@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 
     public GameObject playPageCanvas;
     public GameObject storePageCanvas;
+    public GameObject garagePageCanvas;
 
     public Text coinsCount;
     // Start is called before the first frame update
@@ -27,12 +28,21 @@ public class GameManager : MonoBehaviour
     {
         storePageCanvas.SetActive(true);
         playPageCanvas.SetActive(false);
+        garagePageCanvas.SetActive(false);
     }
 
     public void EnterPlayPage()
     {
         storePageCanvas.SetActive(false);
         playPageCanvas.SetActive(true);
+        garagePageCanvas.SetActive(false);
+    }
+
+    public void EnterGaragePage()
+    {
+        storePageCanvas.SetActive(false);
+        playPageCanvas.SetActive(false);
+        garagePageCanvas.SetActive(true);
     }
 
     // check if the player is in play mode (page)
