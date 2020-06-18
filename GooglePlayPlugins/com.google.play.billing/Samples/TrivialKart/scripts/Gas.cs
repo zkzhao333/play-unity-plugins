@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Gas : MonoBehaviour
@@ -53,7 +52,7 @@ public class Gas : MonoBehaviour
         return _gasLevel;
     }
 
-    // set the gas level bar length and color according to the distance the car has traveled
+    // Set the gas level bar length and color according to the distance the car has traveled
     public void SetGasLevel(float lengthPerCircle, int circleCount, float distance)
     {
         if (_gasLevel > 0)
@@ -73,7 +72,7 @@ public class Gas : MonoBehaviour
         // set color change according to the bar length
         if (_gasLevel < 0.2 * _fullGasLevel)
         {
-            image.color = new Color32(196,92,29,255 );
+            image.color = new Color32(196,92,29,255);
         } else if (_gasLevel < 0.4 * _fullGasLevel)
         {
             image.color = new Color32(255,196,0,255);
