@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// controller for the gas store page
 public class GasStorePageController : MonoBehaviour
 {
     public Text gasPrice;
@@ -14,18 +15,20 @@ public class GasStorePageController : MonoBehaviour
     private double _currentCost;
     private Gas _gas;
     private Image _gasLevelImage;
+    private GameData _gameData;
+
     private void Awake()
     {
         _gas = car.GetComponent<Gas>();
         _gasLevelImage = gasLevelImageObj.GetComponent<Image>();
+        _gameData = FindObjectOfType<GameManager>().GetGameData();
     }
-    
-   
+
     private void OnEnable()
     {
         RefreshGasStorePage();
     }
-    
+
     // update the gas price and refresh the page when get into the gas store page
     private void RefreshGasStorePage()
     {
@@ -37,9 +40,10 @@ public class GasStorePageController : MonoBehaviour
         cannotAffordWarning.SetActive(false);
     }
 
+    // listener for fill gas button.
     public void FillGasOnClick()
     {
-        var currentCoins = PlayerPrefs.GetInt("coins", 20);
+        var currentCoins = _gameData.coinOwned;
         if (currentCoins >= _currentCost)
         {
             panelFillGas.SetActive(true);
@@ -49,19 +53,21 @@ public class GasStorePageController : MonoBehaviour
             cannotAffordWarning.SetActive(true);
         }
     }
-    
+
+    // Listener for cancel/no fill gas button.
     public void CancelFillGas()
     {
         panelFillGas.SetActive(false);
     }
 
+    // Listener for confirm/yes fill gas button.
     public void ConfirmFillGas()
     {
         panelFillGas.SetActive(false);
-        var currentCoins = PlayerPrefs.GetInt("coins", 20);
+        var currentCoins = _gameData.coinOwned;
         if (currentCoins >= _currentCost)
         {
-            PlayerPrefs.SetInt("coins", (int)(currentCoins - _currentCost));
+            _gameData.ReduceCoinsOwned((int)_currentCost);
             _gas.FilledGas();
             FindObjectOfType<GameManager>().SetCoins();
             FindObjectOfType<StoreController>().SetCoins();

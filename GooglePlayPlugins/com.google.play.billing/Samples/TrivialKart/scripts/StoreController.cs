@@ -12,10 +12,23 @@ public class StoreController : MonoBehaviour
 
     private GameObject[] _tabs;
     private int _tabsCount;
-    
-    // Start is called before the first frame update
-    void Start()
+    private GameData _gameData;
+    private const int UnselectedTabIndex = 0;
+    private const int SelectedTabIndex = 1;
+
+
+    private void Awake()
     {
+        _gameData = FindObjectOfType<GameManager>().GetGameData();
+    }
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        if (_gameData == null)
+        {
+            Debug.Log("gamedata is null");
+        }
         _tabsCount = tab.transform.childCount;
         _tabs = new GameObject[_tabsCount];
         for (int i = 0; i < _tabsCount; i++)
@@ -26,7 +39,8 @@ public class StoreController : MonoBehaviour
 
     private void Update()
     {
-        coinsCount.text = PlayerPrefs.GetInt("coins", 20).ToString();
+        // TODO should I delete this ??
+        coinsCount.text = _gameData.coinOwned.ToString();
     }
 
     public void EnterGasPage()
@@ -53,19 +67,19 @@ public class StoreController : MonoBehaviour
         SetTab(2);
     }
 
-    void SetTab(int targetTagIndex)
+    private void SetTab(int targetTagIndex)
     {
         for (int i = 0; i < _tabsCount; i++)
         {
             if (i == targetTagIndex)
             {
-                _tabs[i].transform.GetChild(0).gameObject.SetActive(false);
-                _tabs[i].transform.GetChild(1).gameObject.SetActive(true);
+                _tabs[i].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(false);
+                _tabs[i].transform.GetChild(SelectedTabIndex).gameObject.SetActive(true);
             }
             else
             {
-                _tabs[i].transform.GetChild(0).gameObject.SetActive(true);
-                _tabs[i].transform.GetChild(1).gameObject.SetActive(false);
+                _tabs[i].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(true);
+                _tabs[i].transform.GetChild(SelectedTabIndex).gameObject.SetActive(false);
             }
         }
     }
@@ -78,6 +92,10 @@ public class StoreController : MonoBehaviour
 
     public void SetCoins()
     {
-        coinsCount.text = PlayerPrefs.GetInt("coins", 20).ToString();
+        if (_gameData == null)
+        {
+            Debug.Log("game data isss null");
+        } 
+        coinsCount.text = _gameData.coinOwned.ToString();
     }
 }

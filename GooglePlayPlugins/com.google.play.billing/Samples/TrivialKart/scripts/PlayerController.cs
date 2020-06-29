@@ -1,55 +1,91 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
 
+// controller for car movement
 public class PlayerController : MonoBehaviour
 {
+    public GameObject cam;
+    public GameObject carSedan;
+    public GameObject carTruck;
+    public GameObject carJeep;
+    public GameObject carKart;
 
-    public GameObject tapToDriveText;
-    public Animator animator;
-    [FormerlySerializedAs("MovementSpeed")] public float force = 500;
-    
+    private GameObject _carInUse;
+    private Animator _carInUseAnimator;
     private Gas _gas;
     private Vector3 _carStartPos;
     private Rigidbody2D _rigidbody2D;
     private int _circleCount;
     private static readonly int Speed = Animator.StringToHash("speed");
+    private GameData _gameData;
+    private Vector3 _camOffset;
 
     public void Start()
     {
+        _gameData = FindObjectOfType<GameManager>().GetGameData();
+        UpdateCarInUse();
         _circleCount = 0;
         _gas = GetComponent<Gas>();
-        _carStartPos = transform.position;
-        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _carStartPos = _carInUse.transform.position;
+        _camOffset = cam.transform.position - _carStartPos;
+        Debug.Log("has started play controller.cs");
     }
-    
-    // when the player click the car at the play mode, the car drive forward.
-    private void OnMouseDown()
-    {
-        if (_rigidbody2D.velocity.magnitude < 0.01 && _gas.HasGas() &&  FindObjectOfType<GameManager>().IsInPlayPage())
-        {
-            Drive();
-        }
-    }
+
 
     private void FixedUpdate()
     {
         // back to the start point when reach the end
-        if (transform.position.x >= 25)
+        if (_carInUse.transform.position.x >= 25)
         {
             _circleCount++;
-            transform.position = _carStartPos;
+            _carInUse.transform.position = _carStartPos;
         }
-        animator.SetFloat(Speed,  _rigidbody2D.velocity.magnitude);
-        _gas.SetGasLevel(25 - _carStartPos.x, _circleCount, (float)Math.Round(transform.position.x - _carStartPos.x, 2));
+
+        _carInUseAnimator.SetFloat(Speed, _rigidbody2D.velocity.magnitude);
+        _gas.SetGasLevel(25 - _carStartPos.x, _circleCount,
+            (float) Math.Round(_carInUse.transform.position.x - _carStartPos.x, 2));
+
+        // update cam position
+        var carPosition = _carInUse.transform.position;
+        cam.transform.position = new Vector3(carPosition.x, carPosition.y, carPosition.z) + _camOffset;
     }
 
-    private void Drive()
+    // update the car in use in the play when player switch the car.
+    public void UpdateCarInUse()
     {
-        if (tapToDriveText.activeInHierarchy)
+        switch (_gameData.carInUse)
         {
-            tapToDriveText.SetActive(false);
+            case "carSedan":
+                SetUsingState(carSedan, new List<GameObject> {carTruck, carJeep, carKart});
+                break;
+            case "carTruck":
+                SetUsingState(carTruck, new List<GameObject> {carSedan, carJeep, carKart});
+                break;
+            case "carJeep":
+                SetUsingState(carJeep, new List<GameObject> {carSedan, carTruck, carKart});
+                break;
+            case "carKart":
+                SetUsingState(carKart, new List<GameObject> {carSedan, carTruck, carJeep});
+                break;
         }
-        _rigidbody2D.AddForce(new Vector2(force,0));
+    }
+
+    private void SetUsingState(GameObject usingCarObj, List<GameObject> notUsingCarObjList)
+    {
+        usingCarObj.SetActive(true);
+        if (!(_carInUse is null))
+        {
+            // sync the position of next use car
+            usingCarObj.transform.position = _carInUse.transform.position;
+        }
+
+        _carInUse = usingCarObj;
+        _carInUseAnimator = _carInUse.GetComponent<Animator>();
+        _rigidbody2D = _carInUse.GetComponent<Rigidbody2D>();
+        foreach (var carObj in notUsingCarObjList)
+        {
+            carObj.SetActive(false);
+        }
     }
 }

@@ -6,12 +6,16 @@ public class Gas : MonoBehaviour
     public GameObject noGasText;
     public GameObject gasLevelImageObj;
 
-    private float _mpg = 0.1f;
+    private const float Mpg = 0.1f;
+    private const float FullGasLevel = 5.0f;
     private float _gasLevel = 5.0f;
-    private float _fullGasLevel = 5.0f;
-    private float _drivedDistanceBeforeLastFill = 0f;
+    private float _droveDistanceBeforeLastFill = 0f;
     private float _totalDistanceDriven = 0f;
     private Image _gasLevelImage;
+    private readonly Color32 _darkRedColor = new Color32(196, 92, 29, 255);
+    private readonly Color32 _orangeColor = new Color32(255, 196, 0, 255);
+    private readonly Color32 _lightGreenColor = new Color32(125, 210, 76, 255);
+    private readonly Color32 _greenColor = new Color32(94, 201, 93, 255);
 
     // Start is called before the first frame update
     private void Start()
@@ -36,15 +40,15 @@ public class Gas : MonoBehaviour
     // reset the gas level and distance when fill the gas
     public void FilledGas()
     {
-        _gasLevel = _fullGasLevel;
+        _gasLevel = FullGasLevel;
         // set current distance to previous distance
-        _drivedDistanceBeforeLastFill = _totalDistanceDriven;
+        _droveDistanceBeforeLastFill = _totalDistanceDriven;
         noGasText.SetActive(false);
     }
 
     public float GetFullGasLevel()
     {
-        return _fullGasLevel;
+        return FullGasLevel;
     }
 
     public float GetGasLevel()
@@ -55,35 +59,37 @@ public class Gas : MonoBehaviour
     // Set the gas level bar length and color according to the distance the car has traveled
     public void SetGasLevel(float lengthPerCircle, int circleCount, float distance)
     {
+        _totalDistanceDriven = (lengthPerCircle * circleCount + distance);
         if (_gasLevel > 0)
         {
-            _totalDistanceDriven = (lengthPerCircle * circleCount + distance);
-            var consumedGas = (_totalDistanceDriven - _drivedDistanceBeforeLastFill)  * _mpg;
-            _gasLevel = _fullGasLevel - consumedGas;
-           SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
+            // TODO use the real mpg of each car
+            var consumedGas = (_totalDistanceDriven - _droveDistanceBeforeLastFill) * Mpg;
+            _gasLevel = FullGasLevel - consumedGas;
+            SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
         }
     }
 
-    
+
     public void SetGasLevelHelper(Image image, GameObject obj)
     {
-        obj.transform.localScale = new Vector3(_gasLevel/_fullGasLevel, 1, 1);
-            
-        // set color change according to the bar length
-        if (_gasLevel < 0.2 * _fullGasLevel)
-        {
-            image.color = new Color32(196,92,29,255);
-        } else if (_gasLevel < 0.4 * _fullGasLevel)
-        {
-            image.color = new Color32(255,196,0,255);
-        } else if (_gasLevel < 0.6 * _fullGasLevel)
-        {
-            image.color = new Color32(125,210,76, 255);
-        } else
-        {
-            image.color = new Color32(94, 201, 93, 255);
-        }
+        obj.transform.localScale = new Vector3(_gasLevel / FullGasLevel, 1, 1);
 
+        // set color change according to the bar length
+        if (_gasLevel < 0.2 * FullGasLevel)
+        {
+            image.color = _darkRedColor;
+        }
+        else if (_gasLevel < 0.4 * FullGasLevel)
+        {
+            image.color = _orangeColor;
+        }
+        else if (_gasLevel < 0.6 * FullGasLevel)
+        {
+            image.color = _lightGreenColor;
+        }
+        else
+        {
+            image.color = _greenColor;
+        }
     }
-    
 }

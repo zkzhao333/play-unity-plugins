@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// controller for car store page
 public class CarStorePageController : MonoBehaviour
 {
     public GameObject itemSedan;
@@ -14,11 +15,14 @@ public class CarStorePageController : MonoBehaviour
     private int _priceInCoin;
     private string _itemNameToPurchase;
     private GameManager _gameManager;
-    
+    private GameData _gameData;
+    private readonly Color32 _lightGreyColor = new Color32(147, 147, 147, 255);
+
     // Start is called before the first frame update
     private void Start()
     {
         _gameManager = FindObjectOfType<GameManager>();
+        _gameData = _gameManager.GetGameData();
         RefreshPage();
     }
 
@@ -32,37 +36,37 @@ public class CarStorePageController : MonoBehaviour
         CheckCarOwnership("carJeep", itemJeep, true);
         CheckCarOwnership("carKart", itemKart, true);
     }
-    
-    
+
+
     public void ItemSedanOnclick()
     {
-        
-        itemCoinsOnClick("carSedan", 0f, false);
+        itemCarsOnClick("carSedan", 0f, false);
         _itemNameToPurchase = "carSedan";
     }
-    
+
     public void ItemTruckOnClick()
     {
-        if (PlayerPrefs.GetInt("coins", 20) >= 20)
+        // players can purchase the coin item only it they have enough coin
+        if (_gameData.coinOwned>= 20)
         {
-            itemCoinsOnClick("Truck", 20f, false);
+            itemCarsOnClick("Truck", 20f, false);
             _itemNameToPurchase = "carTruck";
         }
     }
-    
+
     public void ItemJeepOnClick()
-    {   
-        itemCoinsOnClick("Jeep", 2.99f, true);
+    {
+        itemCarsOnClick("Jeep", 2.99f, true);
         _itemNameToPurchase = "carJeep";
     }
-    
+
     public void ItemKartOnClick()
-    {   
-        itemCoinsOnClick("Kart", 4.99f, true);
+    {
+        itemCarsOnClick("Kart", 4.99f, true);
         _itemNameToPurchase = "carKart";
     }
 
-    private void itemCoinsOnClick(String carName, float price, bool dollarItem)
+    private void itemCarsOnClick(String carName, float price, bool dollarItem) 
     {
         confirmPanel.SetActive(true);
         if (dollarItem)
@@ -73,7 +77,7 @@ public class CarStorePageController : MonoBehaviour
         }
         else
         {
-            _priceInCoin = (int)price;
+            _priceInCoin = (int) price;
             confirmText.text = "Would you like to purchase " + carName + " with " + price + " coins?";
         }
     }
@@ -85,38 +89,36 @@ public class CarStorePageController : MonoBehaviour
         // if the item sales in coins
         if (_priceInCoin != -1)
         {
-            PlayerPrefs.SetInt("coins", PlayerPrefs.GetInt("coins", 20) - _priceInCoin);
+            _gameData.ReduceCoinsOwned(_priceInCoin);
             FindObjectOfType<GameManager>().SetCoins();
             FindObjectOfType<StoreController>().SetCoins();
         }
-        
+
         //TODO play-billing-API
         bool confirmedPurchase = true;
 
         if (confirmedPurchase)
         {
-            PlayerPrefs.SetInt(_itemNameToPurchase, 1);
-            _gameManager.SaveData();
+            _gameData.PurchaseCar(_itemNameToPurchase);
+            _gameManager.SaveGameData();
         }
-        
+
         RefreshPage();
-        
     }
 
     public void CancelPurchase()
     {
         confirmPanel.SetActive(false);
     }
-    
+
 
     // check if the player own the car
     // if the player own the car, disable the interaction of the car item
     private void CheckCarOwnership(String carName, GameObject carObj, bool dollarItem)
     {
-       
-        if (PlayerPrefs.HasKey(carName))
+        if (_gameData.CheckOwnership(carName))
         {
-            carObj.GetComponent<Image>().color = new Color32(147, 147, 147, 255);
+            carObj.GetComponent<Image>().color = _lightGreyColor;
             carObj.transform.Find("price").gameObject.GetComponent<Text>().text = "owned";
             carObj.GetComponent<Button>().interactable = false;
             if (!dollarItem)

@@ -1,38 +1,37 @@
-﻿
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
+// GameManager controls page switches among play, store and garage.
+// It also manages game data loading and saving.
 public class GameManager : MonoBehaviour
 {
-
     public GameObject playPageCanvas;
     public GameObject storePageCanvas;
     public GameObject garagePageCanvas;
     public Text coinsCount;
     public Car sedan;
-    
+
     private string _filename = "data.json";
     private string _dataPath;
     private GameData _gameData;
 
-    // Start is called before the first frame update
-    public void Start()
+    // init the game
+    public void Awake()
     {
-        PlayerPrefs.DeleteAll();
-        // reset the coins when start the game
-        PlayerPrefs.SetInt("coins", 20);
-        SetCoins();
+        // user login
         _dataPath = Application.persistentDataPath + "/" + _filename;
         Debug.Log(_dataPath);
-        LoadData();
+        LoadGameData();
+        SetCoins();
     }
-    
+
     // set the coins count at the play page
     public void SetCoins()
     {
-        coinsCount.text = PlayerPrefs.GetInt("coins", 20).ToString();
+        coinsCount.text = _gameData.coinOwned.ToString();
     }
 
+    // switch pages when enter the store.
     public void EnterStore()
     {
         storePageCanvas.SetActive(true);
@@ -40,6 +39,7 @@ public class GameManager : MonoBehaviour
         garagePageCanvas.SetActive(false);
     }
 
+    // switch pages when enter the play.
     public void EnterPlayPage()
     {
         storePageCanvas.SetActive(false);
@@ -47,6 +47,7 @@ public class GameManager : MonoBehaviour
         garagePageCanvas.SetActive(false);
     }
 
+    // switch pages when enter the garage.
     public void EnterGaragePage()
     {
         storePageCanvas.SetActive(false);
@@ -60,28 +61,14 @@ public class GameManager : MonoBehaviour
         return playPageCanvas.activeInHierarchy;
     }
 
-    private void PrintCarJson()
-    {
-        sedan = new Car("sedan", 500, 0, false, true);
-       
-        print(JsonUtility.ToJson(sedan));
-    }
-
     // save game data
-    public void SaveData()
+    public void SaveGameData()
     {
-        // update the ownership of the car
-        foreach (var car in _gameData.cars)
-        {
-            // if playerpref has car name key, the user owned the car
-            car.owned = PlayerPrefs.HasKey(car.carName);
-            Debug.Log(car.carName);
-        } 
         System.IO.File.WriteAllText(_dataPath, JsonUtility.ToJson(_gameData, true));
     }
-    
+
     // load game data
-    private void LoadData()
+    private void LoadGameData()
     {
         try
         {
@@ -94,28 +81,19 @@ public class GameManager : MonoBehaviour
             else // if data file doesn't exist, create a default one
             {
                 Debug.Log("Unable to read the save data, file does not exist");
-                _gameData = new GameData();
-                _gameData.cars.Add(new Car("carSedan", 500, 0, false, true));
-                _gameData.cars.Add(new Car("carTruck", 400, 0, false, false));
-                _gameData.cars.Add(new Car("carJeep", 600, 0, true, false));
-                _gameData.cars.Add(new Car("carKart", 1000, 0, true, false));
-                SaveData();
+                _gameData = new GameData(_dataPath);
+                SaveGameData();
             }
-            
-            // set car ownership into player pref
-            foreach (var car in _gameData.cars)
-            {
-                if (car.owned)
-                {
-                    PlayerPrefs.SetInt(car.carName, 1);
-                }
-                Debug.Log(car.carName);
-            }
-            
         }
         catch (System.Exception ex)
         {
             Debug.Log(ex.Message);
         }
+    }
+
+    // get the game data
+    public GameData GetGameData()
+    {
+        return _gameData;
     }
 }
