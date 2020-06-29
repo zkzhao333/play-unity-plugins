@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class StoreController : MonoBehaviour
@@ -15,6 +14,10 @@ public class StoreController : MonoBehaviour
     private GameData _gameData;
     private const int UnselectedTabIndex = 0;
     private const int SelectedTabIndex = 1;
+    private const int GasStorePageTabIndex = 0;
+    private const int CoinStorePageTabIndex = 1;
+    private const int CarStorePageTabIndex = 2;
+    
 
 
     private void Awake()
@@ -25,10 +28,6 @@ public class StoreController : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        if (_gameData == null)
-        {
-            Debug.Log("gamedata is null");
-        }
         _tabsCount = tab.transform.childCount;
         _tabs = new GameObject[_tabsCount];
         for (int i = 0; i < _tabsCount; i++)
@@ -37,10 +36,10 @@ public class StoreController : MonoBehaviour
         }
     }
 
+    // keep the coin text updated
     private void Update()
     {
-        // TODO should I delete this ??
-        coinsCount.text = _gameData.coinOwned.ToString();
+        SetCoins();
     }
 
     public void EnterGasPage()
@@ -48,7 +47,7 @@ public class StoreController : MonoBehaviour
         gasPage.SetActive(true);
         coinPage.SetActive(false);
         carPage.SetActive(false);
-        SetTab(0);
+        SetTab(GasStorePageTabIndex);
     }
 
     public void EnterCoinPage()
@@ -56,7 +55,7 @@ public class StoreController : MonoBehaviour
         coinPage.SetActive(true);
         gasPage.SetActive(false);
         carPage.SetActive(false);
-        SetTab(1);
+        SetTab(CoinStorePageTabIndex);
     }
 
     public void EnterCarPage()
@@ -64,7 +63,7 @@ public class StoreController : MonoBehaviour
         carPage.SetActive(true);
         coinPage.SetActive(false);
         gasPage.SetActive(false);
-        SetTab(2);
+        SetTab(CarStorePageTabIndex);
     }
 
     private void SetTab(int targetTagIndex)
@@ -83,19 +82,10 @@ public class StoreController : MonoBehaviour
             }
         }
     }
-
-    // update coins when enter store
-    private void OnEnable()
-    {
-        SetCoins();
-    }
+    
 
     public void SetCoins()
     {
-        if (_gameData == null)
-        {
-            Debug.Log("game data isss null");
-        } 
         coinsCount.text = _gameData.coinOwned.ToString();
     }
 }

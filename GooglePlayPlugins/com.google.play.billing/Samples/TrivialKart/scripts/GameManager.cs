@@ -9,9 +9,8 @@ public class GameManager : MonoBehaviour
     public GameObject storePageCanvas;
     public GameObject garagePageCanvas;
     public Text coinsCount;
-    public Car sedan;
 
-    private string _filename = "data.json";
+    private const string Filename = "data.json";
     private string _dataPath;
     private GameData _gameData;
 
@@ -19,7 +18,7 @@ public class GameManager : MonoBehaviour
     public void Awake()
     {
         // user login
-        _dataPath = Application.persistentDataPath + "/" + _filename;
+        _dataPath = Application.persistentDataPath + "/" + Filename;
         Debug.Log(_dataPath);
         LoadGameData();
         SetCoins();
@@ -75,7 +74,7 @@ public class GameManager : MonoBehaviour
             // check if the data file exits
             if (System.IO.File.Exists(_dataPath))
             {
-                string contents = System.IO.File.ReadAllText(_dataPath);
+                var contents = System.IO.File.ReadAllText(_dataPath);
                 _gameData = JsonUtility.FromJson<GameData>(contents);
             }
             else // if data file doesn't exist, create a default one

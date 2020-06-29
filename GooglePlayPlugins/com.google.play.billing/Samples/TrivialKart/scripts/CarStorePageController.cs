@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 // controller for car store page
@@ -13,7 +12,8 @@ public class CarStorePageController : MonoBehaviour
     public Text confirmText;
 
     private int _priceInCoin;
-    private string _itemNameToPurchase;
+    private const int PriceInDollar = -1;
+    private string _carNameToPurchase;
     private GameManager _gameManager;
     private GameData _gameData;
     private readonly Color32 _lightGreyColor = new Color32(147, 147, 147, 255);
@@ -25,7 +25,12 @@ public class CarStorePageController : MonoBehaviour
         _gameData = _gameManager.GetGameData();
         RefreshPage();
     }
-
+    
+    private void OnEnable()
+    {
+        confirmPanel.SetActive(false);
+    }
+    
     // refresh the page
     private void RefreshPage()
     {
@@ -40,45 +45,48 @@ public class CarStorePageController : MonoBehaviour
 
     public void ItemSedanOnclick()
     {
-        itemCarsOnClick("carSedan", 0f, false);
-        _itemNameToPurchase = "carSedan";
+        _carNameToPurchase = "carSedan";
+        BuyCars();
     }
 
     public void ItemTruckOnClick()
     {
         // players can purchase the coin item only it they have enough coin
-        if (_gameData.coinOwned >= 20)
+        if (_gameData.coinOwned >= CarList.CarTruck.price)
         {
-            itemCarsOnClick("Truck", 20f, false);
-            _itemNameToPurchase = "carTruck";
+            _carNameToPurchase = "carTruck";
+            BuyCars();
         }
     }
 
     public void ItemJeepOnClick()
     {
-        itemCarsOnClick("Jeep", 2.99f, true);
-        _itemNameToPurchase = "carJeep";
+        _carNameToPurchase = "carJeep";
+        BuyCars();
     }
 
     public void ItemKartOnClick()
     {
-        itemCarsOnClick("Kart", 4.99f, true);
-        _itemNameToPurchase = "carKart";
+        _carNameToPurchase = "carKart";
+        BuyCars();
     }
 
-    private void itemCarsOnClick(String carName, float price, bool dollarItem)
+    private void BuyCars()
     {
+        var carObjToPurchase = CarList.GetCarByName(_carNameToPurchase);
         confirmPanel.SetActive(true);
-        if (dollarItem)
+        if (carObjToPurchase.isPriceInDollar)
         {
-            // set price in coin to -1 if the car sales in dollar.
-            _priceInCoin = -1;
-            confirmText.text = "Would you like to purchase " + carName + " with $" + price + "?";
+            // set price in coin to PriceInDollar if the car sales in dollar.
+            _priceInCoin = PriceInDollar;
+            confirmText.text = "Would you like to purchase " + carObjToPurchase.carName + " with $" +
+                               carObjToPurchase.price + "?";
         }
         else
         {
-            _priceInCoin = (int) price;
-            confirmText.text = "Would you like to purchase " + carName + " with " + price + " coins?";
+            _priceInCoin = (int) carObjToPurchase.price;
+            confirmText.text = "Would you like to purchase " + carObjToPurchase.carName + " with " +
+                               carObjToPurchase.price + " coins?";
         }
     }
 
@@ -87,7 +95,7 @@ public class CarStorePageController : MonoBehaviour
         // purchase APIs
         confirmPanel.SetActive(false);
         // if the item sales in coins
-        if (_priceInCoin != -1)
+        if (_priceInCoin != PriceInDollar)
         {
             _gameData.ReduceCoinsOwned(_priceInCoin);
             FindObjectOfType<GameManager>().SetCoins();
@@ -99,7 +107,7 @@ public class CarStorePageController : MonoBehaviour
 
         if (confirmedPurchase)
         {
-            _gameData.PurchaseCar(_itemNameToPurchase);
+            _gameData.PurchaseCar(_carNameToPurchase);
             _gameManager.SaveGameData();
         }
 
@@ -114,14 +122,14 @@ public class CarStorePageController : MonoBehaviour
 
     // check if the player own the car
     // if the player own the car, disable the interaction of the car item
-    private void CheckCarOwnership(String carName, GameObject carObj, bool dollarItem)
+    private void CheckCarOwnership(string carName, GameObject carObj, bool isPriceInDollar)
     {
         if (_gameData.CheckOwnership(carName))
         {
             carObj.GetComponent<Image>().color = _lightGreyColor;
-            carObj.transform.Find("price").gameObject.GetComponent<Text>().text = "owned";
             carObj.GetComponent<Button>().interactable = false;
-            if (!dollarItem)
+            carObj.transform.Find("price").gameObject.GetComponent<Text>().text = "owned";
+            if (!isPriceInDollar)
             {
                 carObj.transform.Find("coinImage").gameObject.SetActive(false);
             }

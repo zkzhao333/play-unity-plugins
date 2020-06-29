@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
@@ -18,6 +15,5 @@ public class CameraController : MonoBehaviour
     {
         var position = car.position;
         transform.position = new Vector3(position.x, position.y, position.z) + _offset;
-        //   print("camera position is " + transform.position);
     }
 }

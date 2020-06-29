@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CarMove : MonoBehaviour
 {
-    private Rigidbody2D _rigidbody2D;
     public GameObject tapToDriveText;
     public string carName;
 
+    private Rigidbody2D _rigidbody2D;
     private GameManager _gameManger;
     private Car _carObj;
+    private const float NoVelocity = 0.01f;
 
     private void Start()
     {
@@ -21,7 +19,7 @@ public class CarMove : MonoBehaviour
     private void OnMouseDown()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        if (_rigidbody2D.velocity.magnitude < 0.01 &&
+        if (_rigidbody2D.velocity.magnitude < NoVelocity &&
             transform.parent.gameObject.GetComponent<Gas>().HasGas() &&
             _gameManger.IsInPlayPage())
         {

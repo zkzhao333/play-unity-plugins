@@ -32,7 +32,7 @@ public class GasStorePageController : MonoBehaviour
     // update the gas price and refresh the page when get into the gas store page
     private void RefreshGasStorePage()
     {
-        _currentCost = Math.Ceiling((_gas.GetFullGasLevel() - _gas.GetGasLevel()) * 1);
+        _currentCost = Math.Ceiling(_gas.GetFullGasLevel() - _gas.GetGasLevel());
         gasPrice.text = "* " + _currentCost;
         panelGasPrice.text = "Would you like to fill the gas tank with  " + _currentCost + "  coins";
         _gas.SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);

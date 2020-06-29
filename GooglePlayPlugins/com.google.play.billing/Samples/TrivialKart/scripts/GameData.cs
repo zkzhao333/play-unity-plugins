@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
 
 [Serializable]
 public class GameData
@@ -51,10 +49,9 @@ public class GameData
     }
 
     // check if user owns a car with carName
+    // return true if the user owns it; otherwise return false
     public bool CheckOwnership(string carName)
     {
         return carIndexToOwnership[CarList.GetIndexByName(carName)];
     }
 }
-
-//我觉得就 放gamemanegr然后 get gamedata吧

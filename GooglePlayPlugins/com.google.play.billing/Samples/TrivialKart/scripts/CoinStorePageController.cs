@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class CoinStorePageController : MonoBehaviour
@@ -17,29 +16,29 @@ public class CoinStorePageController : MonoBehaviour
 
     public void FiveCoinsOnClick()
     {
-        itemCoinsOnClick(5, 0.99f);
+        BuyCoins(CoinList.FiveCoins);
     }
 
     public void TenCoinsOnClick()
     {
-        itemCoinsOnClick(10, 1.99f);
+        BuyCoins(CoinList.TenCoins);
     }
 
     public void TwentyCoinsOnClick()
     {
-        itemCoinsOnClick(20, 2.99f);
+        BuyCoins(CoinList.TwentyCoins);
     }
 
     public void FiftyCoinsOnClick()
     {
-        itemCoinsOnClick(50, 4.99f);
+        BuyCoins(CoinList.FiftyCoins);
     }
 
-    private void itemCoinsOnClick(int coinAmount, float price)
+    private void BuyCoins(CoinList.Coin coin)
     {
         confirmPanel.SetActive(true);
-        _coinsToPurchase = coinAmount;
-        confirmText.text = "Would you like to purchase " + coinAmount + "    Coins with $" + price + "?";
+        _coinsToPurchase = coin.Amount;
+        confirmText.text = "Would you like to purchase " + coin.Amount + "  Coins with $" + coin.Price + "?";
     }
 
     public void ConfirmPurchase()

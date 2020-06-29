@@ -1,9 +1,6 @@
-﻿using System;
-using System.Diagnostics;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
-using Debug = UnityEngine.Debug;
 
 public class GarageController : MonoBehaviour
 {
@@ -12,7 +9,7 @@ public class GarageController : MonoBehaviour
     public GameObject itemJeep;
     public GameObject itemKart;
     public GameObject car;
-    public Text coinsCount;
+    public Text coinsCountText;
 
     private GameManager _gameManager;
     private GameData _gameData;
@@ -23,12 +20,9 @@ public class GarageController : MonoBehaviour
     {
         _gameManager = FindObjectOfType<GameManager>();
         _gameData = _gameManager.GetGameData();
-    }
-
-    private void Start()
-    {
         _playerController = car.GetComponent<PlayerController>();
     }
+
 
     // fresh the page when on eable
     private void OnEnable()
@@ -52,12 +46,10 @@ public class GarageController : MonoBehaviour
         CheckCarOwnershipHelper("carKart", itemKart);
     }
 
-    private void CheckCarOwnershipHelper(string carName, GameObject carObj)
+    private void CheckCarOwnershipHelper(string carName, GameObject carGameObj)
     {
-        if (_gameData.CheckOwnership(carName))
-        {
-            carObj.SetActive(true);
-        }
+        bool isCarOwned = _gameData.CheckOwnership(carName);
+        carGameObj.SetActive(isCarOwned);
     }
 
     private void CheckUsingStatus()
@@ -79,10 +71,10 @@ public class GarageController : MonoBehaviour
         }
     }
 
-    private void SetUsingState(GameObject usingCarObj, List<GameObject> notUsingCarObjList)
+    private void SetUsingState(GameObject usingCarGameObj, List<GameObject> notUsingCarGameObjList)
     {
-        usingCarObj.transform.Find("statusText").gameObject.SetActive(true);
-        foreach (var carObj in notUsingCarObjList)
+        usingCarGameObj.transform.Find("statusText").gameObject.SetActive(true);
+        foreach (var carObj in notUsingCarGameObjList)
         {
             carObj.transform.Find("statusText").gameObject.SetActive(false);
         }
@@ -119,6 +111,6 @@ public class GarageController : MonoBehaviour
 
     private void SetCoins()
     {
-        coinsCount.text = _gameData.coinOwned.ToString();
+        coinsCountText.text = _gameData.coinOwned.ToString();
     }
 }

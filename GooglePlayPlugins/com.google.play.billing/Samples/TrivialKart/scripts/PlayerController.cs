@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rigidbody2D;
     private int _circleCount;
     private static readonly int Speed = Animator.StringToHash("speed");
+    private const int EndOfRoadPositionX = 25;
     private GameData _gameData;
     private Vector3 _camOffset;
 
@@ -29,22 +30,22 @@ public class PlayerController : MonoBehaviour
         _gas = GetComponent<Gas>();
         _carStartPos = _carInUse.transform.position;
         _camOffset = cam.transform.position - _carStartPos;
-        Debug.Log("has started play controller.cs");
     }
 
 
     private void FixedUpdate()
     {
         // back to the start point when reach the end
-        if (_carInUse.transform.position.x >= 25)
+        if (_carInUse.transform.position.x >= EndOfRoadPositionX)
         {
             _circleCount++;
             _carInUse.transform.position = _carStartPos;
         }
 
         _carInUseAnimator.SetFloat(Speed, _rigidbody2D.velocity.magnitude);
-        _gas.SetGasLevel(25 - _carStartPos.x, _circleCount,
-            (float) Math.Round(_carInUse.transform.position.x - _carStartPos.x, 2));
+        var lengthPerCircle = EndOfRoadPositionX - _carStartPos.x;
+        _gas.SetGasLevel(lengthPerCircle, _circleCount,
+            (float) Math.Round(_carInUse.transform.position.x - _carStartPos.x, 1));
 
         // update cam position
         var carPosition = _carInUse.transform.position;
@@ -71,21 +72,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void SetUsingState(GameObject usingCarObj, List<GameObject> notUsingCarObjList)
+    private void SetUsingState(GameObject usingCarGameObj, List<GameObject> notUsingCarGameObjList)
     {
-        usingCarObj.SetActive(true);
+        usingCarGameObj.SetActive(true);
         if (!(_carInUse is null))
         {
             // sync the position of next use car
-            usingCarObj.transform.position = _carInUse.transform.position;
+            usingCarGameObj.transform.position = _carInUse.transform.position;
         }
 
-        _carInUse = usingCarObj;
+        _carInUse = usingCarGameObj;
         _carInUseAnimator = _carInUse.GetComponent<Animator>();
         _rigidbody2D = _carInUse.GetComponent<Rigidbody2D>();
-        foreach (var carObj in notUsingCarObjList)
+        foreach (var carGameObj in notUsingCarGameObjList)
         {
-            carObj.SetActive(false);
+            carGameObj.SetActive(false);
         }
     }
 }

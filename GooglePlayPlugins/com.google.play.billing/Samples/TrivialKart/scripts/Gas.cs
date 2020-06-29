@@ -12,7 +12,6 @@ public class Gas : MonoBehaviour
     private float _droveDistanceBeforeLastFill = 0f;
     private float _totalDistanceDriven = 0f;
     private Image _gasLevelImage;
-    private GameData _gameData;
     private readonly Color32 _darkRedColor = new Color32(196, 92, 29, 255);
     private readonly Color32 _orangeColor = new Color32(255, 196, 0, 255);
     private readonly Color32 _lightGreenColor = new Color32(125, 210, 76, 255);
@@ -24,7 +23,6 @@ public class Gas : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        _gameData = FindObjectOfType<GameManager>().GetGameData();
         _gasLevelImage = gasLevelImageObj.GetComponent<Image>();
     }
 
@@ -50,8 +48,7 @@ public class Gas : MonoBehaviour
         _droveDistanceBeforeLastFill = _totalDistanceDriven;
         noGasText.SetActive(false);
     }
-    
-    
+
 
     public float GetFullGasLevel()
     {
@@ -68,33 +65,33 @@ public class Gas : MonoBehaviour
     {
         _totalDistanceDriven = (lengthPerCircle * circleCount + distance);
         // return if no gas left
-        if (!(_gasLevel > 0)) return; 
+        if (!(_gasLevel > 0)) return;
         var consumedGas = (_totalDistanceDriven - _droveDistanceBeforeLastFill) * Mpg;
         _gasLevel = FullGasLevel - consumedGas;
         SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
     }
 
 
-    public void SetGasLevelHelper(Image image, GameObject obj)
+    public void SetGasLevelHelper(Image gasLevelImage, GameObject gasLevelImageObject)
     {
-        obj.transform.localScale = new Vector3(_gasLevel / FullGasLevel, 1, 1);
+        gasLevelImageObject.transform.localScale = new Vector3(_gasLevel / FullGasLevel, 1, 1);
 
         // set color change according to the bar length
         if (_gasLevel < LowVolumeCoefficient * FullGasLevel)
         {
-            image.color = _darkRedColor;
+            gasLevelImage.color = _darkRedColor;
         }
         else if (_gasLevel < MediumVloumCoefficient * FullGasLevel)
         {
-            image.color = _orangeColor;
+            gasLevelImage.color = _orangeColor;
         }
         else if (_gasLevel < HighVolumnCoefficient * FullGasLevel)
         {
-            image.color = _lightGreenColor;
+            gasLevelImage.color = _lightGreenColor;
         }
         else
         {
-            image.color = _greenColor;
+            gasLevelImage.color = _greenColor;
         }
     }
 }
