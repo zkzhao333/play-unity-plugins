@@ -1,10 +1,10 @@
 ﻿
 public static class CarList
 {
-     public static Car CarSedan = new Car("carSedan", 500, 0, false, true, 0.1f);
-     public static Car CarTruck = new Car("carTruck", 600, 0, false, false, 0.2f);
-     public static Car CarJeep = new Car("carJeep", 650, 0, true, false, 0.2f);
-     public static Car CarKart =  new Car("carKart", 1000, 0, true, false, 0.3f);
+     public static Car CarSedan = new Car("carSedan", 500, 0, false);
+     public static Car CarTruck = new Car("carTruck", 600, 0, false );
+     public static Car CarJeep = new Car("carJeep", 650, 0, true);
+     public static Car CarKart =  new Car("carKart", 1000, 0, true);
 
      public static Car GetCarByName(string carName)
      {

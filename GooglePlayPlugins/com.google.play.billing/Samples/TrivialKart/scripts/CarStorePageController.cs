@@ -47,7 +47,7 @@ public class CarStorePageController : MonoBehaviour
     public void ItemTruckOnClick()
     {
         // players can purchase the coin item only it they have enough coin
-        if (_gameData.coinOwned>= 20)
+        if (_gameData.coinOwned >= 20)
         {
             itemCarsOnClick("Truck", 20f, false);
             _itemNameToPurchase = "carTruck";
@@ -66,7 +66,7 @@ public class CarStorePageController : MonoBehaviour
         _itemNameToPurchase = "carKart";
     }
 
-    private void itemCarsOnClick(String carName, float price, bool dollarItem) 
+    private void itemCarsOnClick(String carName, float price, bool dollarItem)
     {
         confirmPanel.SetActive(true);
         if (dollarItem)

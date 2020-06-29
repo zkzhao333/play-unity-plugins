@@ -11,6 +11,7 @@ public class CarMove : MonoBehaviour
 
     private GameManager _gameManger;
     private Car _carObj;
+
     private void Start()
     {
         _gameManger = FindObjectOfType<GameManager>();

@@ -67,7 +67,7 @@ public class GasStorePageController : MonoBehaviour
         var currentCoins = _gameData.coinOwned;
         if (currentCoins >= _currentCost)
         {
-            _gameData.ReduceCoinsOwned((int)_currentCost);
+            _gameData.ReduceCoinsOwned((int) _currentCost);
             _gas.FilledGas();
             FindObjectOfType<GameManager>().SetCoins();
             FindObjectOfType<StoreController>().SetCoins();

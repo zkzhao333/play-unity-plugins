@@ -6,20 +6,25 @@ public class Gas : MonoBehaviour
     public GameObject noGasText;
     public GameObject gasLevelImageObj;
 
-    private const float Mpg = 0.1f;
     private const float FullGasLevel = 5.0f;
+    private const float Mpg = 0.1f;
     private float _gasLevel = 5.0f;
     private float _droveDistanceBeforeLastFill = 0f;
     private float _totalDistanceDriven = 0f;
     private Image _gasLevelImage;
+    private GameData _gameData;
     private readonly Color32 _darkRedColor = new Color32(196, 92, 29, 255);
     private readonly Color32 _orangeColor = new Color32(255, 196, 0, 255);
     private readonly Color32 _lightGreenColor = new Color32(125, 210, 76, 255);
     private readonly Color32 _greenColor = new Color32(94, 201, 93, 255);
+    private const float LowVolumeCoefficient = 0.2f;
+    private const float MediumVloumCoefficient = 0.4f;
+    private const float HighVolumnCoefficient = 0.6f;
 
     // Start is called before the first frame update
     private void Start()
     {
+        _gameData = FindObjectOfType<GameManager>().GetGameData();
         _gasLevelImage = gasLevelImageObj.GetComponent<Image>();
     }
 
@@ -45,6 +50,8 @@ public class Gas : MonoBehaviour
         _droveDistanceBeforeLastFill = _totalDistanceDriven;
         noGasText.SetActive(false);
     }
+    
+    
 
     public float GetFullGasLevel()
     {
@@ -60,13 +67,11 @@ public class Gas : MonoBehaviour
     public void SetGasLevel(float lengthPerCircle, int circleCount, float distance)
     {
         _totalDistanceDriven = (lengthPerCircle * circleCount + distance);
-        if (_gasLevel > 0)
-        {
-            // TODO use the real mpg of each car
-            var consumedGas = (_totalDistanceDriven - _droveDistanceBeforeLastFill) * Mpg;
-            _gasLevel = FullGasLevel - consumedGas;
-            SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
-        }
+        // return if no gas left
+        if (!(_gasLevel > 0)) return; 
+        var consumedGas = (_totalDistanceDriven - _droveDistanceBeforeLastFill) * Mpg;
+        _gasLevel = FullGasLevel - consumedGas;
+        SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
     }
 
 
@@ -75,15 +80,15 @@ public class Gas : MonoBehaviour
         obj.transform.localScale = new Vector3(_gasLevel / FullGasLevel, 1, 1);
 
         // set color change according to the bar length
-        if (_gasLevel < 0.2 * FullGasLevel)
+        if (_gasLevel < LowVolumeCoefficient * FullGasLevel)
         {
             image.color = _darkRedColor;
         }
-        else if (_gasLevel < 0.4 * FullGasLevel)
+        else if (_gasLevel < MediumVloumCoefficient * FullGasLevel)
         {
             image.color = _orangeColor;
         }
-        else if (_gasLevel < 0.6 * FullGasLevel)
+        else if (_gasLevel < HighVolumnCoefficient * FullGasLevel)
         {
             image.color = _lightGreenColor;
         }
