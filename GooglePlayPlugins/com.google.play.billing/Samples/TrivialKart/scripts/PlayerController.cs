@@ -53,11 +53,11 @@ public class PlayerController : MonoBehaviour
         // set all car to be inactive
         foreach (var car in CarList.List)
         {
-            car.playItemGameObj.SetActive(false);
+            car.playCarGameObj.SetActive(false);
         }
         
         // set the car in use game object to be active
-        var carInUseGameObj = _gameData.GetCarObjInUse().playItemGameObj;
+        var carInUseGameObj = _gameData.GetCarInUseObj().playCarGameObj;
         SetUsingState(carInUseGameObj);
     }
 

@@ -17,7 +17,7 @@ public class CoinStorePageController : MonoBehaviour
 
     public void OnFiveCoinsClicked()
     {
-        _coinToPurchaseObj =CoinList.FiveCoins;
+        _coinToPurchaseObj = CoinList.FiveCoins;
         BuyCoins();
     }
 
@@ -42,7 +42,8 @@ public class CoinStorePageController : MonoBehaviour
     private void BuyCoins()
     {
         confirmPanel.SetActive(true);
-        confirmText.text = "Would you like to purchase " + _coinToPurchaseObj.Amount + "  Coins with $" + _coinToPurchaseObj.Price + "?";
+        confirmText.text = "Would you like to purchase " + _coinToPurchaseObj.Amount + "  Coins with $" +
+                           _coinToPurchaseObj.Price + "?";
     }
 
     public void OnConfirmPurchaseButtonClicked()

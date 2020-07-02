@@ -3,52 +3,50 @@
 [Serializable]
 public class GameData
 {
-    public string carNameInUse;
+    public string carInUseName;
     public bool[] carIndexToOwnership;
-    public int coinOwned;
+    public int coinsOwned;
 
-    private Car _carObjInUse;
-    private string _dataPath;
+    private Car _carInUseObj;
     private const int InitialCoinAmount = 20;
     private const int TotalCarCount = 4;
     private const bool Owned = true;
     private const bool NotOwned = false;
 
-    public GameData(string dataPath)
+    public GameData()
     {
-        _dataPath = dataPath;
-        coinOwned = InitialCoinAmount;
+        coinsOwned = InitialCoinAmount;
         carIndexToOwnership = new bool[TotalCarCount];
         carIndexToOwnership[CarList.GetIndexByName("carSedan")] = Owned;
         carIndexToOwnership[CarList.GetIndexByName("carTruck")] = NotOwned;
         carIndexToOwnership[CarList.GetIndexByName("carJeep")] = NotOwned;
         carIndexToOwnership[CarList.GetIndexByName("carKart")] = NotOwned;
-        carNameInUse = "carSedan";
+        carInUseName = "carSedan";
     }
 
     // update car object in use
-    public void SetCarObjInUse()
+    public void SetCarInUseObj()
     {
-        _carObjInUse = CarList.GetCarByName(carNameInUse);
+        _carInUseObj = CarList.GetCarByName(carInUseName);
     }
 
     // get the car object in use
-    public Car GetCarObjInUse()
+    public Car GetCarInUseObj()
     {
-        return _carObjInUse;
+        return _carInUseObj;
     }
 
 
     // reduce coins owned 
     public void ReduceCoinsOwned(int reduceAmount)
     {
-        coinOwned -= reduceAmount;
+        coinsOwned -= reduceAmount;
     }
 
     // increase coins owned
     public void IncreaseCoinsOwned(int increaseAmount)
     {
-        coinOwned += increaseAmount;
+        coinsOwned += increaseAmount;
     }
 
     // own a car

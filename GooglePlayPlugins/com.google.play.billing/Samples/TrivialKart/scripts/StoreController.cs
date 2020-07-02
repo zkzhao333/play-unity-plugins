@@ -102,6 +102,6 @@ public class StoreController : MonoBehaviour
 
     public void SetCoins()
     {
-        coinsCount.text = _gameData.coinOwned.ToString();
+        coinsCount.text = _gameData.coinsOwned.ToString();
     }
 }

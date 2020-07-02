@@ -11,7 +11,7 @@ public class Car
     public bool isPriceInDollar;
     public GameObject storeItemCarGameObj;
     public GameObject garageItemGameObj;
-    public GameObject playItemGameObj;
+    public GameObject playCarGameObj;
 
     public Car(string carName, int speed, float price, bool isPriceInDollar)
     {

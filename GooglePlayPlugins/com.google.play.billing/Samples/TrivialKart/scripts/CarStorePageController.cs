@@ -13,7 +13,7 @@ public class CarStorePageController : MonoBehaviour
     private readonly Color32 _lightGreyColor = new Color32(147, 147, 147, 255);
 
     // Start is called before the first frame update
-    private void Start()
+    private void Awake()
     {
         _gameManager = FindObjectOfType<GameManager>();
         _gameData = _gameManager.GetGameData();
@@ -45,7 +45,7 @@ public class CarStorePageController : MonoBehaviour
     public void OnItemTruckClicked()
     {
         // players can purchase the coin item only it they have enough coin
-        if (_gameData.coinOwned >= CarList.CarTruck.price)
+        if (_gameData.coinsOwned >= CarList.CarTruck.price)
         {
             _carToPurchaseObj = CarList.CarTruck;
             BuyCars();

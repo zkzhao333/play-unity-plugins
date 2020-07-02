@@ -51,7 +51,7 @@ public class GarageController : MonoBehaviour
             carObj.garageItemGameObj.transform.Find("statusText").gameObject.SetActive(false);
         }
 
-        _gameData.GetCarObjInUse().garageItemGameObj.transform.Find("statusText").gameObject.SetActive(true);
+        _gameData.GetCarInUseObj().garageItemGameObj.transform.Find("statusText").gameObject.SetActive(true);
     }
 
 
@@ -77,8 +77,8 @@ public class GarageController : MonoBehaviour
 
     private void SwitchCarInUse(Car targetCar)
     {
-        _gameData.carNameInUse = targetCar.carName;
-        _gameData.SetCarObjInUse();
+        _gameData.carInUseName = targetCar.carName;
+        _gameData.SetCarInUseObj();
         RefreshPage();
         _gameManager.SaveGameData();
         _playerController.UpdateCarInUse();
@@ -86,6 +86,6 @@ public class GarageController : MonoBehaviour
 
     private void SetCoins()
     {
-        coinsCountText.text = _gameData.coinOwned.ToString();
+        coinsCountText.text = _gameData.coinsOwned.ToString();
     }
 }

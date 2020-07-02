@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     // set the coins count at the play page
     public void SetCoins()
     {
-        coinsCount.text = _gameData.coinOwned.ToString();
+        coinsCount.text = _gameData.coinsOwned.ToString();
     }
 
     // switch pages when enter the store.
@@ -102,12 +102,12 @@ public class GameManager : MonoBehaviour
             else // if data file doesn't exist, create a default one
             {
                 Debug.Log("Unable to read the save data, file does not exist");
-                _gameData = new GameData(_dataPath);
+                _gameData = new GameData();
                 SaveGameData();
             }
 
             // transfer the stored carName to carObj for future use
-            _gameData.SetCarObjInUse();
+            _gameData.SetCarInUseObj();
         }
         catch (System.Exception ex)
         {
@@ -125,16 +125,16 @@ public class GameManager : MonoBehaviour
     private void InitCarList()
     {
         CarList.CarSedan.garageItemGameObj = garageItemCarSedanGameObj;
-        CarList.CarSedan.playItemGameObj = playCarSedanGameObj;
+        CarList.CarSedan.playCarGameObj = playCarSedanGameObj;
         CarList.CarSedan.storeItemCarGameObj = storeItemCarSedanGameObj;
         CarList.CarTruck.garageItemGameObj = garageItemCarTruckGameObj;
-        CarList.CarTruck.playItemGameObj = playCarTruckGameObj;
+        CarList.CarTruck.playCarGameObj = playCarTruckGameObj;
         CarList.CarTruck.storeItemCarGameObj = storeItemCarTruckGameObj;
         CarList.CarJeep.garageItemGameObj = garageItemCarJeepGameObj;
-        CarList.CarJeep.playItemGameObj = playCarJeepGameObj;
+        CarList.CarJeep.playCarGameObj = playCarJeepGameObj;
         CarList.CarJeep.storeItemCarGameObj = storeItemCarJeepGameObj;
         CarList.CarKart.garageItemGameObj = garageItemCarKartGameObj;
-        CarList.CarKart.playItemGameObj = playCarKartGameObj;
+        CarList.CarKart.playCarGameObj = playCarKartGameObj;
         CarList.CarKart.storeItemCarGameObj = storeItemCarKartGameObj;
     }
 }
