@@ -1,14 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class GarageController : MonoBehaviour
 {
-    public GameObject itemSedan;
-    public GameObject itemTruck;
-    public GameObject itemJeep;
-    public GameObject itemKart;
-    public GameObject car;
+    public GameObject playCarGameObject;
     public Text coinsCountText;
 
     private GameManager _gameManager;
@@ -20,7 +15,7 @@ public class GarageController : MonoBehaviour
     {
         _gameManager = FindObjectOfType<GameManager>();
         _gameData = _gameManager.GetGameData();
-        _playerController = car.GetComponent<PlayerController>();
+        _playerController = playCarGameObject.GetComponent<PlayerController>();
     }
 
 
@@ -40,70 +35,49 @@ public class GarageController : MonoBehaviour
 
     private void CheckCarOwnership()
     {
-        CheckCarOwnershipHelper("carSedan", itemSedan);
-        CheckCarOwnershipHelper("carTruck", itemTruck);
-        CheckCarOwnershipHelper("carJeep", itemJeep);
-        CheckCarOwnershipHelper("carKart", itemKart);
-    }
-
-    private void CheckCarOwnershipHelper(string carName, GameObject carGameObj)
-    {
-        bool isCarOwned = _gameData.CheckOwnership(carName);
-        carGameObj.SetActive(isCarOwned);
+        foreach (var car in CarList.List)
+        {
+            var isCarOwned = _gameData.CheckOwnership(car.carName);
+            // set the car item active if the player owns the car.
+            car.garageItemGameObj.SetActive(isCarOwned);
+        }
     }
 
     private void CheckUsingStatus()
     {
-        switch (_gameData.carInUse)
+        foreach (var carObj in CarList.List)
         {
-            case "carSedan":
-                SetUsingState(itemSedan, new List<GameObject> {itemTruck, itemJeep, itemKart});
-                break;
-            case "carTruck":
-                SetUsingState(itemTruck, new List<GameObject> {itemSedan, itemJeep, itemKart});
-                break;
-            case "carJeep":
-                SetUsingState(itemJeep, new List<GameObject> {itemSedan, itemTruck, itemKart});
-                break;
-            case "carKart":
-                SetUsingState(itemKart, new List<GameObject> {itemSedan, itemTruck, itemJeep});
-                break;
+            carObj.garageItemGameObj.transform.Find("statusText").gameObject.SetActive(false);
         }
-    }
 
-    private void SetUsingState(GameObject usingCarGameObj, List<GameObject> notUsingCarGameObjList)
-    {
-        usingCarGameObj.transform.Find("statusText").gameObject.SetActive(true);
-        foreach (var carObj in notUsingCarGameObjList)
-        {
-            carObj.transform.Find("statusText").gameObject.SetActive(false);
-        }
+        _gameData.GetCarObjInUse().garageItemGameObj.transform.Find("statusText").gameObject.SetActive(true);
     }
 
 
-    public void ItemSedanOnclick()
+    public void OnItemSedanClicked()
     {
-        ItemCarsOnClick("carSedan");
+        SwitchCarInUse(CarList.CarSedan);
     }
 
-    public void ItemTruckOnClick()
+    public void OnItemTruckClicked()
     {
-        ItemCarsOnClick("carTruck");
+        SwitchCarInUse(CarList.CarTruck);
     }
 
-    public void ItemJeepOnClick()
+    public void OnItemJeepClicked()
     {
-        ItemCarsOnClick("carJeep");
+        SwitchCarInUse(CarList.CarJeep);
     }
 
-    public void ItemKartOnClick()
+    public void OnItemKartClicked()
     {
-        ItemCarsOnClick("carKart");
+        SwitchCarInUse(CarList.CarKart);
     }
 
-    private void ItemCarsOnClick(string carName)
+    private void SwitchCarInUse(Car targetCar)
     {
-        _gameData.carInUse = carName;
+        _gameData.carNameInUse = targetCar.carName;
+        _gameData.SetCarObjInUse();
         RefreshPage();
         _gameManager.SaveGameData();
         _playerController.UpdateCarInUse();

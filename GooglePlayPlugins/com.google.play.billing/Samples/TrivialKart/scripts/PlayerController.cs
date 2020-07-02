@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 // controller for car movement
 public class PlayerController : MonoBehaviour
 {
     public GameObject cam;
-    public GameObject carSedan;
-    public GameObject carTruck;
-    public GameObject carJeep;
-    public GameObject carKart;
 
-    private GameObject _carInUse;
+    private GameObject _carInUseGameObj;
     private Animator _carInUseAnimator;
     private Gas _gas;
     private Vector3 _carStartPos;
@@ -28,7 +23,7 @@ public class PlayerController : MonoBehaviour
         UpdateCarInUse();
         _circleCount = 0;
         _gas = GetComponent<Gas>();
-        _carStartPos = _carInUse.transform.position;
+        _carStartPos = _carInUseGameObj.transform.position;
         _camOffset = cam.transform.position - _carStartPos;
     }
 
@@ -36,57 +31,47 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         // back to the start point when reach the end
-        if (_carInUse.transform.position.x >= EndOfRoadPositionX)
+        if (_carInUseGameObj.transform.position.x >= EndOfRoadPositionX)
         {
             _circleCount++;
-            _carInUse.transform.position = _carStartPos;
+            _carInUseGameObj.transform.position = _carStartPos;
         }
 
         _carInUseAnimator.SetFloat(Speed, _rigidbody2D.velocity.magnitude);
-        var lengthPerCircle = EndOfRoadPositionX - _carStartPos.x;
-        _gas.SetGasLevel(lengthPerCircle, _circleCount,
-            (float) Math.Round(_carInUse.transform.position.x - _carStartPos.x, 1));
+        var currentCircleTravelDistance = EndOfRoadPositionX - _carStartPos.x;
+        _gas.SetGasLevel(currentCircleTravelDistance, _circleCount,
+            (float) Math.Round(_carInUseGameObj.transform.position.x - _carStartPos.x, 1));
 
         // update cam position
-        var carPosition = _carInUse.transform.position;
+        var carPosition = _carInUseGameObj.transform.position;
         cam.transform.position = new Vector3(carPosition.x, carPosition.y, carPosition.z) + _camOffset;
     }
 
     // update the car in use in the play when player switch the car.
     public void UpdateCarInUse()
     {
-        switch (_gameData.carInUse)
+        // set all car to be inactive
+        foreach (var car in CarList.List)
         {
-            case "carSedan":
-                SetUsingState(carSedan, new List<GameObject> {carTruck, carJeep, carKart});
-                break;
-            case "carTruck":
-                SetUsingState(carTruck, new List<GameObject> {carSedan, carJeep, carKart});
-                break;
-            case "carJeep":
-                SetUsingState(carJeep, new List<GameObject> {carSedan, carTruck, carKart});
-                break;
-            case "carKart":
-                SetUsingState(carKart, new List<GameObject> {carSedan, carTruck, carJeep});
-                break;
+            car.playItemGameObj.SetActive(false);
         }
+        
+        // set the car in use game object to be active
+        var carInUseGameObj = _gameData.GetCarObjInUse().playItemGameObj;
+        SetUsingState(carInUseGameObj);
     }
 
-    private void SetUsingState(GameObject usingCarGameObj, List<GameObject> notUsingCarGameObjList)
+    private void SetUsingState(GameObject carInUseGameObj)
     {
-        usingCarGameObj.SetActive(true);
-        if (!(_carInUse is null))
+        carInUseGameObj.SetActive(true);
+        if (!(_carInUseGameObj is null))
         {
             // sync the position of next use car
-            usingCarGameObj.transform.position = _carInUse.transform.position;
+            carInUseGameObj.transform.position = _carInUseGameObj.transform.position;
         }
 
-        _carInUse = usingCarGameObj;
-        _carInUseAnimator = _carInUse.GetComponent<Animator>();
-        _rigidbody2D = _carInUse.GetComponent<Rigidbody2D>();
-        foreach (var carGameObj in notUsingCarGameObjList)
-        {
-            carGameObj.SetActive(false);
-        }
+        _carInUseGameObj = carInUseGameObj;
+        _carInUseAnimator = _carInUseGameObj.GetComponent<Animator>();
+        _rigidbody2D = _carInUseGameObj.GetComponent<Rigidbody2D>();
     }
 }

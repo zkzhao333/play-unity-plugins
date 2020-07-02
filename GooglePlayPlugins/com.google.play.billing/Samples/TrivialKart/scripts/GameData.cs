@@ -3,12 +3,13 @@
 [Serializable]
 public class GameData
 {
-    public string carInUse;
+    public string carNameInUse;
     public bool[] carIndexToOwnership;
     public int coinOwned;
 
+    private Car _carObjInUse;
     private string _dataPath;
-    private const int InitialCoin = 20;
+    private const int InitialCoinAmount = 20;
     private const int TotalCarCount = 4;
     private const bool Owned = true;
     private const bool NotOwned = false;
@@ -16,19 +17,27 @@ public class GameData
     public GameData(string dataPath)
     {
         _dataPath = dataPath;
-        coinOwned = InitialCoin;
+        coinOwned = InitialCoinAmount;
         carIndexToOwnership = new bool[TotalCarCount];
         carIndexToOwnership[CarList.GetIndexByName("carSedan")] = Owned;
         carIndexToOwnership[CarList.GetIndexByName("carTruck")] = NotOwned;
         carIndexToOwnership[CarList.GetIndexByName("carJeep")] = NotOwned;
         carIndexToOwnership[CarList.GetIndexByName("carKart")] = NotOwned;
-        carInUse = "carSedan";
+        carNameInUse = "carSedan";
     }
 
-    // save init game data when the user first time playing this game
-    public void SaveInitialGameData()
+    // update car object in use
+    public void SetCarObjInUse()
     {
+        _carObjInUse = CarList.GetCarByName(carNameInUse);
     }
+
+    // get the car object in use
+    public Car GetCarObjInUse()
+    {
+        return _carObjInUse;
+    }
+
 
     // reduce coins owned 
     public void ReduceCoinsOwned(int reduceAmount)

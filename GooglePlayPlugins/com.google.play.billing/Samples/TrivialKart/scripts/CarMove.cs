@@ -16,6 +16,7 @@ public class CarMove : MonoBehaviour
         _carObj = CarList.GetCarByName(carName);
     }
 
+    // trigger when player tap the car
     private void OnMouseDown()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
@@ -29,11 +30,7 @@ public class CarMove : MonoBehaviour
 
     private void Drive()
     {
-        if (tapToDriveText.activeInHierarchy)
-        {
-            tapToDriveText.SetActive(false);
-        }
-
+        tapToDriveText.SetActive(false);
         _rigidbody2D.AddForce(new Vector2(_carObj.speed, 0));
     }
 }

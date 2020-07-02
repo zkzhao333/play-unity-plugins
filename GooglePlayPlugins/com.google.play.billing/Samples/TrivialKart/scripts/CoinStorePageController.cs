@@ -6,7 +6,7 @@ public class CoinStorePageController : MonoBehaviour
     public GameObject confirmPanel;
     public Text confirmText;
 
-    private int _coinsToPurchase;
+    private CoinList.Coin _coinToPurchaseObj;
     private GameData _gameData;
 
     private void Start()
@@ -14,43 +14,46 @@ public class CoinStorePageController : MonoBehaviour
         _gameData = FindObjectOfType<GameManager>().GetGameData();
     }
 
-    public void FiveCoinsOnClick()
+    public void OnFiveCoinsClicked()
     {
-        BuyCoins(CoinList.FiveCoins);
+        _coinToPurchaseObj =CoinList.FiveCoins;
+        BuyCoins();
     }
 
-    public void TenCoinsOnClick()
+    public void OnTenCoinsClicked()
     {
-        BuyCoins(CoinList.TenCoins);
+        _coinToPurchaseObj = CoinList.TenCoins;
+        BuyCoins();
     }
 
-    public void TwentyCoinsOnClick()
+    public void OnTwentyCoinsClicked()
     {
-        BuyCoins(CoinList.TwentyCoins);
+        _coinToPurchaseObj = CoinList.TwentyCoins;
+        BuyCoins();
     }
 
-    public void FiftyCoinsOnClick()
+    public void OnFiftyCoinsClicked()
     {
-        BuyCoins(CoinList.FiftyCoins);
+        _coinToPurchaseObj = CoinList.FiftyCoins;
+        BuyCoins();
     }
 
-    private void BuyCoins(CoinList.Coin coin)
+    private void BuyCoins()
     {
         confirmPanel.SetActive(true);
-        _coinsToPurchase = coin.Amount;
-        confirmText.text = "Would you like to purchase " + coin.Amount + "  Coins with $" + coin.Price + "?";
+        confirmText.text = "Would you like to purchase " + _coinToPurchaseObj.Amount + "  Coins with $" + _coinToPurchaseObj.Price + "?";
     }
 
-    public void ConfirmPurchase()
+    public void OnConfirmPurchaseButtonClicked()
     {
         // purchase APIs
         confirmPanel.SetActive(false);
-        _gameData.IncreaseCoinsOwned(_coinsToPurchase);
+        _gameData.IncreaseCoinsOwned(_coinToPurchaseObj.Amount);
         FindObjectOfType<GameManager>().SetCoins();
         FindObjectOfType<StoreController>().SetCoins();
     }
 
-    public void CancelPurchase()
+    public void OnCancelPurchaseButtonClicked()
     {
         confirmPanel.SetActive(false);
     }

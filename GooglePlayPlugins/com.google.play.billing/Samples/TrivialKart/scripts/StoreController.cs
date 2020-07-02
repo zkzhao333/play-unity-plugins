@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class StoreController : MonoBehaviour
@@ -7,6 +8,7 @@ public class StoreController : MonoBehaviour
     public GameObject gasPage;
     public GameObject coinPage;
     public GameObject carPage;
+    public GameObject subscriptionPage;
     public Text coinsCount;
 
     private GameObject[] _tabs;
@@ -17,8 +19,9 @@ public class StoreController : MonoBehaviour
     private const int GasStorePageTabIndex = 0;
     private const int CoinStorePageTabIndex = 1;
     private const int CarStorePageTabIndex = 2;
-    
+    private const int SubscriptionPageTabIndex = 3;
 
+    private List<GameObject> _storePages;
 
     private void Awake()
     {
@@ -28,9 +31,12 @@ public class StoreController : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        _storePages = new List<GameObject>()
+            {gasPage, coinPage, carPage, subscriptionPage};
         _tabsCount = tab.transform.childCount;
+
         _tabs = new GameObject[_tabsCount];
-        for (int i = 0; i < _tabsCount; i++)
+        for (var i = 0; i < _tabsCount; i++)
         {
             _tabs[i] = tab.transform.GetChild(i).gameObject;
         }
@@ -42,47 +48,56 @@ public class StoreController : MonoBehaviour
         SetCoins();
     }
 
-    public void EnterGasPage()
+    public void OnEnterGasPageButtonClicked()
     {
-        gasPage.SetActive(true);
-        coinPage.SetActive(false);
-        carPage.SetActive(false);
+        SetPage(gasPage);
         SetTab(GasStorePageTabIndex);
     }
 
-    public void EnterCoinPage()
+    public void OnEnterCoinPageButtonClicked()
     {
-        coinPage.SetActive(true);
-        gasPage.SetActive(false);
-        carPage.SetActive(false);
+        SetPage(coinPage);
         SetTab(CoinStorePageTabIndex);
     }
 
-    public void EnterCarPage()
+    public void OnEnterCarPageButtonClicked()
     {
-        carPage.SetActive(true);
-        coinPage.SetActive(false);
-        gasPage.SetActive(false);
+        SetPage(carPage);
         SetTab(CarStorePageTabIndex);
+    }
+
+    public void OnEnterSubscriptionPageButtonClicked()
+    {
+        SetPage(subscriptionPage);
+        SetTab(SubscriptionPageTabIndex);
+    }
+
+    private void SetPage(GameObject targetPage)
+    {
+        // set all store pages to inactive
+        foreach (var page in _storePages)
+        {
+            page.SetActive(false);
+        }
+
+        // set the target page to active
+        targetPage.SetActive(true);
     }
 
     private void SetTab(int targetTagIndex)
     {
-        for (int i = 0; i < _tabsCount; i++)
+        // set all tags to be unselected
+        for (var i = 0; i < _tabsCount; i++)
         {
-            if (i == targetTagIndex)
-            {
-                _tabs[i].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(false);
-                _tabs[i].transform.GetChild(SelectedTabIndex).gameObject.SetActive(true);
-            }
-            else
-            {
-                _tabs[i].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(true);
-                _tabs[i].transform.GetChild(SelectedTabIndex).gameObject.SetActive(false);
-            }
+            _tabs[i].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(true);
+            _tabs[i].transform.GetChild(SelectedTabIndex).gameObject.SetActive(false);
         }
+
+        // set the target tag to be selected
+        _tabs[targetTagIndex].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(false);
+        _tabs[targetTagIndex].transform.GetChild(SelectedTabIndex).gameObject.SetActive(true);
     }
-    
+
 
     public void SetCoins()
     {

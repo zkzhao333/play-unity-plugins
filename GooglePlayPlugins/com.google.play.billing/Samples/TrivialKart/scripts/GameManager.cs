@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.UI;
 
 // GameManager controls page switches among play, store and garage.
@@ -9,10 +10,23 @@ public class GameManager : MonoBehaviour
     public GameObject storePageCanvas;
     public GameObject garagePageCanvas;
     public Text coinsCount;
+    public GameObject storeItemCarSedanGameObj;
+    public GameObject storeItemCarTruckGameObj;
+    public GameObject storeItemCarJeepGameObj;
+    public GameObject storeItemCarKartGameObj;
+    public GameObject garageItemCarSedanGameObj;
+    public GameObject garageItemCarTruckGameObj;
+    public GameObject garageItemCarJeepGameObj;
+    public GameObject garageItemCarKartGameObj;
+    public GameObject playCarSedanGameObj;
+    public GameObject playCarJeepGameObj;
+    public GameObject playCarTruckGameObj;
+    public GameObject playCarKartGameObj;
 
     private const string Filename = "data.json";
     private string _dataPath;
     private GameData _gameData;
+    private List<GameObject> _canvasPagesList;
 
     // init the game
     public void Awake()
@@ -20,8 +34,10 @@ public class GameManager : MonoBehaviour
         // user login
         _dataPath = Application.persistentDataPath + "/" + Filename;
         Debug.Log(_dataPath);
+        InitCarList();
         LoadGameData();
         SetCoins();
+        _canvasPagesList = new List<GameObject>() {playPageCanvas, storePageCanvas, garagePageCanvas};
     }
 
     // set the coins count at the play page
@@ -31,27 +47,33 @@ public class GameManager : MonoBehaviour
     }
 
     // switch pages when enter the store.
-    public void EnterStore()
+    public void OnEnterStoreButtonClicked()
     {
-        storePageCanvas.SetActive(true);
-        playPageCanvas.SetActive(false);
-        garagePageCanvas.SetActive(false);
+        SetCanvas(storePageCanvas);
     }
 
     // switch pages when enter the play.
-    public void EnterPlayPage()
+    public void OnEnterPlayPageButtonClicked()
     {
-        storePageCanvas.SetActive(false);
-        playPageCanvas.SetActive(true);
-        garagePageCanvas.SetActive(false);
+        SetCanvas(playPageCanvas);
     }
 
     // switch pages when enter the garage.
-    public void EnterGaragePage()
+    public void OnEnterGaragePageButtonClicked()
     {
-        storePageCanvas.SetActive(false);
-        playPageCanvas.SetActive(false);
-        garagePageCanvas.SetActive(true);
+        SetCanvas(garagePageCanvas);
+    }
+
+    private void SetCanvas(GameObject targetCanvasPage)
+    {
+        // set all canvas pages to be inactive
+        foreach (var canvasPage in _canvasPagesList)
+        {
+            canvasPage.SetActive(false);
+        }
+
+        // set the target canvas page to be active
+        targetCanvasPage.SetActive(true);
     }
 
     // check if the player is in play mode (page)
@@ -83,6 +105,9 @@ public class GameManager : MonoBehaviour
                 _gameData = new GameData(_dataPath);
                 SaveGameData();
             }
+
+            // transfer the stored carName to carObj for future use
+            _gameData.SetCarObjInUse();
         }
         catch (System.Exception ex)
         {
@@ -94,5 +119,22 @@ public class GameManager : MonoBehaviour
     public GameData GetGameData()
     {
         return _gameData;
+    }
+
+    // link car game obj to the car obj in carList
+    private void InitCarList()
+    {
+        CarList.CarSedan.garageItemGameObj = garageItemCarSedanGameObj;
+        CarList.CarSedan.playItemGameObj = playCarSedanGameObj;
+        CarList.CarSedan.storeItemCarGameObj = storeItemCarSedanGameObj;
+        CarList.CarTruck.garageItemGameObj = garageItemCarTruckGameObj;
+        CarList.CarTruck.playItemGameObj = playCarTruckGameObj;
+        CarList.CarTruck.storeItemCarGameObj = storeItemCarTruckGameObj;
+        CarList.CarJeep.garageItemGameObj = garageItemCarJeepGameObj;
+        CarList.CarJeep.playItemGameObj = playCarJeepGameObj;
+        CarList.CarJeep.storeItemCarGameObj = storeItemCarJeepGameObj;
+        CarList.CarKart.garageItemGameObj = garageItemCarKartGameObj;
+        CarList.CarKart.playItemGameObj = playCarKartGameObj;
+        CarList.CarKart.storeItemCarGameObj = storeItemCarKartGameObj;
     }
 }

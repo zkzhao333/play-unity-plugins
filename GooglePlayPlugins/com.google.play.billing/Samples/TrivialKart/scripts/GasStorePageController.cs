@@ -41,7 +41,7 @@ public class GasStorePageController : MonoBehaviour
     }
 
     // listener for fill gas button.
-    public void FillGasOnClick()
+    public void OnFillGasButtonClicked()
     {
         var currentCoins = _gameData.coinOwned;
         if (currentCoins >= _currentCost)
@@ -55,13 +55,13 @@ public class GasStorePageController : MonoBehaviour
     }
 
     // Listener for cancel/no fill gas button.
-    public void CancelFillGas()
+    public void OnCancelFillGasButtonClicked()
     {
         panelFillGas.SetActive(false);
     }
 
     // Listener for confirm/yes fill gas button.
-    public void ConfirmFillGas()
+    public void OnConfirmFillGasButtonClicked()
     {
         panelFillGas.SetActive(false);
         var currentCoins = _gameData.coinOwned;

@@ -17,8 +17,8 @@ public class Gas : MonoBehaviour
     private readonly Color32 _lightGreenColor = new Color32(125, 210, 76, 255);
     private readonly Color32 _greenColor = new Color32(94, 201, 93, 255);
     private const float LowVolumeCoefficient = 0.2f;
-    private const float MediumVloumCoefficient = 0.4f;
-    private const float HighVolumnCoefficient = 0.6f;
+    private const float MediumVolumeCoefficient = 0.4f;
+    private const float HighVolumeCoefficient = 0.6f;
 
     // Start is called before the first frame update
     private void Start()
@@ -61,9 +61,9 @@ public class Gas : MonoBehaviour
     }
 
     // Set the gas level bar length and color according to the distance the car has traveled
-    public void SetGasLevel(float lengthPerCircle, int circleCount, float distance)
+    public void SetGasLevel(float currentCircleTravelDistance, int circleCount, float distance)
     {
-        _totalDistanceDriven = (lengthPerCircle * circleCount + distance);
+        _totalDistanceDriven = (currentCircleTravelDistance * circleCount + distance);
         // return if no gas left
         if (!(_gasLevel > 0)) return;
         var consumedGas = (_totalDistanceDriven - _droveDistanceBeforeLastFill) * Mpg;
@@ -81,11 +81,11 @@ public class Gas : MonoBehaviour
         {
             gasLevelImage.color = _darkRedColor;
         }
-        else if (_gasLevel < MediumVloumCoefficient * FullGasLevel)
+        else if (_gasLevel < MediumVolumeCoefficient * FullGasLevel)
         {
             gasLevelImage.color = _orangeColor;
         }
-        else if (_gasLevel < HighVolumnCoefficient * FullGasLevel)
+        else if (_gasLevel < HighVolumeCoefficient * FullGasLevel)
         {
             gasLevelImage.color = _lightGreenColor;
         }

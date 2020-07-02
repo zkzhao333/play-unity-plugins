@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 // Car stores all info about a car.
 [Serializable]
@@ -8,6 +9,9 @@ public class Car
     public int speed;
     public float price;
     public bool isPriceInDollar;
+    public GameObject storeItemCarGameObj;
+    public GameObject garageItemGameObj;
+    public GameObject playItemGameObj;
 
     public Car(string carName, int speed, float price, bool isPriceInDollar)
     {
