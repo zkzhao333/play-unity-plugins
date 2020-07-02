@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// constant data of cars
 public static class CarList
 {
     public static readonly Car CarSedan = new Car("carSedan", 500, 0, true);

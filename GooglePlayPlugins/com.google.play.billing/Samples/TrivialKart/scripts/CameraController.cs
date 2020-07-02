@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+// controller for game camera
 public class CameraController : MonoBehaviour
 {
     public Transform car;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+// controller of the garage page
 public class GarageController : MonoBehaviour
 {
     public GameObject playCarGameObject;

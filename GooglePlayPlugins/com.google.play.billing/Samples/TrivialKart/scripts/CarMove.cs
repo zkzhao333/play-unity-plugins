@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+// control car movement
 public class CarMove : MonoBehaviour
 {
     public GameObject tapToDriveText;

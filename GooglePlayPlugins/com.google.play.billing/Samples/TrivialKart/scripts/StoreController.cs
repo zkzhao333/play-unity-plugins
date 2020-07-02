@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+// controller of the whole store
 public class StoreController : MonoBehaviour
 {
     public GameObject tab;

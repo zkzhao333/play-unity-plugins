@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+// Controller for coin store page
 public class CoinStorePageController : MonoBehaviour
 {
     public GameObject confirmPanel;

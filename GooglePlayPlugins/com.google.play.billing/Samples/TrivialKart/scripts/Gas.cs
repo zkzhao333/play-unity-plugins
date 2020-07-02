@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
+// control gas change of the car
 public class Gas : MonoBehaviour
 {
     public GameObject noGasText;
