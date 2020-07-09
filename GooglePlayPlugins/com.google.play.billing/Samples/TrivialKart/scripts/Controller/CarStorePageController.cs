@@ -3,7 +3,7 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for car store page
+// Controller for car store page.
 public class CarStorePageController : MonoBehaviour
 {
     public GameObject confirmPanel;
@@ -26,7 +26,7 @@ public class CarStorePageController : MonoBehaviour
         RefreshPage();
     }
 
-    // Refresh the page
+    // Refresh the page.
     private void RefreshPage()
     {
         confirmPanel.SetActive(false);
@@ -34,8 +34,8 @@ public class CarStorePageController : MonoBehaviour
         UpdateCarPrice();
     }
 
-    // Check if the player own the car
-    // If the player own the car, disable the interaction of the car store item
+    // Check if the player own the car.
+    // If the player own the car, disable the interaction of the car store item.
     private void CheckCarOwnerships()
     {
         foreach (var carObj in CarList.List)
@@ -75,7 +75,7 @@ public class CarStorePageController : MonoBehaviour
 
     public void OnItemTruckClicked()
     {
-        // Players can purchase the coin item only it they have enough coin
+        // Players can purchase the coin item only it they have enough coin.
         if (_gameData.CoinsOwned >= CarList.CarTruck.Price)
         {
             _carToPurchase = CarList.CarTruck;
@@ -112,9 +112,9 @@ public class CarStorePageController : MonoBehaviour
 
     public void OnConfirmPurchaseButtonClicked()
     {
-        // Purchase APIs
+        // Purchase APIs will be applied here.
         confirmPanel.SetActive(false);
-        // If the item sales in coins
+        // If the item sales in coins.
         if (!_carToPurchase.IsPriceInDollar)
         {
             _gameData.PurchaseCar(_carToPurchase);
@@ -125,7 +125,7 @@ public class CarStorePageController : MonoBehaviour
             return;
         }
 
-        // TODO: Play-billing-API
+        // TODO: Play-billing-API will be applied here.
         bool confirmedPurchase = true;
 
         if (confirmedPurchase)

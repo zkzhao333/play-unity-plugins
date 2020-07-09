@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-// Controller for car movement
+// Controller for car movement.
 public class PlayerController : MonoBehaviour
 {
     public GameObject cam;
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Back to the start point when the car reaches the end
+        // Back to the start point when the car reaches the end.
         if (_carInUseGameObj.transform.position.x >= EndOfRoadPositionX)
         {
             _circleCount++;
@@ -39,13 +39,13 @@ public class PlayerController : MonoBehaviour
         
         _carInUseAnimator.SetFloat(Speed, _rigidbody2D.velocity.magnitude);
         
-        // Update gas level
+        // Update gas level.
         var distancePerCircle = EndOfRoadPositionX - _carStartPos.x;
         var distanceTraveledInCurCircle =  (float) Math.Round(_carInUseGameObj.transform.position.x - _carStartPos.x, 1);
         var totalDistanceTraveled = distancePerCircle * _circleCount + distanceTraveledInCurCircle;
         _gas.SetGasLevel(totalDistanceTraveled);
 
-        // Update cam position
+        // Update cam position.
         var carPosition = _carInUseGameObj.transform.position;
         cam.transform.position = new Vector3(carPosition.x, carPosition.y, carPosition.z) + _camOffset;
     }
@@ -53,13 +53,13 @@ public class PlayerController : MonoBehaviour
     // Update the car in use in the play page when player switch the car.
     public void UpdateCarInUse()
     {
-        // Set all cars to be inactive
+        // Set all cars to be inactive.
         foreach (var car in CarList.List)
         {
             car.PlayCarGameObj.SetActive(false);
         }
 
-        // Set the car in use game object to be active
+        // Set the car in use game object to be active.
         var carInUseGameObj = _gameData.CarInUseObj.PlayCarGameObj;
         SetUsingState(carInUseGameObj);
     }
@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
         carInUseGameObj.SetActive(true);
         if (!(_carInUseGameObj is null))
         {
-            // Sync next use car position with current position
+            // Sync next use car position with current position.
             carInUseGameObj.transform.position = _carInUseGameObj.transform.position;
         }
 

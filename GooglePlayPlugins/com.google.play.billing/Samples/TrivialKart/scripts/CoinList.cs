@@ -1,4 +1,5 @@
-﻿// Constant data for coin store item
+﻿
+// Constant data for coin store item.
 public static class CoinList
 {
     public class Coin
