@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Utils.Server;
 
-public class SecurityController
+public class NetworkRequestController
 {
 
   public static ServerResponseModel registerUserDevice() {

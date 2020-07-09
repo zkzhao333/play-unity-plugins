@@ -29,7 +29,7 @@ public class GameManager : MonoBehaviour
     public void Awake()
     {
         // user login
-        SecurityController.registerUserDevice();
+        NetworkRequestController.registerUserDevice();
         InitCarList();
         GameDataController.LoadGameData();
         SetCoins();

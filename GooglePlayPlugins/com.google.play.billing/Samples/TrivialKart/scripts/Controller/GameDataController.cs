@@ -50,37 +50,40 @@ public class GameDataController
 
     private static void LoadGameOnline()
     {
-
-      ServerResponseModel serverResponse = sendUnityWebRequest(new Dictionary<string, string>(), ServerURLs.GET_GAME_DATA_URL);
-      if(serverResponse.success){
-        Debug.Log(serverResponse.result);
-        _gameData = JsonUtility.FromJson<GameData>(serverResponse.result);
-      }else{
-        _gameData = new GameData();
-      }
+        ServerResponseModel serverResponse =
+            sendUnityWebRequest(new Dictionary<string, string>(), ServerURLs.GET_GAME_DATA_URL);
+        if (serverResponse.success)
+        {
+            Debug.Log(serverResponse.result);
+            _gameData = JsonUtility.FromJson<GameData>(serverResponse.result);
+        }
+        else
+        {
+            _gameData = new GameData();
+        }
     }
 
     private static void LoadGameOffline()
     {
-      try
-      {
-          // check if the data file exits
-          if (File.Exists(DATA_PATH))
-          {
-              var contents = File.ReadAllText(DATA_PATH);
-              _gameData = JsonUtility.FromJson<GameData>(contents);
-              Debug.Log(contents);
-          }
-          else // if data file doesn't exist, create a default one
-          {
-              Debug.Log("Unable to read the save data, file does not exist");
-              _gameData = new GameData();
-          }
-      }
-      catch (Exception ex)
-      {
-          Debug.Log(ex.Message);
-      }
+        try
+        {
+            // check if the data file exits
+            if (File.Exists(DATA_PATH))
+            {
+                var contents = File.ReadAllText(DATA_PATH);
+                _gameData = JsonUtility.FromJson<GameData>(contents);
+                Debug.Log(contents);
+            }
+            else // if data file doesn't exist, create a default one
+            {
+                Debug.Log("Unable to read the save data, file does not exist");
+                _gameData = new GameData();
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex.Message);
+        }
     }
 
     public static GameData GetGameData()
