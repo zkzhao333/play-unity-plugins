@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for coin store page
+// Controller for coin store page.
 public class CoinStorePageController : MonoBehaviour
 {
     public GameObject confirmPanel;
@@ -53,7 +53,7 @@ public class CoinStorePageController : MonoBehaviour
 
     public void OnConfirmPurchaseButtonClicked()
     {
-        // Purchase APIs here
+        // Purchase APIs here.
         confirmPanel.SetActive(false);
         _gameData.IncreaseCoinsOwned(_coinToPurchase.Amount);
         FindObjectOfType<GameManager>().SetCoins();

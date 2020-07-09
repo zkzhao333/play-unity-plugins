@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-// Controller for game camera
+// Controller for game camera.
 public class CameraController : MonoBehaviour
 {
     public Transform car;
@@ -12,7 +12,7 @@ public class CameraController : MonoBehaviour
         _offset = transform.position - car.position;
     }
 
-    // Update is called once per frame
+    // Update is called once per frame.
     private void Update()
     {
         var position = car.position;

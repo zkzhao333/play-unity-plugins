@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
     public GameObject playPageCanvas;
     public GameObject storePageCanvas;
     public GameObject garagePageCanvas;
-    public Text coinsCount;
     public GameObject storeItemCarSedanGameObj;
     public GameObject storeItemCarTruckGameObj;
     public GameObject storeItemCarJeepGameObj;
@@ -22,16 +21,17 @@ public class GameManager : MonoBehaviour
     public GameObject playCarJeepGameObj;
     public GameObject playCarTruckGameObj;
     public GameObject playCarKartGameObj;
+    public Text coinsCount;
 
     private const string Filename = "data.json";
     private string _dataPath;
     private GameData _gameData;
     private List<GameObject> _canvasPagesList;
 
-    // Init the game
+    // Init the game.
     public void Awake()
     {
-        // TODO: User login
+        // TODO: User login.
         _dataPath = Application.persistentDataPath + "/" + Filename;
         Debug.Log(_dataPath);
         InitCarList();
@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         _canvasPagesList = new List<GameObject>() {playPageCanvas, storePageCanvas, garagePageCanvas};
     }
 
-    // Set the coins text at the play page
+    // Set the coins text at the play page.
     public void SetCoins()
     {
         coinsCount.text = _gameData.CoinsOwned.ToString();
@@ -66,41 +66,41 @@ public class GameManager : MonoBehaviour
 
     private void SetCanvas(GameObject targetCanvasPage)
     {
-        // Set all canvas pages to be inactive
+        // Set all canvas pages to be inactive.
         foreach (var canvasPage in _canvasPagesList)
         {
             canvasPage.SetActive(false);
         }
 
-        // Set the target canvas page to be active
+        // Set the target canvas page to be active.
         targetCanvasPage.SetActive(true);
     }
 
-    // Check if the player is in play mode (page)
+    // Check if the player is in play mode (page).
     public bool IsInPlayPage()
     {
         return playPageCanvas.activeInHierarchy;
     }
 
-    // Save game data
+    // Save game data.
     public void SaveGameData()
     {
         System.IO.File.WriteAllText(_dataPath, JsonUtility.ToJson(_gameData, true));
     }
 
-    // TODO: put this part into the gamedata.cs
-    // Load game data
+    // TODO: put this part into the gamedata.cs.
+    // Load game data.
     private void LoadGameData()
     {
         try
         {
-            // Check if the data file exits
+            // Check if the data file exits.
             if (System.IO.File.Exists(_dataPath))
             {
                 var contents = System.IO.File.ReadAllText(_dataPath);
                 _gameData = JsonUtility.FromJson<GameData>(contents);
             }
-            else // If data file doesn't exist, create a default one
+            else // If data file doesn't exist, create a default one.
             {
                 Debug.Log("Unable to read the save data, file does not exist");
                 _gameData = new GameData();
@@ -113,13 +113,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Get the game data
+    // Get the game data.
     public GameData GetGameData()
     {
         return _gameData;
     }
 
-    // Link car game obj to the car obj in carList
+    // Link car game obj to the car obj in carList.
     private void InitCarList()
     {
         // TODO: Improve it. 

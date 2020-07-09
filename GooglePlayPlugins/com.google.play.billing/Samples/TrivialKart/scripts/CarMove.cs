@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-// Control car movement
+// Control car movement.
 public class CarMove : MonoBehaviour
 {
     public GameObject tapToDriveText;
@@ -17,7 +17,7 @@ public class CarMove : MonoBehaviour
         _carObj = CarList.GetCarByName(carName);
     }
 
-    // Trigger when player tap the car
+    // Trigger when player tap the car.
     private void OnMouseDown()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();

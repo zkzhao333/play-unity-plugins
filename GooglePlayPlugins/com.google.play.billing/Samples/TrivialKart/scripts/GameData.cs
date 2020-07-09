@@ -13,7 +13,7 @@ public enum SubscriptionType
     GoldenSubscription
 }
 
-// TODO: Update carInUseName to enum after merge
+// TODO: Update carInUseName to enum after merge.
 public enum CarType
 {
     Sedan,
@@ -64,46 +64,48 @@ public class GameData
 
     public int CoinsOwned => coinsOwned;
 
-    // Return possible discount on in store items () 
+    // Return possible discount on in store items.
     public float Discount => subscriptionType == SubscriptionType.GoldenSubscription ? 0.6f : 1;
 
-    // Reduce coins owned 
+    // Reduce amount of coins owned.
     public void ReduceCoinsOwned(int reduceAmount)
     {
         coinsOwned -= reduceAmount;
     }
 
-    // Increase coins owned
+    // Increase amount of coins owned.
     public void IncreaseCoinsOwned(int increaseAmount)
     {
         coinsOwned += increaseAmount;
     }
 
-    // Purchase a car
+    // Purchase a car.
     public void PurchaseCar(Car car)
     {
         if (!car.IsPriceInDollar)
         {
             ReduceCoinsOwned((int) car.Price);
-        };
+        }
+
+        ;
         carIndexToOwnership[CarList.GetIndexByName(car.CarName)] = Ownership.Owned;
     }
-    
 
-    // Check if user owns a car with carName
-    // Return true if the user owns it; Otherwise return false
+
+    // Check if user owns a car with carName.
+    // Return true if the user owns it; Otherwise return false.
     public bool CheckOwnership(string carName)
     {
         return carIndexToOwnership[CarList.GetIndexByName(carName)] == Ownership.Owned;
     }
 
-    // Change car in use status
+    // Change car in use.
     public void ChangeCar(Car targetCar)
     {
         carInUseName = targetCar.CarName;
     }
 
-    // Subscribe to a subscription
+    // Subscribe to a subscription.
     public void SubscriptTo(SubscriptionList.Subscription targetSubscription)
     {
         subscriptionType = targetSubscription.Type;

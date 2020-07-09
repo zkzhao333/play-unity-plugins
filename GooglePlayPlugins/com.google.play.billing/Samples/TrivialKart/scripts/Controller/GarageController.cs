@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for the garage page
+// Controller for the garage page.
 public class GarageController : MonoBehaviour
 {
     public GameObject playCarGameObject;
@@ -20,7 +20,7 @@ public class GarageController : MonoBehaviour
     }
 
 
-    // Refresh the page when on enable
+    // Refresh the page when on enable.
     private void OnEnable()
     {
         RefreshPage();
@@ -33,7 +33,7 @@ public class GarageController : MonoBehaviour
         SetCoins();
     }
     
-    // Check if player owns the car
+    // Check if player owns the car.
     private void CheckCarOwnership()
     {
         foreach (var car in CarList.List)
@@ -76,7 +76,7 @@ public class GarageController : MonoBehaviour
 
     private void SwitchCarInUse(Car targetCar)
     {
-        // TODO: Combine the save game data into the _gameData
+        // TODO: Combine the save game data into the _gameData.
         _gameData.ChangeCar(targetCar);
         _gameManager.SaveGameData();
         RefreshPage();

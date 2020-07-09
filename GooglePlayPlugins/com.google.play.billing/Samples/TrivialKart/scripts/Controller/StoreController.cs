@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for the whole store
+// Controller for the whole store.
 public class StoreController : MonoBehaviour
 {
     public GameObject tab;
@@ -28,7 +28,7 @@ public class StoreController : MonoBehaviour
         _gameData = FindObjectOfType<GameManager>().GetGameData();
     }
 
-    // Start is called before the first frame update
+    // Start is called before the first frame update.
     private void Start()
     {
         _storePages = new List<GameObject>()
@@ -43,7 +43,7 @@ public class StoreController : MonoBehaviour
 
     private void Update()
     {
-        // Keep the coin text updated
+        // Keep the coin text updated.
         SetCoins();
     }
 
@@ -73,32 +73,32 @@ public class StoreController : MonoBehaviour
 
     private void SetPage(GameObject targetPage)
     {
-        // Set all store pages to inactive
+        // Set all store pages to inactive.
         foreach (var page in _storePages)
         {
             page.SetActive(false);
         }
 
-        // Set the target page to active
+        // Set the target page to active.
         targetPage.SetActive(true);
     }
 
     private void SetTab(int targetTagIndex)
     {
-        // TODO: consider to make a class
-        // Set all tags to be unselected
+        // TODO: consider to make a class.
+        // Set all tags to be unselected.
         for (var tagIndex = 0; tagIndex < _tabsCount; tagIndex++)
         {
             _tabs[tagIndex].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(true);
             _tabs[tagIndex].transform.GetChild(SelectedTabIndex).gameObject.SetActive(false);
         }
 
-        // Set the target tag to be selected
+        // Set the target tag to be selected.
         _tabs[targetTagIndex].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(false);
         _tabs[targetTagIndex].transform.GetChild(SelectedTabIndex).gameObject.SetActive(true);
     }
 
-    // Update coin text
+    // Update coin text.
     public void SetCoins()
     {
         coinsCount.text = _gameData.CoinsOwned.ToString();

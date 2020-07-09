@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Constant data for backgrounds
+// Constant data for backgrounds.
 public static class BackgroundList
 {
     public class Background
@@ -11,7 +11,7 @@ public static class BackgroundList
         public Background(BackgroundName name, GameObject backGroundGarageItemGameObject, Sprite imageSprite)
         {
             Name = name;
-            // TODO: Change this game object to real game object
+            // TODO: Change this game object to real game object.
             BackGroundGarageItemGameObject = backGroundGarageItemGameObject;
             ImageSprite = imageSprite;
         }

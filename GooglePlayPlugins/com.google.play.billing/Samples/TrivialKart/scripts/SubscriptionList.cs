@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-// Constant data for subscriptions in game
+// Constant data for subscriptions in game.
 public static class SubscriptionList
 {
     public class Subscription
@@ -37,7 +37,7 @@ public static class SubscriptionList
     public static readonly List<Subscription> List = new List<Subscription>()
         {NoSubscription, SilverSubscription, GoldenSubscription};
 
-    // Get the subscription object by given subscription type
+    // Get the subscription object by given subscription type.
     public static Subscription GetSubscriptionObjByType(SubscriptionType subscriptionType)
     {
         switch (subscriptionType)

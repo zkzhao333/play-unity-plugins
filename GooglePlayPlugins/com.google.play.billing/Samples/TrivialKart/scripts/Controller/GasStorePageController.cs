@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for the gas store page
+// Controller for the gas store page.
 public class GasStorePageController : MonoBehaviour
 {
     public Text gasPrice;
@@ -24,7 +24,7 @@ public class GasStorePageController : MonoBehaviour
         _gameData = FindObjectOfType<GameManager>().GetGameData();
     }
 
-    // Update the gas price and refresh the page when get into the gas store page
+    // Update the gas price and refresh the page when get into the gas store page.
     private void OnEnable()
     {
         RefreshGasStorePage();
@@ -32,7 +32,7 @@ public class GasStorePageController : MonoBehaviour
     
     private void RefreshGasStorePage()
     {
-        _currentCost = Math.Ceiling((Gas.KFullGasLevel - _gas.GasLevel) * _gameData.Discount) ;
+        _currentCost = Math.Ceiling((Gas.FullGasLevel - _gas.GasLevel) * _gameData.Discount) ;
         gasPrice.text = "* " + _currentCost;
         panelGasPrice.text = "Would you like to fill the gas tank with  " + _currentCost + "  coins";
         _gas.SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
