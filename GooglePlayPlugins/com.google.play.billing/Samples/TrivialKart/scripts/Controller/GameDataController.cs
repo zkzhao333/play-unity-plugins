@@ -2,11 +2,8 @@
 //#define OFFLINE
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using static Utils.Server;
-
 
 public class GameDataController
 {
@@ -20,22 +17,8 @@ public class GameDataController
 #if OFFLINE
         SaveGameDataOffline();
 #elif ONLINE
-        SaveGameDataOnline();
+        NetworkRequestController.SaveGameDataOnline();
 #endif
-    }
-
-    private static void SaveGameDataOffline()
-    {
-        File.WriteAllText(DATA_PATH, JsonUtility.ToJson(_gameData, true));
-    }
-
-    private static void SaveGameDataOnline()
-    {
-        var values = new Dictionary<string, string>
-        {
-            ["gameData"] = JsonUtility.ToJson(_gameData)
-        };
-        sendUnityWebRequest(values, ServerURLs.SAVE_GAME_DATA_URL);
     }
 
     public static void LoadGameData()
@@ -44,23 +27,13 @@ public class GameDataController
 #if OFFLINE
         LoadGameOffline();
 #elif ONLINE
-        LoadGameOnline();
+        NetworkRequestController.LoadGameOnline();
 #endif
     }
 
-    private static void LoadGameOnline()
+    private static void SaveGameDataOffline()
     {
-        ServerResponseModel serverResponse =
-            sendUnityWebRequest(new Dictionary<string, string>(), ServerURLs.GET_GAME_DATA_URL);
-        if (serverResponse.success)
-        {
-            Debug.Log(serverResponse.result);
-            _gameData = JsonUtility.FromJson<GameData>(serverResponse.result);
-        }
-        else
-        {
-            _gameData = new GameData();
-        }
+        File.WriteAllText(DATA_PATH, JsonUtility.ToJson(_gameData, true));
     }
 
     private static void LoadGameOffline()
@@ -89,5 +62,10 @@ public class GameDataController
     public static GameData GetGameData()
     {
         return _gameData;
+    }
+
+    public static void SetGameData(GameData gameData)
+    {
+        _gameData = gameData;
     }
 }

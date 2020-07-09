@@ -99,4 +99,9 @@ public class GameManager : MonoBehaviour
     {
         GameDataController.SaveGameData();
     }
+
+    void OnApplicationQuit()
+    {
+        GameDataController.SaveGameData();
+    }
 }
