@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -26,7 +26,7 @@ public class StoreController : MonoBehaviour
 
     private void Awake()
     {
-        _gameData = FindObjectOfType<GameManager>().GetGameData();
+        _gameData = GameDataController.GetGameData();
     }
 
     // Start is called before the first frame update

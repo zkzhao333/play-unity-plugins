@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 // controller for car store page
@@ -16,7 +16,7 @@ public class CarStorePageController : MonoBehaviour
     private void Awake()
     {
         _gameManager = FindObjectOfType<GameManager>();
-        _gameData = _gameManager.GetGameData();
+        _gameData = GameDataController.GetGameData();
     }
 
     private void OnEnable()
@@ -97,7 +97,6 @@ public class CarStorePageController : MonoBehaviour
         if (confirmedPurchase)
         {
             _gameData.PurchaseCar(_carToPurchaseObj.carName);
-            _gameManager.SaveGameData();
         }
 
         RefreshPage();
