@@ -2,22 +2,43 @@
 using UnityEngine;
 
 // Car stores all info about a car.
-[Serializable]
 public class Car
 {
-    public string carName;
-    public int speed;
-    public float price;
-    public bool isPriceInDollar;
-    public GameObject storeItemCarGameObj;
-    public GameObject garageItemGameObj;
-    public GameObject playCarGameObj;
+    private GameObject _storeItemCarGameObj;
+    private GameObject _garageItemGameObj;
+    private GameObject _playCarGameObj;
 
     public Car(string carName, int speed, float price, bool isPriceInDollar)
     {
-        this.carName = carName;
-        this.speed = speed;
-        this.price = price;
-        this.isPriceInDollar = isPriceInDollar;
+        this.CarName = carName;
+        this.Speed = speed;
+        this.Price = price;
+        this.IsPriceInDollar = isPriceInDollar;
+    }
+
+    public string CarName { get; }
+
+    public int Speed { get; }
+
+    public float Price { get; }
+
+    public bool IsPriceInDollar { get; }
+
+    public GameObject StoreItemCarGameObj
+    {
+        get => _storeItemCarGameObj;
+        set => _storeItemCarGameObj = value;
+    }
+
+    public GameObject GarageItemGameObj
+    {
+        get => _garageItemGameObj;
+        set => _garageItemGameObj = value;
+    }
+
+    public GameObject PlayCarGameObj
+    {
+        get => _playCarGameObj;
+        set => _playCarGameObj = value;
     }
 }

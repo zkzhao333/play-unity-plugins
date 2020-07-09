@@ -9,17 +9,17 @@ public class Gas : MonoBehaviour
 
     private const float FullGasLevel = 5.0f;
     private const float Mpg = 0.1f;
-    private float _gasLevel = 5.0f;
-    private float _droveDistanceBeforeLastFill = 0f;
-    private float _totalDistanceDriven = 0f;
-    private Image _gasLevelImage;
+    private const float LowVolumeCoefficient = 0.2f;
+    private const float MediumVolumeCoefficient = 0.4f;
+    private const float HighVolumeCoefficient = 0.6f;
     private readonly Color32 _darkRedColor = new Color32(196, 92, 29, 255);
     private readonly Color32 _orangeColor = new Color32(255, 196, 0, 255);
     private readonly Color32 _lightGreenColor = new Color32(125, 210, 76, 255);
     private readonly Color32 _greenColor = new Color32(94, 201, 93, 255);
-    private const float LowVolumeCoefficient = 0.2f;
-    private const float MediumVolumeCoefficient = 0.4f;
-    private const float HighVolumeCoefficient = 0.6f;
+    private float _gasLevel = 5.0f;
+    private float _totalDistanceDriven = 0f;
+    private Image _gasLevelImage;
+
 
     // Start is called before the first frame update
     private void Start()
@@ -41,17 +41,15 @@ public class Gas : MonoBehaviour
         }
     }
 
-    // reset the gas level and distance when fill the gas
+    // reset the gas level and distance before last fill when fill the gas
     public void FilledGas()
     {
         _gasLevel = FullGasLevel;
-        // set current distance to previous distance
-        _droveDistanceBeforeLastFill = _totalDistanceDriven;
         noGasText.SetActive(false);
     }
 
 
-    public float GetFullGasLevel()
+    public static float GetFullGasLevel()
     {
         return FullGasLevel;
     }
@@ -62,14 +60,15 @@ public class Gas : MonoBehaviour
     }
 
     // Set the gas level bar length and color according to the distance the car has traveled
-    public void SetGasLevel(float currentCircleTravelDistance, int circleCount, float distance)
+    public void SetGasLevel(float curTotalDistanceDriven)
     {
-        _totalDistanceDriven = (currentCircleTravelDistance * circleCount + distance);
         // return if no gas left
-        if (!(_gasLevel > 0)) return;
-        var consumedGas = (_totalDistanceDriven - _droveDistanceBeforeLastFill) * Mpg;
-        _gasLevel = FullGasLevel - consumedGas;
+        if (_gasLevel <= 0) return;
+        var consumedGas = (curTotalDistanceDriven - _totalDistanceDriven) * Mpg;
+        _gasLevel -= consumedGas;
         SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
+        // update the total distance driven
+        _totalDistanceDriven = curTotalDistanceDriven;
     }
 
 

@@ -32,6 +32,6 @@ public class CarMove : MonoBehaviour
     private void Drive()
     {
         tapToDriveText.SetActive(false);
-        _rigidbody2D.AddForce(new Vector2(_carObj.speed, 0));
+        _rigidbody2D.AddForce(new Vector2(_carObj.Speed, 0));
     }
 }

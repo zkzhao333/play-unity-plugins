@@ -2,14 +2,15 @@
 {
     public class Coin
     {
-        public readonly int Amount;
-        public readonly float Price;
-
         public Coin(int amount, float price)
         {
             Amount = amount;
             Price = price;
         }
+
+        public int Amount { get; }
+
+        public float Price { get; }
     }
 
     public static readonly Coin FiveCoins = new Coin(5, 0.99f);

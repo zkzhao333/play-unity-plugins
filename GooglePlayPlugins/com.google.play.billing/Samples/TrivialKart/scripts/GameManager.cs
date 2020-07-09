@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     // set the coins count at the play page
     public void SetCoins()
     {
-        coinsCount.text = _gameData.coinsOwned.ToString();
+        coinsCount.text = _gameData.CoinsOwned.ToString();
     }
 
     // switch pages when enter the store.
@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
         System.IO.File.WriteAllText(_dataPath, JsonUtility.ToJson(_gameData, true));
     }
 
+    // TODO: put this part into the gamedata.cs
     // load game data
     private void LoadGameData()
     {
@@ -105,9 +106,6 @@ public class GameManager : MonoBehaviour
                 _gameData = new GameData();
                 SaveGameData();
             }
-
-            // transfer the stored carName to carObj for future use
-            _gameData.SetCarInUseObj();
         }
         catch (System.Exception ex)
         {
@@ -124,17 +122,18 @@ public class GameManager : MonoBehaviour
     // link car game obj to the car obj in carList
     private void InitCarList()
     {
-        CarList.CarSedan.garageItemGameObj = garageItemCarSedanGameObj;
-        CarList.CarSedan.playCarGameObj = playCarSedanGameObj;
-        CarList.CarSedan.storeItemCarGameObj = storeItemCarSedanGameObj;
-        CarList.CarTruck.garageItemGameObj = garageItemCarTruckGameObj;
-        CarList.CarTruck.playCarGameObj = playCarTruckGameObj;
-        CarList.CarTruck.storeItemCarGameObj = storeItemCarTruckGameObj;
-        CarList.CarJeep.garageItemGameObj = garageItemCarJeepGameObj;
-        CarList.CarJeep.playCarGameObj = playCarJeepGameObj;
-        CarList.CarJeep.storeItemCarGameObj = storeItemCarJeepGameObj;
-        CarList.CarKart.garageItemGameObj = garageItemCarKartGameObj;
-        CarList.CarKart.playCarGameObj = playCarKartGameObj;
-        CarList.CarKart.storeItemCarGameObj = storeItemCarKartGameObj;
+        // TODO: improve it. 
+        CarList.CarSedan.GarageItemGameObj = garageItemCarSedanGameObj;
+        CarList.CarSedan.PlayCarGameObj = playCarSedanGameObj;
+        CarList.CarSedan.StoreItemCarGameObj = storeItemCarSedanGameObj;
+        CarList.CarTruck.GarageItemGameObj = garageItemCarTruckGameObj;
+        CarList.CarTruck.PlayCarGameObj = playCarTruckGameObj;
+        CarList.CarTruck.StoreItemCarGameObj = storeItemCarTruckGameObj;
+        CarList.CarJeep.GarageItemGameObj = garageItemCarJeepGameObj;
+        CarList.CarJeep.PlayCarGameObj = playCarJeepGameObj;
+        CarList.CarJeep.StoreItemCarGameObj = storeItemCarJeepGameObj;
+        CarList.CarKart.GarageItemGameObj = garageItemCarKartGameObj;
+        CarList.CarKart.PlayCarGameObj = playCarKartGameObj;
+        CarList.CarKart.StoreItemCarGameObj = storeItemCarKartGameObj;
     }
 }
