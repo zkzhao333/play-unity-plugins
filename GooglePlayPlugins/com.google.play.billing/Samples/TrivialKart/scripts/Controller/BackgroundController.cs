@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 
+// Controller for background garage page
 public class BackgroundController : MonoBehaviour
 {
     public GameObject backGroundImages;
 
-    public void SwitchToDesertBackGround()
+    // Switch the background of play page to mushroom background
+    public void SwitchToMushroomBackGround()
     {
         foreach (Transform backGround in backGroundImages.transform)
         {

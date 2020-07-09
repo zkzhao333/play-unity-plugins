@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 
-// controller for game camera
+// Controller for game camera
 public class CameraController : MonoBehaviour
 {
     public Transform car;
+    
     private Vector3 _offset;
 
     private void Start()

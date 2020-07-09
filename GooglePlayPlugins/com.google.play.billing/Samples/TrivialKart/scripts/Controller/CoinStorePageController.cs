@@ -53,7 +53,7 @@ public class CoinStorePageController : MonoBehaviour
 
     public void OnConfirmPurchaseButtonClicked()
     {
-        // purchase APIs
+        // Purchase APIs here
         confirmPanel.SetActive(false);
         _gameData.IncreaseCoinsOwned(_coinToPurchase.Amount);
         FindObjectOfType<GameManager>().SetCoins();

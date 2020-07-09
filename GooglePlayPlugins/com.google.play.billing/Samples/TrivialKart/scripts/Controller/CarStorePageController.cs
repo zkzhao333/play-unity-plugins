@@ -3,7 +3,7 @@ using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 
-// controller for car store page
+// Controller for car store page
 public class CarStorePageController : MonoBehaviour
 {
     public GameObject confirmPanel;
@@ -26,7 +26,7 @@ public class CarStorePageController : MonoBehaviour
         RefreshPage();
     }
 
-    // refresh the page
+    // Refresh the page
     private void RefreshPage()
     {
         confirmPanel.SetActive(false);
@@ -34,8 +34,8 @@ public class CarStorePageController : MonoBehaviour
         UpdateCarPrice();
     }
 
-    // check if the player own the car
-    // if the player own the car, disable the interaction of the car item
+    // Check if the player own the car
+    // If the player own the car, disable the interaction of the car store item
     private void CheckCarOwnerships()
     {
         foreach (var carObj in CarList.List)
@@ -52,7 +52,7 @@ public class CarStorePageController : MonoBehaviour
         }
     }
 
-    // apply potential discount on all coin items.
+    // Apply potential discounts on all coin items.
     private void UpdateCarPrice()
     {
         foreach (var carObj in CarList.List)
@@ -75,7 +75,7 @@ public class CarStorePageController : MonoBehaviour
 
     public void OnItemTruckClicked()
     {
-        // players can purchase the coin item only it they have enough coin
+        // Players can purchase the coin item only it they have enough coin
         if (_gameData.CoinsOwned >= CarList.CarTruck.Price)
         {
             _carToPurchase = CarList.CarTruck;
@@ -112,20 +112,20 @@ public class CarStorePageController : MonoBehaviour
 
     public void OnConfirmPurchaseButtonClicked()
     {
-        // purchase APIs
+        // Purchase APIs
         confirmPanel.SetActive(false);
-        // if the item sales in coins
+        // If the item sales in coins
         if (!_carToPurchase.IsPriceInDollar)
         {
             _gameData.PurchaseCar(_carToPurchase);
-            // TODO: combine the following three methods to gameData controller in the future. 
+            // TODO: Combine the following three methods to gameData controller in the future. 
             FindObjectOfType<GameManager>().SetCoins();
             FindObjectOfType<StoreController>().SetCoins();
             _gameManager.SaveGameData();
             return;
         }
 
-        // TODO: play-billing-API
+        // TODO: Play-billing-API
         bool confirmedPurchase = true;
 
         if (confirmedPurchase)

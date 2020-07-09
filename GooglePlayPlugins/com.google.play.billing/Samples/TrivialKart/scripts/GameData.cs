@@ -1,7 +1,5 @@
 ﻿using System;
 
-// TODO: move the enums in a seperate file
-// prefer enum than bool
 public enum Ownership
 {
     Owned,
@@ -15,7 +13,7 @@ public enum SubscriptionType
     GoldenSubscription
 }
 
-// TODO: update carInUseName to enum after merge
+// TODO: Update carInUseName to enum after merge
 public enum CarType
 {
     Sedan,
@@ -30,6 +28,7 @@ public enum BackgroundName
     Mushroom
 }
 
+// GameData stores all the items/data the player obtained.
 [Serializable]
 public class GameData
 {
@@ -65,22 +64,22 @@ public class GameData
 
     public int CoinsOwned => coinsOwned;
 
-    // return possible discount on in store items () 
+    // Return possible discount on in store items () 
     public float Discount => subscriptionType == SubscriptionType.GoldenSubscription ? 0.6f : 1;
 
-    // reduce coins owned 
+    // Reduce coins owned 
     public void ReduceCoinsOwned(int reduceAmount)
     {
         coinsOwned -= reduceAmount;
     }
 
-    // increase coins owned
+    // Increase coins owned
     public void IncreaseCoinsOwned(int increaseAmount)
     {
         coinsOwned += increaseAmount;
     }
 
-    // own a car
+    // Purchase a car
     public void PurchaseCar(Car car)
     {
         if (!car.IsPriceInDollar)
@@ -91,24 +90,26 @@ public class GameData
     }
     
 
-    // check if user owns a car with carName
-    // return true if the user owns it; otherwise return false
+    // Check if user owns a car with carName
+    // Return true if the user owns it; Otherwise return false
     public bool CheckOwnership(string carName)
     {
         return carIndexToOwnership[CarList.GetIndexByName(carName)] == Ownership.Owned;
     }
 
-    // change car in use
+    // Change car in use status
     public void ChangeCar(Car targetCar)
     {
         carInUseName = targetCar.CarName;
     }
 
+    // Subscribe to a subscription
     public void SubscriptTo(SubscriptionList.Subscription targetSubscription)
     {
         subscriptionType = targetSubscription.Type;
     }
 
+    // Unsubscribe from any exist subscription.
     public void Unsubscribe()
     {
         subscriptionType = SubscriptionType.NoSubscription;

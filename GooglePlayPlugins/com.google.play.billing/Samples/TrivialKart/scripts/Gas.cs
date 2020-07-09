@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-// control gas change of the car
+// Control gas change of the car
 public class Gas : MonoBehaviour
 {
     public GameObject noGasText;
@@ -20,6 +20,10 @@ public class Gas : MonoBehaviour
     private float _totalDistanceDriven = 0f;
     private Image _gasLevelImage;
 
+    public float GasLevel => _gasLevel;
+
+    public static float KFullGasLevel => FullGasLevel;
+
 
     // Start is called before the first frame update
     private void Start()
@@ -27,10 +31,10 @@ public class Gas : MonoBehaviour
         _gasLevelImage = gasLevelImageObj.GetComponent<Image>();
     }
 
-    // check if there is gas left in the tank
+    // Check if there is gas left in the tank
     public bool HasGas()
     {
-        if (_gasLevel > 0)
+        if (GasLevel > 0)
         {
             return true;
         }
@@ -41,51 +45,41 @@ public class Gas : MonoBehaviour
         }
     }
 
-    // reset the gas level and distance before last fill when fill the gas
+    // Reset the gas level when fill the gas
     public void FilledGas()
     {
-        _gasLevel = FullGasLevel;
+        _gasLevel = KFullGasLevel;
         noGasText.SetActive(false);
     }
-
-
-    public static float GetFullGasLevel()
-    {
-        return FullGasLevel;
-    }
-
-    public float GetGasLevel()
-    {
-        return _gasLevel;
-    }
+    
 
     // Set the gas level bar length and color according to the distance the car has traveled
     public void SetGasLevel(float curTotalDistanceDriven)
     {
-        // return if no gas left
-        if (_gasLevel <= 0) return;
+        // Return if no gas left
+        if (GasLevel <= 0) return;
         var consumedGas = (curTotalDistanceDriven - _totalDistanceDriven) * Mpg;
-        _gasLevel -= consumedGas;
+        _gasLevel = GasLevel - consumedGas;
         SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
-        // update the total distance driven
+        // Update the total distance driven
         _totalDistanceDriven = curTotalDistanceDriven;
     }
 
 
     public void SetGasLevelHelper(Image gasLevelImage, GameObject gasLevelImageObject)
     {
-        gasLevelImageObject.transform.localScale = new Vector3(_gasLevel / FullGasLevel, 1, 1);
+        gasLevelImageObject.transform.localScale = new Vector3(GasLevel / KFullGasLevel, 1, 1);
 
-        // set color change according to the bar length
-        if (_gasLevel < LowVolumeCoefficient * FullGasLevel)
+        // Change the gas bar color according to the bar length
+        if (GasLevel < LowVolumeCoefficient * KFullGasLevel)
         {
             gasLevelImage.color = _darkRedColor;
         }
-        else if (_gasLevel < MediumVolumeCoefficient * FullGasLevel)
+        else if (GasLevel < MediumVolumeCoefficient * KFullGasLevel)
         {
             gasLevelImage.color = _orangeColor;
         }
-        else if (_gasLevel < HighVolumeCoefficient * FullGasLevel)
+        else if (GasLevel < HighVolumeCoefficient * KFullGasLevel)
         {
             gasLevelImage.color = _lightGreenColor;
         }

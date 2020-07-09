@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-
+// Controller for subscription page
 public class SubscriptionController : MonoBehaviour
 {
     public GameObject backGroundControllerGameObj;
@@ -30,14 +30,14 @@ public class SubscriptionController : MonoBehaviour
         RefreshPage();
     }
 
-    // refresh the page
+    // Refresh the page
     private void RefreshPage()
     {
         confirmPanel.SetActive(false);
         CheckAndSetSubscriptionStatus();
     }
 
-    // check if the player already subscribed to a plan and change the subscribe button correspondingly
+    // Check if the player already subscribed to a plan and change the subscribe button correspondingly
     private void CheckAndSetSubscriptionStatus()
     {
         foreach (var subscription in SubscriptionList.List)
@@ -48,11 +48,11 @@ public class SubscriptionController : MonoBehaviour
         SetSubscribeButton(_gameData.CurSubscriptionObj, "subscribed", false);
     }
 
-    // TODO: set buttons
+    // TODO: Set buttons
     private void SetSubscribeButton(SubscriptionList.Subscription targetSubscription, string targetButtonText,
         bool isButtonInteractive)
     {
-        // do nothing if the player has not subscribed to any plan.
+        // Do nothing if the player has not subscribed to any plan.
         if (targetSubscription.Type == SubscriptionType.NoSubscription)
         {
             return;
@@ -87,17 +87,17 @@ public class SubscriptionController : MonoBehaviour
     {
         confirmPanel.SetActive((false));
 
-        // TODO: play-billing-API
+        // TODO: Play-billing-API
         bool confirmedPurchase = true;
 
         if (confirmedPurchase)
         {
             _gameData.SubscriptTo(_subscriptionToSubscribe);
-            // TODO: combine the below method to above method
+            // TODO: Combine the below method to above method
             _gameManager.SaveGameData();
         }
         
-        _backgroundController.SwitchToDesertBackGround();
+        _backgroundController.SwitchToMushroomBackGround();
         RefreshPage();
     }
 

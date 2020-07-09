@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-// controller for car movement
+// Controller for car movement
 public class PlayerController : MonoBehaviour
 {
     public GameObject cam;
@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     private GameData _gameData;
     private Vector3 _camOffset;
 
-    public void Start()
+    private void Start()
     {
         _gameData = FindObjectOfType<GameManager>().GetGameData();
         UpdateCarInUse();
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // back to the start point when reach the end
+        // Back to the start point when the car reaches the end
         if (_carInUseGameObj.transform.position.x >= EndOfRoadPositionX)
         {
             _circleCount++;
@@ -39,27 +39,27 @@ public class PlayerController : MonoBehaviour
         
         _carInUseAnimator.SetFloat(Speed, _rigidbody2D.velocity.magnitude);
         
-        // update gas level
+        // Update gas level
         var distancePerCircle = EndOfRoadPositionX - _carStartPos.x;
         var distanceTraveledInCurCircle =  (float) Math.Round(_carInUseGameObj.transform.position.x - _carStartPos.x, 1);
         var totalDistanceTraveled = distancePerCircle * _circleCount + distanceTraveledInCurCircle;
         _gas.SetGasLevel(totalDistanceTraveled);
 
-        // update cam position
+        // Update cam position
         var carPosition = _carInUseGameObj.transform.position;
         cam.transform.position = new Vector3(carPosition.x, carPosition.y, carPosition.z) + _camOffset;
     }
 
-    // update the car in use in the play when player switch the car.
+    // Update the car in use in the play page when player switch the car.
     public void UpdateCarInUse()
     {
-        // set all car to be inactive
+        // Set all cars to be inactive
         foreach (var car in CarList.List)
         {
             car.PlayCarGameObj.SetActive(false);
         }
 
-        // set the car in use game object to be active
+        // Set the car in use game object to be active
         var carInUseGameObj = _gameData.CarInUseObj.PlayCarGameObj;
         SetUsingState(carInUseGameObj);
     }
@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
         carInUseGameObj.SetActive(true);
         if (!(_carInUseGameObj is null))
         {
-            // sync the position of next use car
+            // Sync next use car position with current position
             carInUseGameObj.transform.position = _carInUseGameObj.transform.position;
         }
 

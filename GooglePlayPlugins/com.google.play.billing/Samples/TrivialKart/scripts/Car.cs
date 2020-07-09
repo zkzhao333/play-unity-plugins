@@ -1,19 +1,20 @@
 ﻿using System;
 using UnityEngine;
 
-// Car stores all info about a car.
+// Car contains all info about a car.
 public class Car
 {
     private GameObject _storeItemCarGameObj;
     private GameObject _garageItemGameObj;
     private GameObject _playCarGameObj;
 
-    public Car(string carName, int speed, float price, bool isPriceInDollar)
+    public Car(string carName, int speed, float price, bool isPriceInDollar, string productId)
     {
-        this.CarName = carName;
-        this.Speed = speed;
-        this.Price = price;
-        this.IsPriceInDollar = isPriceInDollar;
+        CarName = carName;
+        Speed = speed;
+        Price = price;
+        IsPriceInDollar = isPriceInDollar;
+        ProductId = productId;
     }
 
     public string CarName { get; }
@@ -23,6 +24,8 @@ public class Car
     public float Price { get; }
 
     public bool IsPriceInDollar { get; }
+    
+    public string ProductId { get; }
 
     public GameObject StoreItemCarGameObj
     {

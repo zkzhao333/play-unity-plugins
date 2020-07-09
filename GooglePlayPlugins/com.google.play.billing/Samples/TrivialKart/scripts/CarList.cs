@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// constant data of cars
+// Constant data of cars
 public static class CarList
 {
-    public static readonly Car CarSedan = new Car("carSedan", 500, 0, true);
-    public static readonly Car CarTruck = new Car("carTruck", 600, 20, false);
-    public static readonly Car CarJeep = new Car("carJeep", 650, 2.99f, true);
-    public static readonly Car CarKart = new Car("carKart", 1000, 4.99f, true);
+    public static readonly Car CarSedan = new Car("carSedan", 500, 0, true, "car_sedan");
+
+    public static readonly Car CarTruck = new Car("carTruck", 600, 20, false, "car_truck");
+    public static readonly Car CarJeep = new Car("carJeep", 650, 2.99f, true, "car_jeep");
+    public static readonly Car CarKart = new Car("carKart", 1000, 4.99f, true, "car_kart");
     public static readonly List<Car> List = new List<Car>() {CarSedan, CarTruck, CarJeep, CarKart};
 
-    // return car object by name
+    // Return car object by name
     public static Car GetCarByName(string carName)
     {
         switch (carName)
@@ -30,7 +31,7 @@ public static class CarList
         }
     }
 
-    // return the carIndex by carName
+    // Return the carIndex by carName
     public static int GetIndexByName(string carName)
     {
         switch (carName)
