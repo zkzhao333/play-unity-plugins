@@ -1,23 +1,23 @@
 using System;
 using UnityEngine;
 
-// controller for car movement
+// Controller for car movement.
 public class PlayerController : MonoBehaviour
 {
     public GameObject cam;
 
+    private const int EndOfRoadPositionX = 25;
+    private static readonly int Speed = Animator.StringToHash("speed");
     private GameObject _carInUseGameObj;
     private Animator _carInUseAnimator;
     private Gas _gas;
     private Vector3 _carStartPos;
     private Rigidbody2D _rigidbody2D;
     private int _circleCount;
-    private static readonly int Speed = Animator.StringToHash("speed");
-    private const int EndOfRoadPositionX = 25;
     private GameData _gameData;
     private Vector3 _camOffset;
 
-    public void Start()
+    private void Start()
     {
         _gameData = GameDataController.GetGameData();
         UpdateCarInUse();
@@ -30,35 +30,37 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // back to the start point when reach the end
+        // Back to the start point when the car reaches the end.
         if (_carInUseGameObj.transform.position.x >= EndOfRoadPositionX)
         {
             _circleCount++;
             _carInUseGameObj.transform.position = _carStartPos;
         }
-
+        
         _carInUseAnimator.SetFloat(Speed, _rigidbody2D.velocity.magnitude);
-        var currentCircleTravelDistance = EndOfRoadPositionX - _carStartPos.x;
-        _gas.SetGasLevel(currentCircleTravelDistance, _circleCount,
-            (float) Math.Round(_carInUseGameObj.transform.position.x - _carStartPos.x, 1));
+        
+        // Update gas level.
+        var distancePerCircle = EndOfRoadPositionX - _carStartPos.x;
+        var distanceTraveledInCurCircle =  (float) Math.Round(_carInUseGameObj.transform.position.x - _carStartPos.x, 1);
+        var totalDistanceTraveled = distancePerCircle * _circleCount + distanceTraveledInCurCircle;
+        _gas.SetGasLevel(totalDistanceTraveled);
 
-        // update cam position
+        // Update cam position.
         var carPosition = _carInUseGameObj.transform.position;
         cam.transform.position = new Vector3(carPosition.x, carPosition.y, carPosition.z) + _camOffset;
     }
 
-    // update the car in use in the play when player switch the car.
+    // Update the car in use in the play page when player switch the car.
     public void UpdateCarInUse()
     {
-        // set all car to be inactive
+        // Set all cars to be inactive.
         foreach (var car in CarList.List)
         {
-            car.playCarGameObj.SetActive(false);
+            car.PlayCarGameObj.SetActive(false);
         }
-
-        // set the car in use game object to be active
-        _gameData.SetCarInUseObj();
-        var carInUseGameObj = _gameData.GetCarInUseObj().playCarGameObj;
+        
+        // Set the car in use game object to be active.
+        var carInUseGameObj = _gameData.CarInUseObj.PlayCarGameObj;
         SetUsingState(carInUseGameObj);
     }
 
@@ -67,7 +69,7 @@ public class PlayerController : MonoBehaviour
         carInUseGameObj.SetActive(true);
         if (!(_carInUseGameObj is null))
         {
-            // sync the position of next use car
+            // Sync next use car position with current position.
             carInUseGameObj.transform.position = _carInUseGameObj.transform.position;
         }
 

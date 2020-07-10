@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-// controller for the gas store page
+// Controller for the gas store page.
 public class GasStorePageController : MonoBehaviour
 {
     public Text gasPrice;
@@ -10,7 +10,7 @@ public class GasStorePageController : MonoBehaviour
     public GameObject panelFillGas;
     public GameObject gasLevelImageObj;
     public GameObject cannotAffordWarning;
-    public GameObject car; // need to get gas class from car
+    public GameObject car; 
 
     private double _currentCost;
     private Gas _gas;
@@ -24,26 +24,25 @@ public class GasStorePageController : MonoBehaviour
         _gameData = GameDataController.GetGameData();
     }
 
+    // Update the gas price and refresh the page when get into the gas store page.
     private void OnEnable()
     {
         RefreshGasStorePage();
     }
-
-    // update the gas price and refresh the page when get into the gas store page
+    
     private void RefreshGasStorePage()
     {
-        _currentCost = Math.Ceiling(_gas.GetFullGasLevel() - _gas.GetGasLevel());
+        _currentCost = Math.Ceiling((Gas.FullGasLevel - _gas.GasLevel) * _gameData.Discount) ;
         gasPrice.text = "* " + _currentCost;
         panelGasPrice.text = "Would you like to fill the gas tank with  " + _currentCost + "  coins";
         _gas.SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
         panelFillGas.SetActive(false);
         cannotAffordWarning.SetActive(false);
     }
-
-    // listener for fill gas button.
+    
     public void OnFillGasButtonClicked()
     {
-        var currentCoins = _gameData.coinsOwned;
+        var currentCoins = _gameData.CoinsOwned;
         if (currentCoins >= _currentCost)
         {
             panelFillGas.SetActive(true);
@@ -53,8 +52,7 @@ public class GasStorePageController : MonoBehaviour
             cannotAffordWarning.SetActive(true);
         }
     }
-
-    // Listener for cancel/no fill gas button.
+    
     public void OnCancelFillGasButtonClicked()
     {
         panelFillGas.SetActive(false);
@@ -64,7 +62,7 @@ public class GasStorePageController : MonoBehaviour
     public void OnConfirmFillGasButtonClicked()
     {
         panelFillGas.SetActive(false);
-        var currentCoins = _gameData.coinsOwned;
+        var currentCoins = _gameData.CoinsOwned;
         if (currentCoins >= _currentCost)
         {
             _gameData.ReduceCoinsOwned((int) _currentCost);

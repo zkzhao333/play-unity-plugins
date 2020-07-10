@@ -45,7 +45,7 @@ public class CarStorePageController : MonoBehaviour
     public void OnItemTruckClicked()
     {
         // players can purchase the coin item only it they have enough coin
-        if (_gameData.coinsOwned >= CarList.CarTruck.price)
+        if (_gameData.coinsOwned >= CarList.CarTruck.Price)
         {
             _carToPurchaseObj = CarList.CarTruck;
             BuyCars();
@@ -67,15 +67,15 @@ public class CarStorePageController : MonoBehaviour
     private void BuyCars()
     {
         confirmPanel.SetActive(true);
-        if (_carToPurchaseObj.isPriceInDollar)
+        if (_carToPurchaseObj.IsPriceInDollar)
         {
-            confirmText.text = "Would you like to purchase " + _carToPurchaseObj.carName + " with $" +
-                               _carToPurchaseObj.price + "?";
+            confirmText.text = "Would you like to purchase " + _carToPurchaseObj.CarName + " with $" +
+                               _carToPurchaseObj.Price + "?";
         }
         else
         {
-            confirmText.text = "Would you like to purchase " + _carToPurchaseObj.carName + " with " +
-                               _carToPurchaseObj.price + " coins?";
+            confirmText.text = "Would you like to purchase " + _carToPurchaseObj.CarName + " with " +
+                               _carToPurchaseObj.Price + " coins?";
         }
     }
 
@@ -84,9 +84,9 @@ public class CarStorePageController : MonoBehaviour
         // purchase APIs
         confirmPanel.SetActive(false);
         // if the item sales in coins
-        if (!_carToPurchaseObj.isPriceInDollar)
+        if (!_carToPurchaseObj.IsPriceInDollar)
         {
-            _gameData.ReduceCoinsOwned((int) _carToPurchaseObj.price);
+            _gameData.ReduceCoinsOwned((int) _carToPurchaseObj.Price);
             FindObjectOfType<GameManager>().SetCoins();
             FindObjectOfType<StoreController>().SetCoins();
         }
@@ -96,7 +96,7 @@ public class CarStorePageController : MonoBehaviour
 
         if (confirmedPurchase)
         {
-            _gameData.PurchaseCar(_carToPurchaseObj.carName);
+            _gameData.PurchaseCar(_carToPurchaseObj);
         }
 
         RefreshPage();
@@ -112,13 +112,13 @@ public class CarStorePageController : MonoBehaviour
     // if the player own the car, disable the interaction of the car item
     private void CheckCarOwnership(Car carObj)
     {
-        var storeItemCarGameObj = carObj.storeItemCarGameObj;
-        if (_gameData.CheckOwnership(carObj.carName))
+        var storeItemCarGameObj = carObj.StoreItemCarGameObj;
+        if (_gameData.CheckOwnership(carObj.CarName))
         {
             storeItemCarGameObj.GetComponent<Image>().color = _lightGreyColor;
             storeItemCarGameObj.GetComponent<Button>().interactable = false;
             storeItemCarGameObj.transform.Find("price").gameObject.GetComponent<Text>().text = "owned";
-            if (!carObj.isPriceInDollar)
+            if (!carObj.IsPriceInDollar)
             {
                 storeItemCarGameObj.transform.Find("coinImage").gameObject.SetActive(false);
             }

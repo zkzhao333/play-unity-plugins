@@ -9,7 +9,6 @@ public class GameManager : MonoBehaviour
     public GameObject playPageCanvas;
     public GameObject storePageCanvas;
     public GameObject garagePageCanvas;
-    public Text coinsCount;
     public GameObject storeItemCarSedanGameObj;
     public GameObject storeItemCarTruckGameObj;
     public GameObject storeItemCarJeepGameObj;
@@ -22,10 +21,11 @@ public class GameManager : MonoBehaviour
     public GameObject playCarJeepGameObj;
     public GameObject playCarTruckGameObj;
     public GameObject playCarKartGameObj;
+    public Text coinsCount;
 
     private List<GameObject> _canvasPagesList;
 
-    // init the game
+    // Init the game.
     public void Awake()
     {
         // user login
@@ -36,25 +36,25 @@ public class GameManager : MonoBehaviour
         _canvasPagesList = new List<GameObject>() {playPageCanvas, storePageCanvas, garagePageCanvas};
     }
 
-    // set the coins count at the play page
+    // Set the coins text at the play page.
     public void SetCoins()
     {
         coinsCount.text = GameDataController.GetGameData().coinsOwned.ToString();
     }
 
-    // switch pages when enter the store.
+    // Switch pages when enter the store.
     public void OnEnterStoreButtonClicked()
     {
         SetCanvas(storePageCanvas);
     }
 
-    // switch pages when enter the play.
+    // Switch pages when enter the play.
     public void OnEnterPlayPageButtonClicked()
     {
         SetCanvas(playPageCanvas);
     }
 
-    // switch pages when enter the garage.
+    // Switch pages when enter the garage.
     public void OnEnterGaragePageButtonClicked()
     {
         SetCanvas(garagePageCanvas);
@@ -62,37 +62,38 @@ public class GameManager : MonoBehaviour
 
     private void SetCanvas(GameObject targetCanvasPage)
     {
-        // set all canvas pages to be inactive
+        // Set all canvas pages to be inactive.
         foreach (var canvasPage in _canvasPagesList)
         {
             canvasPage.SetActive(false);
         }
 
-        // set the target canvas page to be active
+        // Set the target canvas page to be active.
         targetCanvasPage.SetActive(true);
     }
 
-    // check if the player is in play mode (page)
+    // Check if the player is in play mode (page).
     public bool IsInPlayPage()
     {
         return playPageCanvas.activeInHierarchy;
     }
 
-    // link car game obj to the car obj in carList
+    // Link car game obj to the car obj in carList
     private void InitCarList()
     {
-        CarList.CarSedan.garageItemGameObj = garageItemCarSedanGameObj;
-        CarList.CarSedan.playCarGameObj = playCarSedanGameObj;
-        CarList.CarSedan.storeItemCarGameObj = storeItemCarSedanGameObj;
-        CarList.CarTruck.garageItemGameObj = garageItemCarTruckGameObj;
-        CarList.CarTruck.playCarGameObj = playCarTruckGameObj;
-        CarList.CarTruck.storeItemCarGameObj = storeItemCarTruckGameObj;
-        CarList.CarJeep.garageItemGameObj = garageItemCarJeepGameObj;
-        CarList.CarJeep.playCarGameObj = playCarJeepGameObj;
-        CarList.CarJeep.storeItemCarGameObj = storeItemCarJeepGameObj;
-        CarList.CarKart.garageItemGameObj = garageItemCarKartGameObj;
-        CarList.CarKart.playCarGameObj = playCarKartGameObj;
-        CarList.CarKart.storeItemCarGameObj = storeItemCarKartGameObj;
+        // TODO: Improve it. 
+        CarList.CarSedan.GarageItemGameObj = garageItemCarSedanGameObj;
+        CarList.CarSedan.PlayCarGameObj = playCarSedanGameObj;
+        CarList.CarSedan.StoreItemCarGameObj = storeItemCarSedanGameObj;
+        CarList.CarTruck.GarageItemGameObj = garageItemCarTruckGameObj;
+        CarList.CarTruck.PlayCarGameObj = playCarTruckGameObj;
+        CarList.CarTruck.StoreItemCarGameObj = storeItemCarTruckGameObj;
+        CarList.CarJeep.GarageItemGameObj = garageItemCarJeepGameObj;
+        CarList.CarJeep.PlayCarGameObj = playCarJeepGameObj;
+        CarList.CarJeep.StoreItemCarGameObj = storeItemCarJeepGameObj;
+        CarList.CarKart.GarageItemGameObj = garageItemCarKartGameObj;
+        CarList.CarKart.PlayCarGameObj = playCarKartGameObj;
+        CarList.CarKart.StoreItemCarGameObj = storeItemCarKartGameObj;
     }
 
     void OnApplicationPause()

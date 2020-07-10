@@ -1,64 +1,119 @@
 ﻿using System;
 
+public enum Ownership
+{
+    Owned,
+    NotOwned
+}
+
+public enum SubscriptionType
+{
+    NoSubscription,
+    SilverSubscription,
+    GoldenSubscription
+}
+
+// TODO: Update carInUseName to enum after merge.
+public enum CarType
+{
+    Sedan,
+    Truck,
+    Jeep,
+    Kart
+}
+
+public enum BackgroundName
+{
+    BlueGrass,
+    Mushroom
+}
+
+// GameData stores all the items/data the player obtained.
 [Serializable]
 public class GameData
 {
     public string carInUseName;
-    public bool[] carIndexToOwnership;
+    public Ownership[] carIndexToOwnership;
     public int coinsOwned;
+    public SubscriptionType subscriptionType;
+    public BackgroundName backgroundNameInUse;
 
-    private Car _carInUseObj;
     private const int InitialCoinAmount = 20;
     private const int TotalCarCount = 4;
-    private const bool Owned = true;
-    private const bool NotOwned = false;
+
 
     public GameData()
     {
         coinsOwned = InitialCoinAmount;
-        carIndexToOwnership = new bool[TotalCarCount];
-        carIndexToOwnership[CarList.GetIndexByName("carSedan")] = Owned;
-        carIndexToOwnership[CarList.GetIndexByName("carTruck")] = NotOwned;
-        carIndexToOwnership[CarList.GetIndexByName("carJeep")] = NotOwned;
-        carIndexToOwnership[CarList.GetIndexByName("carKart")] = NotOwned;
+        carIndexToOwnership = new Ownership[TotalCarCount];
+        foreach (var car in CarList.List)
+        {
+            carIndexToOwnership[CarList.GetIndexByName(car.CarName)] = Ownership.NotOwned;
+        }
+
+        carIndexToOwnership[CarList.GetIndexByName("carSedan")] = Ownership.Owned;
         carInUseName = "carSedan";
+        subscriptionType = SubscriptionType.NoSubscription;
+        backgroundNameInUse = BackgroundName.BlueGrass;
     }
 
-    // update car object in use
-    public void SetCarInUseObj()
-    {
-        _carInUseObj = CarList.GetCarByName(carInUseName);
-    }
+    public Car CarInUseObj => CarList.GetCarByName(carInUseName);
 
-    // get the car object in use
-    public Car GetCarInUseObj()
-    {
-        return _carInUseObj;
-    }
+    public SubscriptionList.Subscription CurSubscriptionObj =>
+        SubscriptionList.GetSubscriptionObjByType(subscriptionType);
 
+    public int CoinsOwned => coinsOwned;
 
-    // reduce coins owned 
+    // Return possible discount on in store items.
+    public float Discount => subscriptionType == SubscriptionType.GoldenSubscription ? 0.6f : 1;
+
+    // Reduce amount of coins owned.
     public void ReduceCoinsOwned(int reduceAmount)
     {
         coinsOwned -= reduceAmount;
     }
 
-    // increase coins owned
+    // Increase amount of coins owned.
     public void IncreaseCoinsOwned(int increaseAmount)
     {
         coinsOwned += increaseAmount;
     }
 
-    // own a car
-    public void PurchaseCar(string carName)
+    // Purchase a car.
+    public void PurchaseCar(Car car)
     {
-        carIndexToOwnership[CarList.GetIndexByName(carName)] = Owned;
+        if (!car.IsPriceInDollar)
+        {
+            ReduceCoinsOwned((int) car.Price);
+        }
+
+        ;
+        carIndexToOwnership[CarList.GetIndexByName(car.CarName)] = Ownership.Owned;
     }
 
-    // check if user owns a car with carName
-    // return true if the user owns it; otherwise return false
+
+    // Check if user owns a car with carName.
+    // Return true if the user owns it; Otherwise return false.
     public bool CheckOwnership(string carName)
     {
-        return carIndexToOwnership[CarList.GetIndexByName(carName)];
+        return carIndexToOwnership[CarList.GetIndexByName(carName)] == Ownership.Owned;
+    }
+
+    // Change car in use.
+    public void ChangeCar(Car targetCar)
+    {
+        carInUseName = targetCar.CarName;
+    }
+
+    // Subscribe to a subscription.
+    public void SubscriptTo(SubscriptionList.Subscription targetSubscription)
+    {
+        subscriptionType = targetSubscription.Type;
+    }
+
+    // Unsubscribe from any exist subscription.
+    public void Unsubscribe()
+    {
+        subscriptionType = SubscriptionType.NoSubscription;
     }
 }

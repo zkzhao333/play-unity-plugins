@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// controller of the garage page
+// Controller for the garage page.
 public class GarageController : MonoBehaviour
 {
     public GameObject playCarGameObject;
@@ -20,7 +20,7 @@ public class GarageController : MonoBehaviour
     }
 
 
-    // fresh the page when on eable
+    // Refresh the page when on enable.
     private void OnEnable()
     {
         RefreshPage();
@@ -28,19 +28,18 @@ public class GarageController : MonoBehaviour
 
     private void RefreshPage()
     {
-        // check if player already owns the car
         CheckCarOwnership();
         CheckUsingStatus();
         SetCoins();
     }
-
+    
+    // Check if player owns the car.
     private void CheckCarOwnership()
     {
         foreach (var car in CarList.List)
         {
-            var isCarOwned = _gameData.CheckOwnership(car.carName);
-            // set the car item active if the player owns the car.
-            car.garageItemGameObj.SetActive(isCarOwned);
+            var isCarOwned = _gameData.CheckOwnership(car.CarName);
+            car.GarageItemGameObj.SetActive(isCarOwned);
         }
     }
 
@@ -48,10 +47,10 @@ public class GarageController : MonoBehaviour
     {
         foreach (var carObj in CarList.List)
         {
-            carObj.garageItemGameObj.transform.Find("statusText").gameObject.SetActive(false);
+            carObj.GarageItemGameObj.transform.Find("statusText").gameObject.SetActive(false);
         }
 
-        _gameData.GetCarInUseObj().garageItemGameObj.transform.Find("statusText").gameObject.SetActive(true);
+        _gameData.CarInUseObj.GarageItemGameObj.transform.Find("statusText").gameObject.SetActive(true);
     }
 
 
@@ -77,14 +76,15 @@ public class GarageController : MonoBehaviour
 
     private void SwitchCarInUse(Car targetCar)
     {
-        _gameData.carInUseName = targetCar.carName;
-        _gameData.SetCarInUseObj();
+        // TODO: Combine the save game data into the _gameData.
+        _gameData.ChangeCar(targetCar);
+        // _gameManager.SaveGameData();
         RefreshPage();
         _playerController.UpdateCarInUse();
     }
 
     private void SetCoins()
     {
-        coinsCountText.text = _gameData.coinsOwned.ToString();
+        coinsCountText.text = _gameData.CoinsOwned.ToString();
     }
 }
