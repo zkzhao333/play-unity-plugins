@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // GameManager controls page switches among play, store and garage.
-// It also manages game data loading and saving.
 public class GameManager : MonoBehaviour
 {
     public GameObject playPageCanvas;
@@ -28,8 +27,9 @@ public class GameManager : MonoBehaviour
     // Init the game.
     public void Awake()
     {
-        // user login
+#if ONLINE
         NetworkRequestController.registerUserDevice();
+#endif
         InitCarList();
         GameDataController.LoadGameData();
         SetCoins();
@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
     // Link car game obj to the car obj in carList
     private void InitCarList()
     {
-        // TODO: Improve it. 
+        // TODO: Improve it.
         CarList.CarSedan.GarageItemGameObj = garageItemCarSedanGameObj;
         CarList.CarSedan.PlayCarGameObj = playCarSedanGameObj;
         CarList.CarSedan.StoreItemCarGameObj = storeItemCarSedanGameObj;

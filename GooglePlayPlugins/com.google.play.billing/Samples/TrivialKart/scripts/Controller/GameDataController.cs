@@ -1,6 +1,3 @@
-#define ONLINE
-//#define OFFLINE
-
 using System;
 using System.IO;
 using UnityEngine;
@@ -14,20 +11,20 @@ public class GameDataController
 
     public static void SaveGameData()
     {
-#if OFFLINE
-        SaveGameDataOffline();
-#elif ONLINE
+#if ONLINE
         NetworkRequestController.SaveGameDataOnline();
+#else
+        SaveGameDataOffline();
 #endif
     }
 
     public static void LoadGameData()
     {
-        Debug.Log(DATA_PATH);
-#if OFFLINE
-        LoadGameOffline();
-#elif ONLINE
+#if ONLINE
         NetworkRequestController.LoadGameOnline();
+#else
+        Debug.Log(DATA_PATH);
+        LoadGameOffline();
 #endif
     }
 
