@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 // Controller for coin store page.
@@ -12,7 +12,7 @@ public class CoinStorePageController : MonoBehaviour
 
     private void Start()
     {
-        _gameData = FindObjectOfType<GameManager>().GetGameData();
+        _gameData = GameDataController.GetGameData();
     }
 
     private void OnEnable()

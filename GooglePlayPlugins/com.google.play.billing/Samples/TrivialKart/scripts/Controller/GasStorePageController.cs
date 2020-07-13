@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -21,7 +21,7 @@ public class GasStorePageController : MonoBehaviour
     {
         _gas = car.GetComponent<Gas>();
         _gasLevelImage = gasLevelImageObj.GetComponent<Image>();
-        _gameData = FindObjectOfType<GameManager>().GetGameData();
+        _gameData = GameDataController.GetGameData();
     }
 
     // Update the gas price and refresh the page when get into the gas store page.

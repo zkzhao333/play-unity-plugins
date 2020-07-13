@@ -16,7 +16,7 @@ public class SubscriptionController : MonoBehaviour
     private void Awake()
     {
         _gameManager = FindObjectOfType<GameManager>();
-        _gameData = _gameManager.GetGameData();
+        _gameData = GameDataController.GetGameData();
     }
 
     // Start is called before the first frame update.
@@ -94,7 +94,7 @@ public class SubscriptionController : MonoBehaviour
         {
             _gameData.SubscriptTo(_subscriptionToSubscribe);
             // TODO: Combine the below method to above method.
-            _gameManager.SaveGameData();
+            // _gameManager.SaveGameData();
         }
         
         _backgroundController.SwitchToMushroomBackGround();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 // Controller for car movement.
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        _gameData = FindObjectOfType<GameManager>().GetGameData();
+        _gameData = GameDataController.GetGameData();
         UpdateCarInUse();
         _circleCount = 0;
         _gas = GetComponent<Gas>();
@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
         {
             car.PlayCarGameObj.SetActive(false);
         }
-
+        
         // Set the car in use game object to be active.
         var carInUseGameObj = _gameData.CarInUseObj.PlayCarGameObj;
         SetUsingState(carInUseGameObj);
