@@ -5,11 +5,11 @@
 public class CarMove : MonoBehaviour
 {
     public GameObject tapToDriveText;
-    public string carName;
+    public CarName carName;
 
     private Rigidbody2D _rigidbody2D;
     private GameManager _gameManger;
-    private Car _carObj;
+    private CarList.Car _carObj;
     private const float NoVelocity = 0.01f;
 
     private void Start()

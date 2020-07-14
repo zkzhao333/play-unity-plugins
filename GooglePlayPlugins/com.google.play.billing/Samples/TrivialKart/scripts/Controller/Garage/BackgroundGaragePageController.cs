@@ -23,13 +23,13 @@ public class BackgroundGaragePageController : MonoBehaviour
     }
 
 
-    public void SwitchToTargetBackground(BackgroundList.Background targetBackground)
+    private void SwitchToTargetBackground(BackgroundList.Background targetBackground)
     {
         GameDataController.GetGameData().ChangeBackground(targetBackground);
         RefreshPages();
     }
 
-    public void RefreshPages()
+    private void RefreshPages()
     {
         CheckCarOwnership();
         CheckUsingStatus();

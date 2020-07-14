@@ -4,19 +4,11 @@ using UnityEngine.UI;
 // Controller for subscription page.
 public class SubscriptionController : MonoBehaviour
 {
-    public GameObject backGroundControllerGameObj;
     public GameObject confirmPanel;
     public Text confirmText;
 
-    private BackgroundGaragePageController _backgroundGaragePageController;
     private SubscriptionList.Subscription _subscriptionToSubscribe;
 
-
-    // Start is called before the first frame update.
-    private void Start()
-    {
-        _backgroundGaragePageController = backGroundControllerGameObj.GetComponent<BackgroundGaragePageController>();
-    }
 
     private void OnEnable()
     {
@@ -89,7 +81,6 @@ public class SubscriptionController : MonoBehaviour
             // _gameManager.SaveGameData();
         }
 
-        _backgroundGaragePageController.SwitchToTargetBackground(BackgroundList.MushroomBackground);
         RefreshPage();
     }
 

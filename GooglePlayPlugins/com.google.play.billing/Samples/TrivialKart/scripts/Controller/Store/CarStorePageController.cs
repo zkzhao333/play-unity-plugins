@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,7 +9,7 @@ public class CarStorePageController : MonoBehaviour
     public GameObject confirmPanel;
     public Text confirmText;
 
-    private Car _carToPurchaseObj;
+    private CarList.Car _carToPurchaseObj;
     private readonly Color32 _lightGreyColor = new Color32(147, 147, 147, 255);
 
 
@@ -16,15 +18,24 @@ public class CarStorePageController : MonoBehaviour
     {
         RefreshPage();
     }
+    
 
     // refresh the page
-    private void RefreshPage()
+    public void RefreshPage()
     {
         confirmPanel.SetActive(false);
-        // check if the player already owns the car
-        foreach (var car in CarList.List)
+        CheckCarOwnerships();
+        SetCoinItemPrices();
+    }
+
+    // Apply discounts on coin text for each car sales in coin
+    private void SetCoinItemPrices()
+    {
+        var discount = GameDataController.GetGameData().Discount;
+        foreach (var car in CarList.List.Where(car => !car.IsPriceInDollar))
         {
-            CheckCarOwnership(car);
+            car.StoreItemCarGameObj.transform.Find("price/priceValue").gameObject.GetComponent<Text>().text =
+                (car.Price * discount).ToString(CultureInfo.InvariantCulture);
         }
     }
 
@@ -38,7 +49,7 @@ public class CarStorePageController : MonoBehaviour
     public void OnItemTruckClicked()
     {
         // players can purchase the coin item only it they have enough coin
-        if (GameDataController.GetGameData().coinsOwned >= CarList.CarTruck.Price)
+        if (GameDataController.GetGameData().coinsOwned >= CarList.CarTruck.Price * GameDataController.GetGameData().Discount)
         {
             _carToPurchaseObj = CarList.CarTruck;
             BuyCars();
@@ -62,13 +73,13 @@ public class CarStorePageController : MonoBehaviour
         confirmPanel.SetActive(true);
         if (_carToPurchaseObj.IsPriceInDollar)
         {
-            confirmText.text = "Would you like to purchase " + _carToPurchaseObj.CarName + " with $" +
+            confirmText.text = "Would you like to purchase " + _carToPurchaseObj.Name + " with $" +
                                _carToPurchaseObj.Price + "?";
         }
         else
         {
-            confirmText.text = "Would you like to purchase " + _carToPurchaseObj.CarName + " with " +
-                               _carToPurchaseObj.Price + " coins?";
+            confirmText.text = "Would you like to purchase " + _carToPurchaseObj.Name + " with " +
+                               _carToPurchaseObj.Price * GameDataController.GetGameData().Discount + " coins?";
         }
     }
 
@@ -79,14 +90,14 @@ public class CarStorePageController : MonoBehaviour
         // if the item sales in coins
         if (!_carToPurchaseObj.IsPriceInDollar)
         {
-            GameDataController.GetGameData().ReduceCoinsOwned((int) _carToPurchaseObj.Price);
+            GameDataController.GetGameData().PurchaseCar(_carToPurchaseObj);
             FindObjectOfType<GameManager>().SetCoins();
             FindObjectOfType<StoreController>().SetCoins();
         }
         
+        // TODO: OOD.
         PurchaseController.BuyProductId(_carToPurchaseObj.ProductId);
         // TODO: make the refresh happened after purchase
-        RefreshPage();
     }
 
     public void OnCancelPurchaseButtonClicked()
@@ -98,18 +109,23 @@ public class CarStorePageController : MonoBehaviour
     // TODO: need to decide to use CarObj or Car as the name.
     // check if the player own the car
     // if the player own the car, disable the interaction of the car item
-    private void CheckCarOwnership(Car carObj)
+    private void CheckCarOwnerships()
     {
-        var storeItemCarGameObj = carObj.StoreItemCarGameObj;
-        if (GameDataController.GetGameData().CheckCarOwnership(carObj))
+        foreach (var car in CarList.List)
         {
-            storeItemCarGameObj.GetComponent<Image>().color = _lightGreyColor;
-            storeItemCarGameObj.GetComponent<Button>().interactable = false;
-            storeItemCarGameObj.transform.Find("price").gameObject.GetComponent<Text>().text = "owned";
-            if (!carObj.IsPriceInDollar)
+            var storeItemCarGameObj = car.StoreItemCarGameObj;
+            if (GameDataController.GetGameData().CheckCarOwnership(car))
             {
-                storeItemCarGameObj.transform.Find("coinImage").gameObject.SetActive(false);
+                storeItemCarGameObj.GetComponent<Image>().color = _lightGreyColor;
+                storeItemCarGameObj.GetComponent<Button>().interactable = false;
+                storeItemCarGameObj.transform.Find("price").gameObject.GetComponent<Text>().text = "owned";
+                if (!car.IsPriceInDollar)
+                {
+                    storeItemCarGameObj.transform.Find("coinImage").gameObject.SetActive(false);
+                    storeItemCarGameObj.transform.Find("price/priceValue").gameObject.SetActive(false);
+                }
             }
         }
+       
     }
 }

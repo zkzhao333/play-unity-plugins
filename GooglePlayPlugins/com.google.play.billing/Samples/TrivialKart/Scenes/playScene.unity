@@ -3842,7 +3842,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f7c7a86343554d66b5fbea57861fce5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backGroundControllerGameObj: {fileID: 1673999203}
   confirmPanel: {fileID: 785660340}
   confirmText: {fileID: 1450197656}
 --- !u!1 &272974522
@@ -3992,7 +3991,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tapToDriveText: {fileID: 96408348}
-  carName: carSedan
+  carName: 0
 --- !u!58 &272974528
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -12545,7 +12544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tapToDriveText: {fileID: 96408348}
-  carName: carKart
+  carName: 3
 --- !u!95 &837701544
 Animator:
   serializedVersion: 3
@@ -13592,7 +13591,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: $ 2.99
+  m_Text: $ 2.49
 --- !u!222 &887435772
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15542,8 +15541,6 @@ MonoBehaviour:
   playCarJeepGameObj: {fileID: 1916547075}
   playCarTruckGameObj: {fileID: 2142797795}
   playCarKartGameObj: {fileID: 837701542}
-  GarageItemBlueGrassBackgroundGameObj: {fileID: 1883743016}
-  GarageItemMushroomBackgroundGameObj: {fileID: 1023875364}
   coinsCount: {fileID: 255060344}
 --- !u!4 &1033821260
 Transform:
@@ -25376,7 +25373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tapToDriveText: {fileID: 96408348}
-  carName: carJeep
+  carName: 2
 --- !u!61 &1916547081
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -27690,7 +27687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tapToDriveText: {fileID: 96408348}
-  carName: carTruck
+  carName: 1
 --- !u!58 &2142797798
 CircleCollider2D:
   m_ObjectHideFlags: 0

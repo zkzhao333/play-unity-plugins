@@ -34,7 +34,7 @@ public static class SubscriptionList
         new Subscription("golden VIP", SubscriptionType.GoldenSubscription, 4.99f,
             GameObject.Find("goldenSubscriptionButton").gameObject, "golden_subscription");
 
-    public static readonly Subscription NoSubscription =
+    private static readonly Subscription NoSubscription =
         new Subscription("No VIP", SubscriptionType.NoSubscription, 0f, new GameObject(), "no_subscription");
 
     public static readonly List<Subscription> List = new List<Subscription>()

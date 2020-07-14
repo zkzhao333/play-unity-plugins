@@ -69,7 +69,7 @@ public class CarGaragePageController : MonoBehaviour
         SwitchCarInUse(CarList.CarKart);
     }
 
-    private void SwitchCarInUse(Car targetCar)
+    private void SwitchCarInUse(CarList.Car targetCar)
     {
         // TODO: Combine the save game data into the _gameData.
         GameDataController.GetGameData().ChangeCar(targetCar);

@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Linq;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 public enum Ownership
 {
-    Owned,
-    NotOwned
+    NotOwned,
+    Owned
 }
 
 public enum SubscriptionType
@@ -15,8 +15,8 @@ public enum SubscriptionType
     GoldenSubscription
 }
 
-// TODO: Update carInUseName to enum after merge.
-public enum CarType
+
+public enum CarName
 {
     Sedan,
     Truck,
@@ -34,13 +34,12 @@ public enum BackgroundName
 [Serializable]
 public class GameData
 {
-    // TODO: switch car in use from string to enum
-    public string carInUseName;
+    public CarName carInUseName;
     public Ownership[] carIndexToOwnership;
     public Ownership[] backgroundNameToOwnership;
     public int coinsOwned;
     public SubscriptionType subscriptionType;
-    public BackgroundName backgroundNameInUse;
+    public BackgroundName backgroundInUseName;
 
     private const int InitialCoinAmount = 20;
     private const int TotalCarCount = 4;
@@ -49,15 +48,15 @@ public class GameData
 
     public GameData()
     {
-        Debug.Log("initialize gamedata");
+        Debug.Log("initialize game data");
         coinsOwned = InitialCoinAmount;
         carIndexToOwnership = new Ownership[TotalCarCount];
         foreach (var car in CarList.List)
         {
-            carIndexToOwnership[CarList.GetIndexByName(car.CarName)] = Ownership.NotOwned;
+            carIndexToOwnership[(int) car.Name] = Ownership.NotOwned;
         }
 
-        carIndexToOwnership[CarList.GetIndexByName("carSedan")] = Ownership.Owned;
+        carIndexToOwnership[(int) CarList.CarSedan.Name] = Ownership.Owned;
 
         backgroundNameToOwnership = new Ownership[TotalBackgroundCount];
         foreach (var background in BackgroundList.List)
@@ -67,15 +66,15 @@ public class GameData
 
         backgroundNameToOwnership[(int) BackgroundList.BlueGrassBackground.Name] = Ownership.Owned;
 
-        carInUseName = "carSedan";
+        carInUseName = CarName.Sedan;
         subscriptionType = SubscriptionType.NoSubscription;
-        backgroundNameInUse = BackgroundName.BlueGrass;
-        Debug.Log("finished initilizing game data");
+        backgroundInUseName = BackgroundName.BlueGrass;
+        Debug.Log("finished initializing game data");
     }
 
-    public Car CarInUseObj => CarList.GetCarByName(carInUseName);
+    public CarList.Car CarInUseObj => CarList.List[(int) carInUseName];
 
-    public BackgroundList.Background BackgroundInUseObj => BackgroundList.List[(int) backgroundNameInUse];
+    public BackgroundList.Background BackgroundInUseObj => BackgroundList.List[(int) backgroundInUseName];
     public SubscriptionList.Subscription CurSubscriptionObj =>
         SubscriptionList.GetSubscriptionObjByType(subscriptionType);
 
@@ -97,29 +96,31 @@ public class GameData
     }
 
     // Purchase a car.
-    public void PurchaseCar(Car car)
+    public void PurchaseCar(CarList.Car car)
     {
+        Debug.Log("purchasing " + car.Name);
         if (!car.IsPriceInDollar)
         {
-            ReduceCoinsOwned((int) car.Price);
+            ReduceCoinsOwned((int) (car.Price * Discount));
         }
-
-        ;
-        carIndexToOwnership[CarList.GetIndexByName(car.CarName)] = Ownership.Owned;
+        
+        carIndexToOwnership[(int) car.Name] = Ownership.Owned;
+        Object.FindObjectOfType<CarStorePageController>()?.RefreshPage();
+        Debug.Log("finished purchasing " + car.Name);
     }
 
 
     // Check if the user owns a specific car.
     // Return true if the user owns it; Otherwise return false.
-    public bool CheckCarOwnership(Car car)
+    public bool CheckCarOwnership(CarList.Car car)
     {
-        return carIndexToOwnership[CarList.GetIndexByName(car.CarName)] == Ownership.Owned;
+        return carIndexToOwnership[(int) car.Name]  == Ownership.Owned;
     }
 
     // Change car in use.
-    public void ChangeCar(Car targetCar)
+    public void ChangeCar(CarList.Car targetCar)
     {
-        carInUseName = targetCar.CarName;
+        carInUseName = targetCar.Name;
     }
 
     // Check if the user owns a specific background.
@@ -131,8 +132,8 @@ public class GameData
     // Change background in use.
     public void ChangeBackground(BackgroundList.Background targetBackground)
     {
-        backgroundNameInUse = targetBackground.Name;
-        GameObject backGroundImages = GameObject.Find("backGroundImages").gameObject;
+        backgroundInUseName = targetBackground.Name;
+        var backGroundImages = GameObject.Find("backGroundImages").gameObject;
         foreach (Transform background in backGroundImages.transform)
         {
             background.gameObject.GetComponent<SpriteRenderer>().sprite = targetBackground.ImageSprite;
@@ -143,6 +144,8 @@ public class GameData
     public void SubscriptTo(SubscriptionList.Subscription targetSubscription)
     {
         subscriptionType = targetSubscription.Type;
+        backgroundNameToOwnership[(int) BackgroundName.Mushroom] = Ownership.Owned;
+        ChangeBackground(BackgroundList.MushroomBackground);
     }
 
     // Unsubscribe from any exist subscription.

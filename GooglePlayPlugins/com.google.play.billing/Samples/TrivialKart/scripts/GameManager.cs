@@ -20,8 +20,6 @@ public class GameManager : MonoBehaviour
     public GameObject playCarJeepGameObj;
     public GameObject playCarTruckGameObj;
     public GameObject playCarKartGameObj;
-    public GameObject GarageItemBlueGrassBackgroundGameObj;
-    public GameObject GarageItemMushroomBackgroundGameObj;
     public Text coinsCount;
 
     private List<GameObject> _canvasPagesList;

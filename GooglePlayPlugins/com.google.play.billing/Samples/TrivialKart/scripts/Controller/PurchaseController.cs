@@ -71,8 +71,8 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             {
                 Debug.Log(string.Format("Purchasing product asychronously: '{0}'", product.definition.id));
                 // ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed 
-                // asynchronously.
-                m_StoreController.InitiatePurchase(product);
+                // asynchronously. 
+               m_StoreController.InitiatePurchase(product);
             }
             // Otherwise ...
             else
@@ -110,11 +110,11 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
+        Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
         // Check if a consumable (coins) has been purchased by this user
         foreach (var coin in CoinList.List)
         {
             if (!String.Equals(args.purchasedProduct.definition.id, coin.ProductId, StringComparison.Ordinal)) continue;
-            Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
             GameDataController.GetGameData().IncreaseCoinsOwned(coin.Amount);
             FindObjectOfType<GameManager>().SetCoins();
             FindObjectOfType<StoreController>().SetCoins();
@@ -126,8 +126,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         {
             if (!String.Equals(args.purchasedProduct.definition.id, car.ProductId,
                 StringComparison.Ordinal)) continue;
-            Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
-            GameDataController.GetGameData().PurchaseCar(CarList.CarJeep);
+            GameDataController.GetGameData().PurchaseCar(car);
             return PurchaseProcessingResult.Complete;
         }
         

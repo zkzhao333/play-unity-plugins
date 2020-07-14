@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 // Constant data for backgrounds.
@@ -22,9 +21,9 @@ public class BackgroundList
 
     public static readonly Background BlueGrassBackground =
         new Background(BackgroundName.BlueGrass);
+
     public static readonly Background MushroomBackground =
         new Background(BackgroundName.Mushroom);
-    
 
     public static readonly List<Background> List = new List<Background>()
         {BlueGrassBackground, MushroomBackground};

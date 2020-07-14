@@ -1,5 +1,4 @@
-﻿
-// Constant data for coin store item.
+﻿// Constant data for coin store item.
 
 using System.Collections.Generic;
 
@@ -25,5 +24,5 @@ public static class CoinList
     public static readonly Coin TenCoins = new Coin(10, 1.99f, "ten_coins");
     public static readonly Coin TwentyCoins = new Coin(20, 2.49f, "twenty_coins");
     public static readonly Coin FiftyCoins = new Coin(50, 4.99f, "fifty_coins");
-    public static readonly List<Coin> List = new List<Coin>(){FiveCoins, TenCoins, TwentyCoins, FiftyCoins};
+    public static readonly List<Coin> List = new List<Coin>() {FiveCoins, TenCoins, TwentyCoins, FiftyCoins};
 }
