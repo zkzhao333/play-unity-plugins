@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 // Controller for the garage page.
@@ -15,7 +15,7 @@ public class GarageController : MonoBehaviour
     private void Awake()
     {
         _gameManager = FindObjectOfType<GameManager>();
-        _gameData = _gameManager.GetGameData();
+        _gameData = GameDataController.GetGameData();
         _playerController = playCarGameObject.GetComponent<PlayerController>();
     }
 
@@ -78,7 +78,7 @@ public class GarageController : MonoBehaviour
     {
         // TODO: Combine the save game data into the _gameData.
         _gameData.ChangeCar(targetCar);
-        _gameManager.SaveGameData();
+        // _gameManager.SaveGameData();
         RefreshPage();
         _playerController.UpdateCarInUse();
     }
