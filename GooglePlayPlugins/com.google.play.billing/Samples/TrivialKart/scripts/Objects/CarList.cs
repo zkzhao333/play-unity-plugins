@@ -5,7 +5,6 @@ using UnityEngine;
 public static class CarList
 {
     public static readonly Car CarSedan = new Car("carSedan", 500, 0, true, "car_sedan");
-
     public static readonly Car CarTruck = new Car("carTruck", 600, 20, false, "car_truck");
     public static readonly Car CarJeep = new Car("carJeep", 650, 2.99f, true, "car_jeep");
     public static readonly Car CarKart = new Car("carKart", 1000, 4.99f, true, "car_kart");

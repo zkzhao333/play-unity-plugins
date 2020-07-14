@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for the whole store.
+// Controller for the tab/page switch in the store.
 public class StoreController : MonoBehaviour
 {
     public GameObject tab;
@@ -20,14 +20,8 @@ public class StoreController : MonoBehaviour
     private const int SubscriptionPageTabIndex = 3;
     private GameObject[] _tabs;
     private int _tabsCount;
-    private GameData _gameData;
     private List<GameObject> _storePages;
-
-    private void Awake()
-    {
-        _gameData = GameDataController.GetGameData();
-    }
-
+    
     // Start is called before the first frame update.
     private void Start()
     {
@@ -101,6 +95,6 @@ public class StoreController : MonoBehaviour
     // Update coin text.
     public void SetCoins()
     {
-        coinsCount.text = _gameData.CoinsOwned.ToString();
+        coinsCount.text = GameDataController.GetGameData().CoinsOwned.ToString();
     }
 }

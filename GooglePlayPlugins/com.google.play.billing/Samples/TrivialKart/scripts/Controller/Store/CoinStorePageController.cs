@@ -8,12 +8,6 @@ public class CoinStorePageController : MonoBehaviour
     public Text confirmText;
 
     private CoinList.Coin _coinToPurchase;
-    private GameData _gameData;
-
-    private void Start()
-    {
-        _gameData = GameDataController.GetGameData();
-    }
 
     private void OnEnable()
     {
@@ -55,9 +49,10 @@ public class CoinStorePageController : MonoBehaviour
     {
         // Purchase APIs here.
         confirmPanel.SetActive(false);
-        _gameData.IncreaseCoinsOwned(_coinToPurchase.Amount);
-        FindObjectOfType<GameManager>().SetCoins();
-        FindObjectOfType<StoreController>().SetCoins();
+        PurchaseController.BuyProductId(_coinToPurchase.ProductId);
+        //  _gameData.IncreaseCoinsOwned(_coinToPurchase.Amount);
+        // FindObjectOfType<GameManager>().SetCoins();
+        // FindObjectOfType<StoreController>().SetCoins();
     }
 
     public void OnCancelPurchaseButtonClicked()

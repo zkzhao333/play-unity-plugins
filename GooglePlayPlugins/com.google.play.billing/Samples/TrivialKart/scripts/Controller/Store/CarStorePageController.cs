@@ -8,16 +8,9 @@ public class CarStorePageController : MonoBehaviour
     public Text confirmText;
 
     private Car _carToPurchaseObj;
-    private GameManager _gameManager;
-    private GameData _gameData;
     private readonly Color32 _lightGreyColor = new Color32(147, 147, 147, 255);
 
-    // Start is called before the first frame update
-    private void Awake()
-    {
-        _gameManager = FindObjectOfType<GameManager>();
-        _gameData = GameDataController.GetGameData();
-    }
+
 
     private void OnEnable()
     {
@@ -45,7 +38,7 @@ public class CarStorePageController : MonoBehaviour
     public void OnItemTruckClicked()
     {
         // players can purchase the coin item only it they have enough coin
-        if (_gameData.coinsOwned >= CarList.CarTruck.Price)
+        if (GameDataController.GetGameData().coinsOwned >= CarList.CarTruck.Price)
         {
             _carToPurchaseObj = CarList.CarTruck;
             BuyCars();
@@ -86,19 +79,13 @@ public class CarStorePageController : MonoBehaviour
         // if the item sales in coins
         if (!_carToPurchaseObj.IsPriceInDollar)
         {
-            _gameData.ReduceCoinsOwned((int) _carToPurchaseObj.Price);
+            GameDataController.GetGameData().ReduceCoinsOwned((int) _carToPurchaseObj.Price);
             FindObjectOfType<GameManager>().SetCoins();
             FindObjectOfType<StoreController>().SetCoins();
         }
-
-        //TODO play-billing-API
-        bool confirmedPurchase = true;
-
-        if (confirmedPurchase)
-        {
-            _gameData.PurchaseCar(_carToPurchaseObj);
-        }
-
+        
+        PurchaseController.BuyProductId(_carToPurchaseObj.ProductId);
+        // TODO: make the refresh happened after purchase
         RefreshPage();
     }
 
@@ -108,12 +95,13 @@ public class CarStorePageController : MonoBehaviour
     }
 
 
+    // TODO: need to decide to use CarObj or Car as the name.
     // check if the player own the car
     // if the player own the car, disable the interaction of the car item
     private void CheckCarOwnership(Car carObj)
     {
         var storeItemCarGameObj = carObj.StoreItemCarGameObj;
-        if (_gameData.CheckOwnership(carObj.CarName))
+        if (GameDataController.GetGameData().CheckCarOwnership(carObj))
         {
             storeItemCarGameObj.GetComponent<Image>().color = _lightGreyColor;
             storeItemCarGameObj.GetComponent<Button>().interactable = false;

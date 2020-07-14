@@ -20,20 +20,23 @@ public class GameManager : MonoBehaviour
     public GameObject playCarJeepGameObj;
     public GameObject playCarTruckGameObj;
     public GameObject playCarKartGameObj;
+    public GameObject GarageItemBlueGrassBackgroundGameObj;
+    public GameObject GarageItemMushroomBackgroundGameObj;
     public Text coinsCount;
 
     private List<GameObject> _canvasPagesList;
-
+    
     // Init the game.
     public void Awake()
     {
 #if ONLINE
         NetworkRequestController.registerUserDevice();
 #endif
-        InitCarList();
+        InitConstantData();
         GameDataController.LoadGameData();
         SetCoins();
-        _canvasPagesList = new List<GameObject>() {playPageCanvas, storePageCanvas, garagePageCanvas};
+        Debug.Log("set canvas");
+        SetCanvas(playPageCanvas);
     }
 
     // Set the coins text at the play page.
@@ -78,7 +81,15 @@ public class GameManager : MonoBehaviour
         return playPageCanvas.activeInHierarchy;
     }
 
-    // Link car game obj to the car obj in carList
+    // Init constant game data before the game starts.
+    private void InitConstantData()
+    {
+        InitCarList();
+        InitBackGroundList();
+        _canvasPagesList = new List<GameObject>() {playPageCanvas, storePageCanvas, garagePageCanvas};
+    }
+    
+    // Link car game object to the car object in carList
     private void InitCarList()
     {
         // TODO: Improve it.
@@ -95,7 +106,16 @@ public class GameManager : MonoBehaviour
         CarList.CarKart.PlayCarGameObj = playCarKartGameObj;
         CarList.CarKart.StoreItemCarGameObj = storeItemCarKartGameObj;
     }
-
+    
+    // Link background game object to the background object in backgroundList.
+    private void InitBackGroundList()
+    {
+        BackgroundList.BlueGrassBackground.GarageItemGameObj =   GameObject.FindWithTag("garagePages").transform.Find("backGroundPage/blueGrassBackground").gameObject;
+        BackgroundList.BlueGrassBackground.ImageSprite = Resources.Load<Sprite>("background/blueGrass");
+        BackgroundList.MushroomBackground.GarageItemGameObj =  GameObject.FindWithTag("garagePages").transform.Find("backGroundPage/mushroomBackground").gameObject;
+        BackgroundList.MushroomBackground.ImageSprite = Resources.Load<Sprite>("background/coloredShroom");
+    }
+    
     void OnApplicationPause()
     {
         GameDataController.SaveGameData();

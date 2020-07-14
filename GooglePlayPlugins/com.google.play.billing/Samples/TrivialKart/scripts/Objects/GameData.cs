@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using UnityEngine;
 
 public enum Ownership
 {
@@ -32,18 +34,22 @@ public enum BackgroundName
 [Serializable]
 public class GameData
 {
+    // TODO: switch car in use from string to enum
     public string carInUseName;
     public Ownership[] carIndexToOwnership;
+    public Ownership[] backgroundNameToOwnership;
     public int coinsOwned;
     public SubscriptionType subscriptionType;
     public BackgroundName backgroundNameInUse;
 
     private const int InitialCoinAmount = 20;
     private const int TotalCarCount = 4;
+    private const int TotalBackgroundCount = 2;
 
 
     public GameData()
     {
+        Debug.Log("initialize gamedata");
         coinsOwned = InitialCoinAmount;
         carIndexToOwnership = new Ownership[TotalCarCount];
         foreach (var car in CarList.List)
@@ -52,13 +58,24 @@ public class GameData
         }
 
         carIndexToOwnership[CarList.GetIndexByName("carSedan")] = Ownership.Owned;
+
+        backgroundNameToOwnership = new Ownership[TotalBackgroundCount];
+        foreach (var background in BackgroundList.List)
+        {
+            backgroundNameToOwnership[(int) background.Name] = Ownership.NotOwned;
+        }
+
+        backgroundNameToOwnership[(int) BackgroundList.BlueGrassBackground.Name] = Ownership.Owned;
+
         carInUseName = "carSedan";
         subscriptionType = SubscriptionType.NoSubscription;
         backgroundNameInUse = BackgroundName.BlueGrass;
+        Debug.Log("finished initilizing game data");
     }
 
     public Car CarInUseObj => CarList.GetCarByName(carInUseName);
 
+    public BackgroundList.Background BackgroundInUseObj => BackgroundList.List[(int) backgroundNameInUse];
     public SubscriptionList.Subscription CurSubscriptionObj =>
         SubscriptionList.GetSubscriptionObjByType(subscriptionType);
 
@@ -92,17 +109,34 @@ public class GameData
     }
 
 
-    // Check if user owns a car with carName.
+    // Check if the user owns a specific car.
     // Return true if the user owns it; Otherwise return false.
-    public bool CheckOwnership(string carName)
+    public bool CheckCarOwnership(Car car)
     {
-        return carIndexToOwnership[CarList.GetIndexByName(carName)] == Ownership.Owned;
+        return carIndexToOwnership[CarList.GetIndexByName(car.CarName)] == Ownership.Owned;
     }
 
     // Change car in use.
     public void ChangeCar(Car targetCar)
     {
         carInUseName = targetCar.CarName;
+    }
+
+    // Check if the user owns a specific background.
+    // Return true if the user owns it; Otherwise return false;
+    public bool CheckBackgroundOwnership(BackgroundList.Background background)
+    {
+        return backgroundNameToOwnership[(int) background.Name] == Ownership.Owned;
+    }
+    // Change background in use.
+    public void ChangeBackground(BackgroundList.Background targetBackground)
+    {
+        backgroundNameInUse = targetBackground.Name;
+        GameObject backGroundImages = GameObject.Find("backGroundImages").gameObject;
+        foreach (Transform background in backGroundImages.transform)
+        {
+            background.gameObject.GetComponent<SpriteRenderer>().sprite = targetBackground.ImageSprite;
+        }
     }
 
     // Subscribe to a subscription.

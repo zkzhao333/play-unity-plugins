@@ -8,21 +8,14 @@ public class SubscriptionController : MonoBehaviour
     public GameObject confirmPanel;
     public Text confirmText;
 
-    private BackgroundController _backgroundController;
+    private BackgroundGaragePageController _backgroundGaragePageController;
     private SubscriptionList.Subscription _subscriptionToSubscribe;
-    private GameData _gameData;
-    private GameManager _gameManager;
 
-    private void Awake()
-    {
-        _gameManager = FindObjectOfType<GameManager>();
-        _gameData = GameDataController.GetGameData();
-    }
 
     // Start is called before the first frame update.
     private void Start()
     {
-        _backgroundController = backGroundControllerGameObj.GetComponent<BackgroundController>();
+        _backgroundGaragePageController = backGroundControllerGameObj.GetComponent<BackgroundGaragePageController>();
     }
 
     private void OnEnable()
@@ -45,7 +38,7 @@ public class SubscriptionController : MonoBehaviour
             SetSubscribeButton(subscription, " subscribe now! ", true);
         }
 
-        SetSubscribeButton(_gameData.CurSubscriptionObj, "subscribed", false);
+        SetSubscribeButton(GameDataController.GetGameData().CurSubscriptionObj, "subscribed", false);
     }
 
     // TODO: Set buttons.
@@ -80,7 +73,6 @@ public class SubscriptionController : MonoBehaviour
         confirmPanel.SetActive(true);
         confirmText.text = "Would you like to subscribe to " + _subscriptionToSubscribe.Name + " with " +
                            _subscriptionToSubscribe.Price + "/month ?";
-        
     }
 
     public void OnConfirmSubscribeButtonClicked()
@@ -92,12 +84,12 @@ public class SubscriptionController : MonoBehaviour
 
         if (confirmedPurchase)
         {
-            _gameData.SubscriptTo(_subscriptionToSubscribe);
+            GameDataController.GetGameData().SubscriptTo(_subscriptionToSubscribe);
             // TODO: Combine the below method to above method.
             // _gameManager.SaveGameData();
         }
-        
-        _backgroundController.SwitchToMushroomBackGround();
+
+        _backgroundGaragePageController.SwitchToTargetBackground(BackgroundList.MushroomBackground);
         RefreshPage();
     }
 

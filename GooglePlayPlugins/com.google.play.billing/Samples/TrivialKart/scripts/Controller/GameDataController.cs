@@ -35,6 +35,7 @@ public class GameDataController
 
     private static void LoadGameOffline()
     {
+        Debug.Log("loading data");
         try
         {
             // check if the data file exits

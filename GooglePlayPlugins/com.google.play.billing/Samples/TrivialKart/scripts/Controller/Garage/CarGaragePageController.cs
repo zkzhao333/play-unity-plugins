@@ -2,20 +2,16 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // Controller for the garage page.
-public class GarageController : MonoBehaviour
+public class CarGaragePageController : MonoBehaviour
 {
     public GameObject playCarGameObject;
     public Text coinsCountText;
-
-    private GameManager _gameManager;
-    private GameData _gameData;
+    
     private PlayerController _playerController;
 
 
     private void Awake()
     {
-        _gameManager = FindObjectOfType<GameManager>();
-        _gameData = GameDataController.GetGameData();
         _playerController = playCarGameObject.GetComponent<PlayerController>();
     }
 
@@ -30,7 +26,6 @@ public class GarageController : MonoBehaviour
     {
         CheckCarOwnership();
         CheckUsingStatus();
-        SetCoins();
     }
     
     // Check if player owns the car.
@@ -38,7 +33,7 @@ public class GarageController : MonoBehaviour
     {
         foreach (var car in CarList.List)
         {
-            var isCarOwned = _gameData.CheckOwnership(car.CarName);
+            var isCarOwned = GameDataController.GetGameData().CheckCarOwnership(car);
             car.GarageItemGameObj.SetActive(isCarOwned);
         }
     }
@@ -50,7 +45,7 @@ public class GarageController : MonoBehaviour
             carObj.GarageItemGameObj.transform.Find("statusText").gameObject.SetActive(false);
         }
 
-        _gameData.CarInUseObj.GarageItemGameObj.transform.Find("statusText").gameObject.SetActive(true);
+        GameDataController.GetGameData().CarInUseObj.GarageItemGameObj.transform.Find("statusText").gameObject.SetActive(true);
     }
 
 
@@ -77,14 +72,9 @@ public class GarageController : MonoBehaviour
     private void SwitchCarInUse(Car targetCar)
     {
         // TODO: Combine the save game data into the _gameData.
-        _gameData.ChangeCar(targetCar);
-        // _gameManager.SaveGameData();
+        GameDataController.GetGameData().ChangeCar(targetCar);
         RefreshPage();
         _playerController.UpdateCarInUse();
     }
-
-    private void SetCoins()
-    {
-        coinsCountText.text = _gameData.CoinsOwned.ToString();
-    }
+    
 }
