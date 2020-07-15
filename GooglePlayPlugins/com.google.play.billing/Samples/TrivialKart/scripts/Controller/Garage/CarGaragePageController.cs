@@ -4,19 +4,8 @@ using UnityEngine.UI;
 // Controller for the garage page.
 public class CarGaragePageController : MonoBehaviour
 {
-    public GameObject playCarGameObject;
-    public Text coinsCountText;
     
-    private PlayerController _playerController;
-
-
-    private void Awake()
-    {
-        _playerController = playCarGameObject.GetComponent<PlayerController>();
-    }
-
-
-    // Refresh the page when on enable.
+    // Refresh the page when enter the car garage page.
     private void OnEnable()
     {
         RefreshPage();
@@ -27,10 +16,11 @@ public class CarGaragePageController : MonoBehaviour
         CheckCarOwnership();
         CheckUsingStatus();
     }
-    
+
     // Check if player owns the car.
     private void CheckCarOwnership()
     {
+        // TODO: make the unavailable car in gray color.
         foreach (var car in CarList.List)
         {
             var isCarOwned = GameDataController.GetGameData().CheckCarOwnership(car);
@@ -45,10 +35,10 @@ public class CarGaragePageController : MonoBehaviour
             carObj.GarageItemGameObj.transform.Find("statusText").gameObject.SetActive(false);
         }
 
-        GameDataController.GetGameData().CarInUseObj.GarageItemGameObj.transform.Find("statusText").gameObject.SetActive(true);
+        GameDataController.GetGameData().CarInUseObj.GarageItemGameObj.transform.Find("statusText").gameObject
+            .SetActive(true);
     }
-
-
+    
     public void OnItemSedanClicked()
     {
         SwitchCarInUse(CarList.CarSedan);
@@ -71,10 +61,7 @@ public class CarGaragePageController : MonoBehaviour
 
     private void SwitchCarInUse(CarList.Car targetCar)
     {
-        // TODO: Combine the save game data into the _gameData.
         GameDataController.GetGameData().ChangeCar(targetCar);
         RefreshPage();
-        _playerController.UpdateCarInUse();
     }
-    
 }

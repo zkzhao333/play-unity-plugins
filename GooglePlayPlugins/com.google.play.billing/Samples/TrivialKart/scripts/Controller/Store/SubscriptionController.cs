@@ -8,8 +8,8 @@ public class SubscriptionController : MonoBehaviour
     public Text confirmText;
 
     private SubscriptionList.Subscription _subscriptionToSubscribe;
-
-
+    
+    
     private void OnEnable()
     {
         RefreshPage();

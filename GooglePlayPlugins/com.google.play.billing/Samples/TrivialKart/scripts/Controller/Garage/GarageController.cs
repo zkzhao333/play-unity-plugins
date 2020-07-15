@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for the tab/page switch in the garage
+// Controller for the tab/page switch in the garage.
 public class GarageController : MonoBehaviour
 {
     public GameObject tab;
@@ -12,41 +12,41 @@ public class GarageController : MonoBehaviour
     
     private const int UnselectedTabIndex = 0;
     private const int SelectedTabIndex = 1;
-    private const int carGaragePageTabIndex = 0;
-    private const int backGroundGragePagetabIndex = 1;
+    private const int CarGaragePageTabIndex = 0;
+    private const int BackGroundGaragePageTabIndex = 1;
     private GameObject[] _tabs;
-    private int _tabsCount;
     private List<GameObject> _garagePages;
+    
     
     private void Start()
     {
         _garagePages = new List<GameObject>()
             {carPage, backgroundPage};
-        _tabsCount = tab.transform.childCount;
-        _tabs = new GameObject[_tabsCount];
-        for (var tabIndex = 0; tabIndex < _tabsCount; tabIndex++)
+        
+        var tabsCount = tab.transform.childCount;
+        _tabs = new GameObject[tabsCount];
+        for (var tabIndex = 0; tabIndex < tabsCount; tabIndex++)
         {
             _tabs[tabIndex] = tab.transform.GetChild(tabIndex).gameObject;
         }
     }
-    
-    // Update is called once per frame
-    void Update()
+
+    private void OnEnable()
     {
-        // Keep the coin text updated.
+        // Update Coin text when enter the garage.
         SetCoins();
     }
 
     public void OnEnterCarGaragePageButtonCLicked()
     {
         SetPage(carPage);
-        SetTab(carGaragePageTabIndex);
+        SetTab(CarGaragePageTabIndex);
     }
 
     public void OnEnterBackgroundPageButtonClicked()
     {
         SetPage(backgroundPage);
-        SetTab(backGroundGragePagetabIndex);
+        SetTab(BackGroundGaragePageTabIndex);
     }
     
     private void SetPage(GameObject targetPage)
@@ -65,10 +65,10 @@ public class GarageController : MonoBehaviour
     {
         // TODO: consider to make a class.
         // Set all tags to be unselected.
-        for (var tagIndex = 0; tagIndex < _tabsCount; tagIndex++)
+        foreach (var tab in _tabs)
         {
-            _tabs[tagIndex].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(true);
-            _tabs[tagIndex].transform.GetChild(SelectedTabIndex).gameObject.SetActive(false);
+            tab.transform.GetChild(UnselectedTabIndex).gameObject.SetActive(true);
+            tab.transform.GetChild(SelectedTabIndex).gameObject.SetActive(false);
         }
 
         // Set the target tag to be selected.
@@ -76,7 +76,7 @@ public class GarageController : MonoBehaviour
         _tabs[targetTagIndex].transform.GetChild(SelectedTabIndex).gameObject.SetActive(true);
     }
     
-    // Update coin text.
+    // Update coin text in the garage page.
     private void SetCoins()
     {
         coinsCount.text = GameDataController.GetGameData().CoinsOwned.ToString();

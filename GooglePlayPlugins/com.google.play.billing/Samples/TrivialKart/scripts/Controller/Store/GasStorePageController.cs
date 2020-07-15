@@ -65,8 +65,6 @@ public class GasStorePageController : MonoBehaviour
         {
             GameDataController.GetGameData().ReduceCoinsOwned((int) _currentCost);
             _gas.FilledGas();
-            FindObjectOfType<GameManager>().SetCoins();
-            FindObjectOfType<StoreController>().SetCoins();
             RefreshGasStorePage();
         }
     }

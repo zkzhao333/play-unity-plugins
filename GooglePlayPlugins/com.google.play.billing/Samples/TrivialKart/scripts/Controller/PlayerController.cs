@@ -14,19 +14,14 @@ public class PlayerController : MonoBehaviour
     private Vector3 _carStartPos;
     private Rigidbody2D _rigidbody2D;
     private int _circleCount;
-    private GameData _gameData;
     private Vector3 _camOffset;
 
+    
     private void Start()
     {
-        _gameData = GameDataController.GetGameData();
         UpdateCarInUse();
-        _circleCount = 0;
-        _gas = GetComponent<Gas>();
-        _carStartPos = _carInUseGameObj.transform.position;
-        _camOffset = cam.transform.position - _carStartPos;
+        InitValues();
     }
-
 
     private void FixedUpdate()
     {
@@ -49,7 +44,16 @@ public class PlayerController : MonoBehaviour
         var carPosition = _carInUseGameObj.transform.position;
         cam.transform.position = new Vector3(carPosition.x, carPosition.y, carPosition.z) + _camOffset;
     }
+    
+    private void InitValues()
+    {
+        _circleCount = 0;
+        _gas = GetComponent<Gas>();
+        _carStartPos = _carInUseGameObj.transform.position;
+        _camOffset = cam.transform.position - _carStartPos;
+    }
 
+    // TODO: Put this method into gameData.cs/gameDataController.cs.
     // Update the car in use in the play page when player switch the car.
     public void UpdateCarInUse()
     {
@@ -60,7 +64,7 @@ public class PlayerController : MonoBehaviour
         }
         
         // Set the car in use game object to be active.
-        var carInUseGameObj = _gameData.CarInUseObj.PlayCarGameObj;
+        var carInUseGameObj = GameDataController.GetGameData().CarInUseObj.PlayCarGameObj;
         SetUsingState(carInUseGameObj);
     }
 

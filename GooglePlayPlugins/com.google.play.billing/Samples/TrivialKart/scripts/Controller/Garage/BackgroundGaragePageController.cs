@@ -4,14 +4,11 @@ using UnityEngine;
 // Controller for background garage page.
 public class BackgroundGaragePageController : MonoBehaviour
 {
-    public GameObject backGroundImages;
-
     private void OnEnable()
     {
-        RefreshPages();
+        RefreshPage();
     }
     
-
     public void OnItemBlueGrassBackgroundClicked()
     {
         SwitchToTargetBackground(BackgroundList.BlueGrassBackground);
@@ -21,22 +18,21 @@ public class BackgroundGaragePageController : MonoBehaviour
     {
         SwitchToTargetBackground(BackgroundList.MushroomBackground);
     }
-
-
+    
     private void SwitchToTargetBackground(BackgroundList.Background targetBackground)
     {
         GameDataController.GetGameData().ChangeBackground(targetBackground);
-        RefreshPages();
+        RefreshPage();
     }
 
-    private void RefreshPages()
+    private void RefreshPage()
     {
-        CheckCarOwnership();
+        CheckBackgroundOwnership();
         CheckUsingStatus();
     }
 
-    // Check if player owns the car.
-    private void CheckCarOwnership()
+    // Check if player owns the background, and set the item activeness accordingly.
+    private void CheckBackgroundOwnership()
     {
         foreach (var background in BackgroundList.List)
         {

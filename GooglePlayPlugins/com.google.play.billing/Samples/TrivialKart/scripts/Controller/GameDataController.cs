@@ -38,14 +38,14 @@ public class GameDataController
         Debug.Log("loading data");
         try
         {
-            // check if the data file exits
+            // Check if the data file exits.
             if (File.Exists(DATA_PATH))
             {
                 var contents = File.ReadAllText(DATA_PATH);
                 _gameData = JsonUtility.FromJson<GameData>(contents);
                 Debug.Log(contents);
             }
-            else // if data file doesn't exist, create a default one
+            else // If data file doesn't exist, create a default one. d
             {
                 Debug.Log("Unable to read the save data, file does not exist");
                 _gameData = new GameData();

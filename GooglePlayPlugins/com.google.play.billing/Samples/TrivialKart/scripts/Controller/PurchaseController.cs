@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Purchasing;
 
@@ -9,10 +10,10 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
     private void Start()
     {
-        // If we haven't set up the Unity Purchasing reference
+        // If we haven't set up the Unity Purchasing reference.
         if (m_StoreController == null)
         {
-            // Begin to configure our connection to Purchasing
+            // Begin to configure our connection to Purchasing.
             InitializePurchasing();
         }
     }
@@ -37,12 +38,9 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         }
 
         // Continue adding the non-consumable products (car).
-        foreach (var car in CarList.List)
+        foreach (var car in CarList.List.Where(car => car.IsPriceInDollar && car.Price > 0))
         {
-            if (car.IsPriceInDollar && car.Price > 0)
-            {
-                builder.AddProduct(car.ProductId, ProductType.NonConsumable);
-            }
+            builder.AddProduct(car.ProductId, ProductType.NonConsumable);
         }
         // TODO: subscription IAP.
 
@@ -64,7 +62,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         {
             // ... look up the Product reference with the general product identifier and the Purchasing 
             // system's products collection.
-            Product product = m_StoreController.products.WithID(productId);
+            var product = m_StoreController.products.WithID(productId);
 
             // If the look up found a product for this device's store and that product is ready to be sold ... 
             if (product != null && product.availableToPurchase)
@@ -116,8 +114,6 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         {
             if (!String.Equals(args.purchasedProduct.definition.id, coin.ProductId, StringComparison.Ordinal)) continue;
             GameDataController.GetGameData().IncreaseCoinsOwned(coin.Amount);
-            FindObjectOfType<GameManager>().SetCoins();
-            FindObjectOfType<StoreController>().SetCoins();
             return PurchaseProcessingResult.Complete;
         }
 
@@ -141,7 +137,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
     {
         // A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing 
         // this reason with the user to guide their troubleshooting actions.
-        Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}",
-            product.definition.storeSpecificId, failureReason));
+        Debug.Log(
+            $"OnPurchaseFailed: FAIL. Product: '{product.definition.storeSpecificId}', PurchaseFailureReason: {failureReason}");
     }
 }

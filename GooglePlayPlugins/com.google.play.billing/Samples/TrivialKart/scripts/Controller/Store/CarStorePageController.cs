@@ -11,14 +11,11 @@ public class CarStorePageController : MonoBehaviour
 
     private CarList.Car _carToPurchaseObj;
     private readonly Color32 _lightGreyColor = new Color32(147, 147, 147, 255);
-
-
-
+    
     private void OnEnable()
     {
         RefreshPage();
     }
-    
 
     // refresh the page
     public void RefreshPage()
@@ -38,8 +35,7 @@ public class CarStorePageController : MonoBehaviour
                 (car.Price * discount).ToString(CultureInfo.InvariantCulture);
         }
     }
-
-
+    
     public void OnItemSedanClicked()
     {
         _carToPurchaseObj = CarList.CarSedan;

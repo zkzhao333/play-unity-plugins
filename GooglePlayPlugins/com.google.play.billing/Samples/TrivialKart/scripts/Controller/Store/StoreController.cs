@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +20,6 @@ public class StoreController : MonoBehaviour
     private const int CarStorePageTabIndex = 2;
     private const int SubscriptionPageTabIndex = 3;
     private GameObject[] _tabs;
-    private int _tabsCount;
     private List<GameObject> _storePages;
     
     // Start is called before the first frame update.
@@ -27,20 +27,20 @@ public class StoreController : MonoBehaviour
     {
         _storePages = new List<GameObject>()
             {gasPage, coinPage, carPage, subscriptionPage};
-        _tabsCount = tab.transform.childCount;
-        _tabs = new GameObject[_tabsCount];
-        for (var tabIndex = 0; tabIndex < _tabsCount; tabIndex++)
+        var tabsCount = tab.transform.childCount;
+        _tabs = new GameObject[tabsCount];
+        for (var tabIndex = 0; tabIndex < tabsCount; tabIndex++)
         {
             _tabs[tabIndex] = tab.transform.GetChild(tabIndex).gameObject;
         }
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        // Keep the coin text updated.
+        // Update Coin text when enter the store.
         SetCoins();
     }
-
+    
     public void OnEnterGasPageButtonClicked()
     {
         SetPage(gasPage);
@@ -81,10 +81,10 @@ public class StoreController : MonoBehaviour
     {
         // TODO: consider to make a class.
         // Set all tags to be unselected.
-        for (var tagIndex = 0; tagIndex < _tabsCount; tagIndex++)
+        foreach (var tab in _tabs)
         {
-            _tabs[tagIndex].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(true);
-            _tabs[tagIndex].transform.GetChild(SelectedTabIndex).gameObject.SetActive(false);
+            tab.transform.GetChild(UnselectedTabIndex).gameObject.SetActive(true);
+            tab.transform.GetChild(SelectedTabIndex).gameObject.SetActive(false);
         }
 
         // Set the target tag to be selected.
@@ -92,7 +92,7 @@ public class StoreController : MonoBehaviour
         _tabs[targetTagIndex].transform.GetChild(SelectedTabIndex).gameObject.SetActive(true);
     }
 
-    // Update coin text.
+    // Update coin text in the store page.
     public void SetCoins()
     {
         coinsCount.text = GameDataController.GetGameData().CoinsOwned.ToString();

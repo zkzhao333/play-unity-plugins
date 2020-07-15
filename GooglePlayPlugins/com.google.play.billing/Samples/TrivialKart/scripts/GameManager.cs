@@ -87,7 +87,7 @@ public class GameManager : MonoBehaviour
         _canvasPagesList = new List<GameObject>() {playPageCanvas, storePageCanvas, garagePageCanvas};
     }
     
-    // Link car game object to the car object in carList
+    // Link car game object to the car object in carList.
     private void InitCarList()
     {
         // TODO: Improve it.
@@ -114,12 +114,12 @@ public class GameManager : MonoBehaviour
         BackgroundList.MushroomBackground.ImageSprite = Resources.Load<Sprite>("background/coloredShroom");
     }
     
-    void OnApplicationPause()
+    private void OnApplicationPause(bool pauseStatus)
     {
         GameDataController.SaveGameData();
     }
 
-    void OnApplicationQuit()
+    private void OnApplicationQuit()
     {
         GameDataController.SaveGameData();
     }
