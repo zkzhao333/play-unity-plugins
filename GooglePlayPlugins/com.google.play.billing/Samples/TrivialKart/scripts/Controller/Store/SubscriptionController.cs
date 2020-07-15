@@ -77,8 +77,6 @@ public class SubscriptionController : MonoBehaviour
         if (confirmedPurchase)
         {
             GameDataController.GetGameData().SubscriptTo(_subscriptionToSubscribe);
-            // TODO: Combine the below method to above method.
-            // _gameManager.SaveGameData();
         }
 
         RefreshPage();

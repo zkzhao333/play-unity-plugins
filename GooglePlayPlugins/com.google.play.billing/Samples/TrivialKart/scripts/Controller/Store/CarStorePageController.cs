@@ -44,8 +44,9 @@ public class CarStorePageController : MonoBehaviour
 
     public void OnItemTruckClicked()
     {
+        var gameData = GameDataController.GetGameData();
         // players can purchase the coin item only it they have enough coin
-        if (GameDataController.GetGameData().coinsOwned >= CarList.CarTruck.Price * GameDataController.GetGameData().Discount)
+        if (gameData.coinsOwned >= CarList.CarTruck.Price * gameData.Discount)
         {
             _carToPurchaseObj = CarList.CarTruck;
             BuyCars();
@@ -84,16 +85,14 @@ public class CarStorePageController : MonoBehaviour
         // purchase APIs
         confirmPanel.SetActive(false);
         // if the item sales in coins
-        if (!_carToPurchaseObj.IsPriceInDollar)
+        if (_carToPurchaseObj.IsPriceInDollar)
+        {
+            PurchaseController.BuyProductId(_carToPurchaseObj.ProductId);
+        }
+        else
         {
             GameDataController.GetGameData().PurchaseCar(_carToPurchaseObj);
-            FindObjectOfType<GameManager>().SetCoins();
-            FindObjectOfType<StoreController>().SetCoins();
         }
-        
-        // TODO: OOD.
-        PurchaseController.BuyProductId(_carToPurchaseObj.ProductId);
-        // TODO: make the refresh happened after purchase
     }
 
     public void OnCancelPurchaseButtonClicked()

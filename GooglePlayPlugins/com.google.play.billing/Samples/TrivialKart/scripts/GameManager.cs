@@ -33,7 +33,6 @@ public class GameManager : MonoBehaviour
         InitConstantData();
         GameDataController.LoadGameData();
         SetCoins();
-        Debug.Log("set canvas");
         SetCanvas(playPageCanvas);
     }
 

@@ -49,7 +49,6 @@ public class GameData
     
     public GameData()
     {
-        Debug.Log("initialize game data");
         coinsOwned = InitialCoinAmount;
         carIndexToOwnership = new Ownership[TotalCarCount];
         foreach (var car in CarList.List)
@@ -70,7 +69,6 @@ public class GameData
         carInUseName = CarName.Sedan;
         subscriptionType = SubscriptionType.NoSubscription;
         backgroundInUseName = BackgroundName.BlueGrass;
-        Debug.Log("finished initializing game data");
     }
 
     public CarList.Car CarInUseObj => CarList.List[(int) carInUseName];
@@ -115,6 +113,7 @@ public class GameData
         }
 
         carIndexToOwnership[(int) car.Name] = Ownership.Owned;
+        // Make the refresh happen in car store page controller.
         Object.FindObjectOfType<CarStorePageController>()?.RefreshPage();
     }
 

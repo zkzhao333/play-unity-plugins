@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 
 // Controller for the garage page.
 public class CarGaragePageController : MonoBehaviour

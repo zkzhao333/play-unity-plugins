@@ -9,7 +9,6 @@ public class BackgroundList
         public Background(BackgroundName name)
         {
             Name = name;
-            // TODO: Change this game object to real game object.
         }
 
         public BackgroundName Name { get; }

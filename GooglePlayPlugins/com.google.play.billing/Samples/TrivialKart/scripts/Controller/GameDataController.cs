@@ -45,7 +45,7 @@ public class GameDataController
                 _gameData = JsonUtility.FromJson<GameData>(contents);
                 Debug.Log(contents);
             }
-            else // If data file doesn't exist, create a default one. d
+            else // If data file doesn't exist, create a default one.
             {
                 Debug.Log("Unable to read the save data, file does not exist");
                 _gameData = new GameData();

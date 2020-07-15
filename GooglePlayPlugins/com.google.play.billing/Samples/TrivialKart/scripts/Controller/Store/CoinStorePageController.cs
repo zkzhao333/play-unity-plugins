@@ -47,12 +47,8 @@ public class CoinStorePageController : MonoBehaviour
 
     public void OnConfirmPurchaseButtonClicked()
     {
-        // Purchase APIs here.
         confirmPanel.SetActive(false);
         PurchaseController.BuyProductId(_coinToPurchase.ProductId);
-        //  _gameData.IncreaseCoinsOwned(_coinToPurchase.Amount);
-        // FindObjectOfType<GameManager>().SetCoins();
-        // FindObjectOfType<StoreController>().SetCoins();
     }
 
     public void OnCancelPurchaseButtonClicked()
