@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 
-// Constant data for coin store item.
+/// <summary>
+/// Constant data for coin store items.
+/// </summary>
 public static class CoinList
 {
     public class Coin

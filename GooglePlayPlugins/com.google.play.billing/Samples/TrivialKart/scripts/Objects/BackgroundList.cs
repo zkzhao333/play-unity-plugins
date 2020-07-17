@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// Constant data for backgrounds.
+/// <summary>
+/// Constant data for backgrounds.
+/// </summary>
 public class BackgroundList
 {
     public class Background

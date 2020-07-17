@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for the tab/page switch in the store.
+/// <summary>
+/// Controller for the tab/page switch in the store.
+/// It switches pages and tabs when different tabs are clicked;
+/// It updates the coin text indicator in the store pages;
+/// </summary>
 public class StoreController : MonoBehaviour
 {
     public GameObject tab;
@@ -41,55 +45,48 @@ public class StoreController : MonoBehaviour
         SetCoins();
     }
     
+    // TODO: Add parameters to the listeners.
     public void OnEnterGasPageButtonClicked()
     {
-        SetPage(gasPage);
-        SetTab(GasStorePageTabIndex);
+        SetPageActiveness(gasPage);
+        SetTabActiveness(GasStorePageTabIndex);
     }
 
     public void OnEnterCoinPageButtonClicked()
     {
-        SetPage(coinPage);
-        SetTab(CoinStorePageTabIndex);
+        SetPageActiveness(coinPage);
+        SetTabActiveness(CoinStorePageTabIndex);
     }
 
     public void OnEnterCarPageButtonClicked()
     {
-        SetPage(carPage);
-        SetTab(CarStorePageTabIndex);
+        SetPageActiveness(carPage);
+        SetTabActiveness(CarStorePageTabIndex);
     }
 
     public void OnEnterSubscriptionPageButtonClicked()
     {
-        SetPage(subscriptionPage);
-        SetTab(SubscriptionPageTabIndex);
+        SetPageActiveness(subscriptionPage);
+        SetTabActiveness(SubscriptionPageTabIndex);
     }
 
-    private void SetPage(GameObject targetPage)
+    private void SetPageActiveness(GameObject targetPage)
     {
-        // Set all store pages to inactive.
         foreach (var page in _storePages)
         {
-            page.SetActive(false);
+            page.SetActive(page.Equals(targetPage));
         }
-
-        // Set the target page to active.
-        targetPage.SetActive(true);
     }
 
-    private void SetTab(int targetTagIndex)
+    private void SetTabActiveness(int targetTabIndex)
     {
         // TODO: consider to make a class.
-        // Set all tags to be unselected.
-        foreach (var tab in _tabs)
+        for (var tabIndex = 0; tabIndex < _tabs.Length; tabIndex++)
         {
-            tab.transform.GetChild(UnselectedTabIndex).gameObject.SetActive(true);
-            tab.transform.GetChild(SelectedTabIndex).gameObject.SetActive(false);
+            var isTabSelected = tabIndex == targetTabIndex;
+            _tabs[tabIndex].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(!isTabSelected);
+            _tabs[tabIndex].transform.GetChild(SelectedTabIndex).gameObject.SetActive(isTabSelected);
         }
-
-        // Set the target tag to be selected.
-        _tabs[targetTagIndex].transform.GetChild(UnselectedTabIndex).gameObject.SetActive(false);
-        _tabs[targetTagIndex].transform.GetChild(SelectedTabIndex).gameObject.SetActive(true);
     }
 
     // Update coin text in the store page.

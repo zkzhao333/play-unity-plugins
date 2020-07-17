@@ -3,7 +3,12 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-// controller for car store page
+/// <summary>
+/// Controller for car store page.
+/// It listens to car purchase button click events,
+/// initializing the purchase flow when car purchase button clicked;
+/// It changes the UI of car store items based on ownerships.
+/// </summary>
 public class CarStorePageController : MonoBehaviour
 {
     public GameObject confirmPanel;
@@ -17,19 +22,19 @@ public class CarStorePageController : MonoBehaviour
         RefreshPage();
     }
 
-    // refresh the page
+    // Refresh the page.
     public void RefreshPage()
     {
         confirmPanel.SetActive(false);
-        CheckCarOwnerships();
-        SetCoinItemPrices();
+        SetCarStoreItemStatusBasedOnOwnership();
+        ApplyCoinItemsDiscount();
     }
 
-    // Apply discounts on coin text for each car sales in coin
-    private void SetCoinItemPrices()
+    // Apply discounts on coin text for each car sales in coin.
+    private void ApplyCoinItemsDiscount()
     {
         var discount = GameDataController.GetGameData().Discount;
-        foreach (var car in CarList.List.Where(car => !car.IsPriceInDollar))
+        foreach (var car in CarList.List.Where(car => !car.IsRealMoneyPurchase))
         {
             car.StoreItemCarGameObj.transform.Find("price/priceValue").gameObject.GetComponent<Text>().text =
                 (car.Price * discount).ToString(CultureInfo.InvariantCulture);
@@ -39,7 +44,7 @@ public class CarStorePageController : MonoBehaviour
     public void OnItemSedanClicked()
     {
         _carToPurchaseObj = CarList.CarSedan;
-        BuyCars();
+        BuyCar();
     }
 
     public void OnItemTruckClicked()
@@ -49,26 +54,27 @@ public class CarStorePageController : MonoBehaviour
         if (gameData.coinsOwned >= CarList.CarTruck.Price * gameData.Discount)
         {
             _carToPurchaseObj = CarList.CarTruck;
-            BuyCars();
+            BuyCar();
         }
+        // TODO: Add a popup window if the player doesn't have enough coins.
     }
 
     public void OnItemJeepClicked()
     {
         _carToPurchaseObj = CarList.CarJeep;
-        BuyCars();
+        BuyCar();
     }
 
     public void OnItemKartClicked()
     {
         _carToPurchaseObj = CarList.CarKart;
-        BuyCars();
+        BuyCar();
     }
 
-    private void BuyCars()
+    private void BuyCar()
     {
         confirmPanel.SetActive(true);
-        if (_carToPurchaseObj.IsPriceInDollar)
+        if (_carToPurchaseObj.IsRealMoneyPurchase)
         {
             confirmText.text = "Would you like to purchase " + _carToPurchaseObj.Name + " with $" +
                                _carToPurchaseObj.Price + "?";
@@ -85,7 +91,7 @@ public class CarStorePageController : MonoBehaviour
         // purchase APIs
         confirmPanel.SetActive(false);
         // if the item sales in coins
-        if (_carToPurchaseObj.IsPriceInDollar)
+        if (_carToPurchaseObj.IsRealMoneyPurchase)
         {
             PurchaseController.BuyProductId(_carToPurchaseObj.ProductId);
         }
@@ -104,7 +110,7 @@ public class CarStorePageController : MonoBehaviour
     // TODO: need to decide to use CarObj or Car as the name.
     // check if the player own the car
     // if the player own the car, disable the interaction of the car item
-    private void CheckCarOwnerships()
+    private void SetCarStoreItemStatusBasedOnOwnership()
     {
         foreach (var car in CarList.List)
         {
@@ -114,7 +120,7 @@ public class CarStorePageController : MonoBehaviour
                 storeItemCarGameObj.GetComponent<Image>().color = _lightGreyColor;
                 storeItemCarGameObj.GetComponent<Button>().interactable = false;
                 storeItemCarGameObj.transform.Find("price").gameObject.GetComponent<Text>().text = "owned";
-                if (!car.IsPriceInDollar)
+                if (!car.IsRealMoneyPurchase)
                 {
                     storeItemCarGameObj.transform.Find("coinImage").gameObject.SetActive(false);
                     storeItemCarGameObj.transform.Find("price/priceValue").gameObject.SetActive(false);

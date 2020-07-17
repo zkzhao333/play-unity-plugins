@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for subscription page.
-public class SubscriptionController : MonoBehaviour
+/// <summary>
+/// Controller for subscription store page.
+/// It listens to subscription subscribe button click events,
+/// initializing the purchase flow when subscribe button clicked.
+/// </summary>
+public class SubscriptionStorePageController : MonoBehaviour
 {
     public GameObject confirmPanel;
     public Text confirmText;
@@ -16,15 +20,16 @@ public class SubscriptionController : MonoBehaviour
     }
 
     // Refresh the page.
-    private void RefreshPage()
+    public void RefreshPage()
     {
         confirmPanel.SetActive(false);
-        CheckAndSetSubscriptionStatus();
+        SetSubscriptionStatusBasedOnOwnership();
     }
 
     // Check if the player already subscribed to a plan and change the subscribe button correspondingly.
-    private void CheckAndSetSubscriptionStatus()
+    private void SetSubscriptionStatusBasedOnOwnership()
     {
+        // TODO: Set upgrade and downgrade button text.
         foreach (var subscription in SubscriptionList.List)
         {
             SetSubscribeButton(subscription, " subscribe now! ", true);
@@ -32,8 +37,7 @@ public class SubscriptionController : MonoBehaviour
 
         SetSubscribeButton(GameDataController.GetGameData().CurSubscriptionObj, "subscribed", false);
     }
-
-    // TODO: Set buttons.
+    
     private void SetSubscribeButton(SubscriptionList.Subscription targetSubscription, string targetButtonText,
         bool isButtonInteractive)
     {
@@ -68,17 +72,9 @@ public class SubscriptionController : MonoBehaviour
     }
 
     public void OnConfirmSubscribeButtonClicked()
-    {
+    { 
         confirmPanel.SetActive((false));
-
-        // TODO: Play-billing-API.
-        bool confirmedPurchase = true;
-
-        if (confirmedPurchase)
-        {
-            GameDataController.GetGameData().SubscriptTo(_subscriptionToSubscribe);
-        }
-
+        PurchaseController.BuyProductId(_subscriptionToSubscribe.ProductId);
         RefreshPage();
     }
 

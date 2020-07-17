@@ -2,6 +2,10 @@ using System;
 using System.IO;
 using UnityEngine;
 
+/// <summary>
+/// Controller for game data.
+/// It controls game data loading, saving and fetching.
+/// </summary>
 public class GameDataController
 {
     private const string FILE_NAME = "data.json";

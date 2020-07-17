@@ -1,7 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for coin store page.
+/// <summary>
+/// Controller for coin store page.
+/// It listens to coin purchase button click events,
+/// initializing the purchase flow when coin purchase button clicked.
+/// </summary>
 public class CoinStorePageController : MonoBehaviour
 {
     public GameObject confirmPanel;

@@ -1,7 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-// Control gas change of the car.
+/// <summary>
+/// A component script for the car game object.
+/// It updates the gas level of the car and
+/// make changes to the gas indicator image accordingly. 
+/// </summary>
 public class Gas : MonoBehaviour
 {
     public GameObject noGasText;

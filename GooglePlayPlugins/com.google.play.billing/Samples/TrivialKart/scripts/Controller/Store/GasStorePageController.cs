@@ -2,7 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for the gas store page.
+/// <summary>
+/// Controller for the gas store page.
+/// It listens to the fill gas button click event. 
+/// </summary>
 public class GasStorePageController : MonoBehaviour
 {
     public Text gasPrice;

@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 
-// Controller for background garage page.
+/// <summary>
+/// Controller for background garage page.
+/// It listens to the background switch button click events;
+/// It controls activeness and usage status of background garage items.
+/// </summary>
 public class BackgroundGaragePageController : MonoBehaviour
 {
     private void OnEnable()
@@ -21,17 +25,17 @@ public class BackgroundGaragePageController : MonoBehaviour
     private void SwitchToTargetBackground(BackgroundList.Background targetBackground)
     {
         GameDataController.GetGameData().ChangeBackground(targetBackground);
-        RefreshPage();
+        SetBackgroundUsageStatus();
     }
 
     private void RefreshPage()
     {
-        CheckBackgroundOwnership();
-        CheckUsingStatus();
+        ToggleBackgroundActivenessBasedOnOwnership();
+        SetBackgroundUsageStatus();
     }
 
     // Check if player owns the background, and set the item activeness accordingly.
-    private void CheckBackgroundOwnership()
+    private void ToggleBackgroundActivenessBasedOnOwnership()
     {
         foreach (var background in BackgroundList.List)
         {
@@ -40,7 +44,7 @@ public class BackgroundGaragePageController : MonoBehaviour
         }
     }
 
-    private void CheckUsingStatus()
+    private void SetBackgroundUsageStatus()
     {
         foreach (var background in BackgroundList.List)
         {

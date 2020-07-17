@@ -1,6 +1,10 @@
 using UnityEngine;
 
-// Controller for the garage page.
+/// <summary>
+/// Controller for the car garage page.
+/// It listens to the car switch button click events;
+/// It controls activeness and usage status of car garage items.
+/// </summary>
 public class CarGaragePageController : MonoBehaviour
 {
     
@@ -12,12 +16,12 @@ public class CarGaragePageController : MonoBehaviour
 
     private void RefreshPage()
     {
-        CheckCarOwnership();
-        CheckUsingStatus();
+        ToggleCarActivenessBasedOnOwnership();
+        SetCarUsageStatus();
     }
 
     // Check if player owns the car.
-    private void CheckCarOwnership()
+    private void ToggleCarActivenessBasedOnOwnership()
     {
         // TODO: make the unavailable car in gray color.
         foreach (var car in CarList.List)
@@ -27,7 +31,7 @@ public class CarGaragePageController : MonoBehaviour
         }
     }
 
-    private void CheckUsingStatus()
+    private void SetCarUsageStatus()
     {
         foreach (var carObj in CarList.List)
         {
@@ -61,6 +65,6 @@ public class CarGaragePageController : MonoBehaviour
     private void SwitchCarInUse(CarList.Car targetCar)
     {
         GameDataController.GetGameData().ChangeCar(targetCar);
-        RefreshPage();
+        SetCarUsageStatus();
     }
 }

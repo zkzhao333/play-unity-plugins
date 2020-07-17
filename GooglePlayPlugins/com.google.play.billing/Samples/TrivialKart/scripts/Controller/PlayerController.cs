@@ -1,7 +1,12 @@
 using System;
 using UnityEngine;
 
-// Controller for car movement.
+/// <summary>
+/// Controller for car movement.
+/// It updates the car movement data (e.g., distance and speed);
+/// It updates the car game object in the play page when car in use changes;
+/// It updates the main game camera position along with the car object.
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
     public GameObject cam;
@@ -65,10 +70,10 @@ public class PlayerController : MonoBehaviour
         
         // Set the car in use game object to be active.
         var carInUseGameObj = GameDataController.GetGameData().CarInUseObj.PlayCarGameObj;
-        SetUsingState(carInUseGameObj);
+        SetCarInUseState(carInUseGameObj);
     }
 
-    private void SetUsingState(GameObject carInUseGameObj)
+    private void SetCarInUseState(GameObject carInUseGameObj)
     {
         carInUseGameObj.SetActive(true);
         if (!(_carInUseGameObj is null))

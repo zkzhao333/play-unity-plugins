@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-// Constant data of cars.
+/// <summary>
+/// Constant data for cars.
+/// </summary>
 public static class CarList
 {
     public class Car
     {
-        public Car(CarName name, int speed, float price, bool isPriceInDollar, string productId)
+        public Car(CarName name, int speed, float price, bool isRealMoneyPurchase, string productId)
         {
             Name = name;
             Speed = speed;
             Price = price;
-            IsPriceInDollar = isPriceInDollar;
+            IsRealMoneyPurchase = isRealMoneyPurchase;
             ProductId = productId;
         }
 
@@ -21,7 +23,7 @@ public static class CarList
 
         public float Price { get; }
 
-        public bool IsPriceInDollar { get; }
+        public bool IsRealMoneyPurchase { get; }
 
         public string ProductId { get; }
 

@@ -29,7 +29,18 @@ public enum BackgroundName
     Mushroom
 }
 
-// GameData stores all the items/data the player obtained.
+public enum CoinAmount
+{
+    FiveCoins,
+    TenCoins,
+    TwentyCoins,
+    FiftyCoins
+}
+
+/// <summary>
+/// GameData stores all the items/data the player obtained.
+/// It contains methods that changes those data.
+/// </summary>
 [Serializable]
 public class GameData
 {
@@ -37,6 +48,7 @@ public class GameData
     public Ownership[] carIndexToOwnership;
     public Ownership[] backgroundNameToOwnership;
     public int coinsOwned;
+    // TODO: Do not store the subscription.
     public SubscriptionType subscriptionType;
     public BackgroundName backgroundInUseName;
 
@@ -44,7 +56,7 @@ public class GameData
     private const int TotalCarCount = 4;
     private const int TotalBackgroundCount = 2;
     private PlayerController _playerController =  Object.FindObjectOfType<PlayerController>();
-    private GameObject _backGroundImages = GameObject.Find("background/backGroundImages").gameObject;
+    private GameObject _backgroundImages = GameObject.Find("background/backGroundImages").gameObject;
 
     
     public GameData()
@@ -76,7 +88,7 @@ public class GameData
     public BackgroundList.Background BackgroundInUseObj => BackgroundList.List[(int) backgroundInUseName];
 
     public SubscriptionList.Subscription CurSubscriptionObj =>
-        SubscriptionList.GetSubscriptionObjByType(subscriptionType);
+        SubscriptionList.List[(int) subscriptionType];
 
     public int CoinsOwned => coinsOwned;
 
@@ -107,13 +119,13 @@ public class GameData
     // Purchase a car.
     public void PurchaseCar(CarList.Car car)
     {
-        if (!car.IsPriceInDollar)
+        if (!car.IsRealMoneyPurchase)
         {
             ReduceCoinsOwned((int) (car.Price * Discount));
         }
 
         carIndexToOwnership[(int) car.Name] = Ownership.Owned;
-        // Make the refresh happen in car store page controller.
+        // TODO: Make the refresh happen in car store page controller.
         Object.FindObjectOfType<CarStorePageController>()?.RefreshPage();
     }
 
@@ -143,7 +155,7 @@ public class GameData
     {
         backgroundInUseName = targetBackground.Name;
         
-        foreach (Transform background in _backGroundImages.transform)
+        foreach (Transform background in _backgroundImages.transform)
         {
             background.gameObject.GetComponent<SpriteRenderer>().sprite = targetBackground.ImageSprite;
         }
@@ -155,6 +167,8 @@ public class GameData
         subscriptionType = targetSubscription.Type;
         backgroundNameToOwnership[(int) BackgroundName.Mushroom] = Ownership.Owned;
         ChangeBackground(BackgroundList.MushroomBackground);
+        // TODO: Make the refresh happen in subscription store page controller.
+        Object.FindObjectOfType<SubscriptionStorePageController>()?.RefreshPage();
     }
 
     // Unsubscribe from any exist subscription.
