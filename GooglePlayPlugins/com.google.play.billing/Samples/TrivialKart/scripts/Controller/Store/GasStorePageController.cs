@@ -2,7 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Controller for the gas store page.
+/// <summary>
+/// Controller for the gas store page.
+/// It listens to the fill gas button click event. 
+/// </summary>
 public class GasStorePageController : MonoBehaviour
 {
     public Text gasPrice;
@@ -15,13 +18,11 @@ public class GasStorePageController : MonoBehaviour
     private double _currentCost;
     private Gas _gas;
     private Image _gasLevelImage;
-    private GameData _gameData;
 
     private void Awake()
     {
         _gas = car.GetComponent<Gas>();
         _gasLevelImage = gasLevelImageObj.GetComponent<Image>();
-        _gameData = GameDataController.GetGameData();
     }
 
     // Update the gas price and refresh the page when get into the gas store page.
@@ -32,7 +33,7 @@ public class GasStorePageController : MonoBehaviour
     
     private void RefreshGasStorePage()
     {
-        _currentCost = Math.Ceiling((Gas.FullGasLevel - _gas.GasLevel) * _gameData.Discount) ;
+        _currentCost = Math.Ceiling((Gas.FullGasLevel - _gas.GasLevel) * GameDataController.GetGameData().Discount) ;
         gasPrice.text = "* " + _currentCost;
         panelGasPrice.text = "Would you like to fill the gas tank with  " + _currentCost + "  coins";
         _gas.SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
@@ -42,7 +43,7 @@ public class GasStorePageController : MonoBehaviour
     
     public void OnFillGasButtonClicked()
     {
-        var currentCoins = _gameData.CoinsOwned;
+        var currentCoins = GameDataController.GetGameData().CoinsOwned;
         if (currentCoins >= _currentCost)
         {
             panelFillGas.SetActive(true);
@@ -62,13 +63,11 @@ public class GasStorePageController : MonoBehaviour
     public void OnConfirmFillGasButtonClicked()
     {
         panelFillGas.SetActive(false);
-        var currentCoins = _gameData.CoinsOwned;
+        var currentCoins = GameDataController.GetGameData().CoinsOwned;
         if (currentCoins >= _currentCost)
         {
-            _gameData.ReduceCoinsOwned((int) _currentCost);
+            GameDataController.GetGameData().ReduceCoinsOwned((int) _currentCost);
             _gas.FilledGas();
-            FindObjectOfType<GameManager>().SetCoins();
-            FindObjectOfType<StoreController>().SetCoins();
             RefreshGasStorePage();
         }
     }

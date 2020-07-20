@@ -2,7 +2,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-// GameManager controls page switches among play, store and garage.
+/// <summary>
+/// GameManager inits the game when the game starts and controls the play canvas.
+/// It inits constant data, requests for game data load;
+/// It controls canvas switches among play, store and garage;
+/// It updates the coin text indicator in the play canvas.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     public GameObject playPageCanvas;
@@ -20,26 +25,30 @@ public class GameManager : MonoBehaviour
     public GameObject playCarJeepGameObj;
     public GameObject playCarTruckGameObj;
     public GameObject playCarKartGameObj;
+    public GameObject silverVipSubscribeButtonGameObj;
+    public GameObject goldenVipSubscribeButtonGameObj;
     public Text coinsCount;
 
     private List<GameObject> _canvasPagesList;
-
+    
     // Init the game.
     public void Awake()
     {
 #if ONLINE
         NetworkRequestController.registerUserDevice();
 #endif
-        InitCarList();
+        InitConstantData();
         GameDataController.LoadGameData();
         SetCoins();
-        _canvasPagesList = new List<GameObject>() {playPageCanvas, storePageCanvas, garagePageCanvas};
+        SetCanvas(playPageCanvas);
+        // TODO: Set the background when start the game.
     }
 
     // Set the coins text at the play page.
     public void SetCoins()
     {
         coinsCount.text = GameDataController.GetGameData().coinsOwned.ToString();
+        
     }
 
     // Switch pages when enter the store.
@@ -78,7 +87,16 @@ public class GameManager : MonoBehaviour
         return playPageCanvas.activeInHierarchy;
     }
 
-    // Link car game obj to the car obj in carList
+    // Init constant game data before the game starts.
+    private void InitConstantData()
+    {
+        InitCarList();
+        InitBackGroundList();
+        InitSubscriptionList();
+        _canvasPagesList = new List<GameObject>() {playPageCanvas, storePageCanvas, garagePageCanvas};
+    }
+    
+    // Link car game object to the car object in carList.
     private void InitCarList()
     {
         // TODO: Improve it.
@@ -95,13 +113,29 @@ public class GameManager : MonoBehaviour
         CarList.CarKart.PlayCarGameObj = playCarKartGameObj;
         CarList.CarKart.StoreItemCarGameObj = storeItemCarKartGameObj;
     }
+    
+    // Link background game object to the background object in backgroundList.
+    private void InitBackGroundList()
+    {
+        BackgroundList.BlueGrassBackground.GarageItemGameObj =   GameObject.FindWithTag("garagePages").transform.Find("backGroundPage/blueGrassBackground").gameObject;
+        BackgroundList.BlueGrassBackground.ImageSprite = Resources.Load<Sprite>("background/blueGrass");
+        BackgroundList.MushroomBackground.GarageItemGameObj =  GameObject.FindWithTag("garagePages").transform.Find("backGroundPage/mushroomBackground").gameObject;
+        BackgroundList.MushroomBackground.ImageSprite = Resources.Load<Sprite>("background/coloredShroom");
+    }
 
-    void OnApplicationPause()
+    private void InitSubscriptionList()
+    {
+        SubscriptionList.SilverSubscription.SubscribeButton = silverVipSubscribeButtonGameObj;
+        SubscriptionList.GoldenSubscription.SubscribeButton = goldenVipSubscribeButtonGameObj;
+        SubscriptionList.NoSubscription.SubscribeButton = new GameObject();
+    }
+    
+    private void OnApplicationPause(bool pauseStatus)
     {
         GameDataController.SaveGameData();
     }
 
-    void OnApplicationQuit()
+    private void OnApplicationQuit()
     {
         GameDataController.SaveGameData();
     }

@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 
-// Control movement of a specific car in the play page.
-// CarMove script is added as a component to every car game object in the play page.
+/// <summary>
+/// A component script for a specific car game object.
+/// It controls movement of a specific car in the play page.
+/// CarMove script is added as a component to every car game object in the play page.
+/// </summary>
 public class CarMove : MonoBehaviour
 {
     public GameObject tapToDriveText;
-    public string carName;
+    public CarName carName;
 
     private Rigidbody2D _rigidbody2D;
     private GameManager _gameManger;
-    private Car _carObj;
+    private CarList.Car _carObj;
     private const float NoVelocity = 0.01f;
 
     private void Start()
@@ -19,7 +22,7 @@ public class CarMove : MonoBehaviour
         _carObj = CarList.GetCarByName(carName);
     }
 
-    // Trigger when player tap the car.
+    // Triggered when player tap the car.
     private void OnMouseDown()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
