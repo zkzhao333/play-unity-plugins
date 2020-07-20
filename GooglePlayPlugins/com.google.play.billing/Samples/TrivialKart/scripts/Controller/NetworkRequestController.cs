@@ -1,6 +1,9 @@
-﻿using System.Collections;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Purchasing;
 using static Server;
 
 public class NetworkRequestController
@@ -9,9 +12,6 @@ public class NetworkRequestController
 
     private const string VERIFY_AND_SAVE_TOKEN_URL =
         "https://us-central1-simpleserver-d2cf5.cloudfunctions.net/verify_and_save_purchase_token";
-
-    private const string VERIFY_PURCHASE_WITH_API_URL =
-        "https://us-central1-simpleserver-d2cf5.cloudfunctions.net/verify_purchase_play_dev_api";
 
     private const string SAVE_GAME_DATA_URL =
         "https://us-central1-simpleserver-d2cf5.cloudfunctions.net/save_game_data";
@@ -30,7 +30,7 @@ public class NetworkRequestController
         {
             ["gameData"] = JsonUtility.ToJson(GameDataController.GetGameData())
         };
-        
+
         return sendUnityWebRequest(values, SAVE_GAME_DATA_URL);
     }
 
@@ -49,24 +49,22 @@ public class NetworkRequestController
         }
     }
 
-    public static ServerResponseModel verifyAndSaveUserPurchase(string purchaseToken)
+    public static void verifyAndSaveUserPurchase(Product product)
     {
         var values = new Dictionary<string, string>
         {
-            ["purchaseToken"] = purchaseToken
+            ["receipt"] = getReceiptDetails(product.receipt),
+            ["isSubscription"] = product.definition.id.Contains("subscription").ToString()
         };
 
-        return sendUnityWebRequest(values, VERIFY_AND_SAVE_TOKEN_URL);
+        ServerResponseModel serverResponse = sendUnityWebRequest(values, VERIFY_AND_SAVE_TOKEN_URL);
+        PurchaseController.ConfirmPendingPurchase(product, serverResponse.success);
     }
 
-    public static ServerResponseModel verifyPurchaseWithApi(string packageName, string productId, string purchaseToken)
+    private static string getReceiptDetails(string receipt)
     {
-        var values = new Dictionary<string, string>
-        {
-            ["packageName"] = packageName,
-            ["productId"] = productId,
-            ["purchaseToken"] = purchaseToken
-        };
-        return sendUnityWebRequest(values, VERIFY_PURCHASE_WITH_API_URL);
+        receipt = String.Join("", receipt.Split('\\'));
+        receipt = receipt.Remove(0, receipt.IndexOf("orderId") - 2);
+        return receipt.Remove(receipt.IndexOf("signature") - 3);
     }
 }
