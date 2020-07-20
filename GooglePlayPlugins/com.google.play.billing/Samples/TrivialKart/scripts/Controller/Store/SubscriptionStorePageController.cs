@@ -12,8 +12,8 @@ public class SubscriptionStorePageController : MonoBehaviour
     public Text confirmText;
 
     private SubscriptionList.Subscription _subscriptionToSubscribe;
-    
-    
+
+
     private void OnEnable()
     {
         RefreshPage();
@@ -27,18 +27,43 @@ public class SubscriptionStorePageController : MonoBehaviour
     }
 
     // Check if the player already subscribed to a plan and change the subscribe button correspondingly.
-    private void SetSubscriptionStatusBasedOnOwnership()
+    private static void SetSubscriptionStatusBasedOnOwnership()
     {
-        // TODO: Set upgrade and downgrade button text.
-        foreach (var subscription in SubscriptionList.List)
+        var currentSubscription = GameDataController.GetGameData().CurSubscriptionObj;
+        // If the player doesn't subscribe to any of subscription, set all subscription item to initial status.
+        if (currentSubscription.Type == SubscriptionType.NoSubscription)
         {
-            SetSubscribeButton(subscription, " subscribe now! ", true);
+            foreach (var subscription in SubscriptionList.List)
+            {
+                SetSubscribeButton(subscription, subscription.SubscribeButton.SubscribeButtonTextWhenNoSubscription,
+                    true);
+            }
         }
-
-        SetSubscribeButton(GameDataController.GetGameData().CurSubscriptionObj, "subscribed", false);
+        else
+        {
+            foreach (var subscription in SubscriptionList.List)
+            {
+                if (subscription == currentSubscription)
+                {
+                    SetSubscribeButton(
+                        subscription,
+                        subscription.SubscribeButton.SubscribeButtonTextWhenSubscribeToThisSubscription,
+                        false
+                    );
+                }
+                else
+                {
+                    SetSubscribeButton(
+                        subscription,
+                        subscription.SubscribeButton.SubscribeButtonTextWhenSubscribeToOthers,
+                        true
+                    );
+                }
+            }
+        }
     }
-    
-    private void SetSubscribeButton(SubscriptionList.Subscription targetSubscription, string targetButtonText,
+
+    private static void SetSubscribeButton(SubscriptionList.Subscription targetSubscription, string targetButtonText,
         bool isButtonInteractive)
     {
         // Do nothing if the player has not subscribed to any plan.
@@ -47,7 +72,7 @@ public class SubscriptionStorePageController : MonoBehaviour
             return;
         }
 
-        var targetButton = targetSubscription.SubscribeButton;
+        var targetButton = targetSubscription.SubscribeButtonGameObj;
         targetButton.transform.Find("Text").gameObject.GetComponent<Text>().text = targetButtonText;
         targetButton.GetComponent<Button>().interactable = isButtonInteractive;
     }
@@ -72,10 +97,10 @@ public class SubscriptionStorePageController : MonoBehaviour
     }
 
     public void OnConfirmSubscribeButtonClicked()
-    { 
-        confirmPanel.SetActive((false));
-        PurchaseController.BuyProductId(_subscriptionToSubscribe.ProductId);
-        RefreshPage();
+    {
+        confirmPanel.SetActive(false);
+        PurchaseController.PurchaseASubscription(GameDataController.GetGameData().CurSubscriptionObj,
+            _subscriptionToSubscribe);
     }
 
     public void OnCancelSubscribeButtonClicked()
