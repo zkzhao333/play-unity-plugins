@@ -125,9 +125,9 @@ public class GameManager : MonoBehaviour
 
     private void InitSubscriptionList()
     {
-        SubscriptionList.SilverSubscription.SubscribeButton = silverVipSubscribeButtonGameObj;
-        SubscriptionList.GoldenSubscription.SubscribeButton = goldenVipSubscribeButtonGameObj;
-        SubscriptionList.NoSubscription.SubscribeButton = new GameObject();
+        SubscriptionList.SilverSubscription.SubscribeButtonGameObj = silverVipSubscribeButtonGameObj;
+        SubscriptionList.GoldenSubscription.SubscribeButtonGameObj = goldenVipSubscribeButtonGameObj;
+        SubscriptionList.NoSubscription.SubscribeButtonGameObj = new GameObject();
     }
     
     private void OnApplicationPause(bool pauseStatus)

@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Purchasing;
+using UnityEngine.Purchasing.Security;
+using IGooglePlayStoreExtensions = Google.Play.Billing.IGooglePlayStoreExtensions;
 
 /// <summary>
 /// Controller for the dollar item purchase flow in the game.
@@ -11,6 +13,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 {
     private static IStoreController m_StoreController; // The Unity Purchasing system.
     private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
+    private static IGooglePlayStoreExtensions _playStoreExtensions;
 
     private void Start()
     {
@@ -47,7 +50,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             builder.AddProduct(car.ProductId, ProductType.NonConsumable);
         }
 
-        // Adding subscription products
+        // Adding subscription products with their product types.
         foreach (var subscription in SubscriptionList.List.Where(subscription =>
             subscription.Type != SubscriptionType.NoSubscription))
         {
@@ -95,8 +98,30 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         else
         {
             // ... report the fact Purchasing has not succeeded initializing yet. Consider waiting longer or 
-            // retrying initiailization.
+            // retrying initialization.
             Debug.Log("BuyProductID FAIL. Not initialized.");
+        }
+    }
+
+
+    public static void PurchaseASubscription(SubscriptionList.Subscription oldSubscription,
+        SubscriptionList.Subscription newSubscription)
+    {
+        // If the player is subscribe to a new subscription from no subscription,
+        // go through the purchase IAP follow.
+        if (oldSubscription.Type == SubscriptionType.NoSubscription)
+        {
+            BuyProductId(newSubscription.ProductId);
+        }
+        // If the player wants to update or downgrade the subscription,
+        // use the upgrade and downgrade flow.
+        else
+        {
+            var oldProduct = m_StoreController.products.WithID(oldSubscription.ProductId);
+            var newProduct = m_StoreController.products.WithID(newSubscription.ProductId);
+            _playStoreExtensions =
+                m_StoreExtensionProvider.GetExtension<IGooglePlayStoreExtensions>();
+            _playStoreExtensions.UpdateSubscription(oldProduct, newProduct);
         }
     }
 
@@ -121,63 +146,80 @@ public class PurchaseController : MonoBehaviour, IStoreListener
     {
         // TODO: Use an error dialog to communicate.
         Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
-        // Check if a consumable (coins) has been purchased by this user.
-        foreach (var coin in CoinList.List)
-        {
-            if (!String.Equals(args.purchasedProduct.definition.id, coin.ProductId, StringComparison.Ordinal))
-            {
-                continue;
-            }
+#if ONLINE
+        // TODO: Server side verification.
+#else
+        bool validPurchase = true; // Presume valid for platforms with no R.V.
 
-            GameDataController.GetGameData().IncreaseCoinsOwned(coin.Amount);
-            return VerifyPurchase(args);
+        // Unity IAP's validation logic is only included on these platforms.
+#if UNITY_ANDROID
+        // Prepare the validator with the secrets we prepared in the Editor
+        // obfuscation window.
+        var validator = new CrossPlatformValidator(GooglePlayTangle.Data(),
+            AppleTangle.Data(), Application.identifier);
+
+        try
+        {
+            // On Google Play, result has a single product ID.
+            var result = validator.Validate(args.purchasedProduct.receipt);
+            // For informational purposes, we list the receipt(s).
+            Debug.Log("Receipt is valid. Contents:");
+            foreach (IPurchaseReceipt productReceipt in result)
+            {
+                Debug.Log(productReceipt.productID);
+                Debug.Log(productReceipt.purchaseDate);
+                Debug.Log(productReceipt.transactionID);
+            }
+        }
+        catch (IAPSecurityException)
+        {
+            Debug.Log("Invalid receipt, not unlocking content");
+            validPurchase = false;
+        }
+#endif
+
+        if (validPurchase)
+        {
+            // Unlock the appropriate content.
+            UnlockInGameContent(args.purchasedProduct.definition.id);
         }
 
-        // Check if a non-consumable (car) has been purchased by this user.
-        foreach (var car in CarList.List)
-        {
-            if (!String.Equals(args.purchasedProduct.definition.id, car.ProductId,
-                StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            GameDataController.GetGameData().PurchaseCar(car);
-            return VerifyPurchase(args);
-        }
-
-        // Check if a subscription has been purchased by this user.
-        foreach (var subscription in SubscriptionList.List)
-        {
-            if (!String.Equals(args.purchasedProduct.definition.id, subscription.ProductId,
-                StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            GameDataController.GetGameData().SubscriptTo(subscription);
-            return VerifyPurchase(args);
-        }
-
-
-        // TODO: build an error dialog. 
-        Debug.LogError("Product ID doesn't match any of exist products.");
         // Return a flag indicating whether this product has completely been received, or if the application needs 
         // to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still 
         // saving purchased products to the cloud, and when that save is delayed. 
         return PurchaseProcessingResult.Complete;
+#endif
     }
 
-    private PurchaseProcessingResult VerifyPurchase(PurchaseEventArgs args)
+
+    private static void UnlockInGameContent(string productId)
     {
-#if ONLINE
-            // Server side verification.
-#else
-        // TODO: Verify purchase locally.
-        // If passed, add to the storage.
-        // If failed, prompt an error.
-        return PurchaseProcessingResult.Complete;
-#endif
+        // Check if a consumable (coins) has been purchased by this user.
+        foreach (var coin in CoinList.List.Where(coin => string.Equals(productId, coin.ProductId, StringComparison.Ordinal)))
+        {
+            GameDataController.GetGameData().IncreaseCoinsOwned(coin.Amount);
+            return;
+        }
+
+        // Check if a non-consumable (car) has been purchased by this user.
+        foreach (var car in CarList.List.Where(car => string.Equals(productId, car.ProductId,
+            StringComparison.Ordinal)))
+        {
+            GameDataController.GetGameData().PurchaseCar(car);
+            return;
+        }
+
+        // Check if a subscription has been purchased by this user.
+        foreach (var subscription in SubscriptionList.List.Where(subscription => string.Equals(productId,
+            subscription.ProductId,
+            StringComparison.Ordinal)))
+        {
+            GameDataController.GetGameData().SubscriptTo(subscription);
+            return;
+        }
+
+        // TODO: build an error dialog. 
+        Debug.LogError("Product ID doesn't match any of exist products.");
     }
 
     public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)

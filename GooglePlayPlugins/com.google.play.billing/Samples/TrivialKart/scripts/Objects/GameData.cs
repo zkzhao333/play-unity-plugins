@@ -47,18 +47,20 @@ public class GameData
     public CarName carInUseName;
     public Ownership[] carIndexToOwnership;
     public Ownership[] backgroundNameToOwnership;
+
     public int coinsOwned;
-    // TODO: Do not store the subscription.
+
+    // TODO: Update the subscription when load the game.
     public SubscriptionType subscriptionType;
     public BackgroundName backgroundInUseName;
 
     private const int InitialCoinAmount = 20;
     private const int TotalCarCount = 4;
     private const int TotalBackgroundCount = 2;
-    private PlayerController _playerController =  Object.FindObjectOfType<PlayerController>();
+    private PlayerController _playerController = Object.FindObjectOfType<PlayerController>();
     private GameObject _backgroundImages = GameObject.Find("background/backGroundImages").gameObject;
 
-    
+
     public GameData()
     {
         coinsOwned = InitialCoinAmount;
@@ -154,7 +156,7 @@ public class GameData
     public void ChangeBackground(BackgroundList.Background targetBackground)
     {
         backgroundInUseName = targetBackground.Name;
-        
+
         foreach (Transform background in _backgroundImages.transform)
         {
             background.gameObject.GetComponent<SpriteRenderer>().sprite = targetBackground.ImageSprite;
