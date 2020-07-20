@@ -46,7 +46,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         }
         // TODO: subscription IAP.
 
-        // Kick off the remainder of the set-up with an asynchrounous call, passing the configuration 
+        // Kick off the remainder of the set-up with an asynchrounous call, passing the configuration
         // and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed.
         UnityPurchasing.Initialize(this, builder);
     }
@@ -62,22 +62,22 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // If Purchasing has been initialized ...
         if (IsInitialized())
         {
-            // ... look up the Product reference with the general product identifier and the Purchasing 
+            // ... look up the Product reference with the general product identifier and the Purchasing
             // system's products collection.
             Product product = m_StoreController.products.WithID(productId);
 
-            // If the look up found a product for this device's store and that product is ready to be sold ... 
+            // If the look up found a product for this device's store and that product is ready to be sold ...
             if (product != null && product.availableToPurchase)
             {
                 Debug.Log(string.Format("Purchasing product asychronously: '{0}'", product.definition.id));
-                // ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed 
-                // asynchronously. 
-               m_StoreController.InitiatePurchase(product);
+                // ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed
+                // asynchronously.
+                m_StoreController.InitiatePurchase(product);
             }
             // Otherwise ...
             else
             {
-                // ... report the product look-up failure situation  
+                // ... report the product look-up failure situation
                 Debug.Log(
                     "BuyProductID: FAIL. Not purchasing product, either is not found or is not available for purchase");
             }
@@ -85,7 +85,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // Otherwise ...
         else
         {
-            // ... report the fact Purchasing has not succeeded initializing yet. Consider waiting longer or 
+            // ... report the fact Purchasing has not succeeded initializing yet. Consider waiting longer or
             // retrying initiailization.
             Debug.Log("BuyProductID FAIL. Not initialized.");
         }
@@ -110,38 +110,55 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
-        Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
-        // Check if a consumable (coins) has been purchased by this user
-        foreach (var coin in CoinList.List)
-        {
-            if (!String.Equals(args.purchasedProduct.definition.id, coin.ProductId, StringComparison.Ordinal)) continue;
-            GameDataController.GetGameData().IncreaseCoinsOwned(coin.Amount);
-            FindObjectOfType<GameManager>().SetCoins();
-            FindObjectOfType<StoreController>().SetCoins();
-            return PurchaseProcessingResult.Complete;
-        }
+#if ONLINE
+        NetworkRequestController.verifyAndSaveUserPurchase(args.purchasedProduct);
+        return PurchaseProcessingResult.Pending;
+#else
+        ExecutePurchase(args.purchasedProduct.definition.id);
+#endif
 
-        // Check if a non-consumable (car) has been purchased by this user
-        foreach (var car in CarList.List)
-        {
-            if (!String.Equals(args.purchasedProduct.definition.id, car.ProductId,
-                StringComparison.Ordinal)) continue;
-            GameDataController.GetGameData().PurchaseCar(car);
-            return PurchaseProcessingResult.Complete;
-        }
-        
-
-        // Return a flag indicating whether this product has completely been received, or if the application needs 
-        // to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still 
-        // saving purchased products to the cloud, and when that save is delayed. 
+        // Return a flag indicating whether this product has completely been received, or if the application needs
+        // to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still
+        // saving purchased products to the cloud, and when that save is delayed.
         return PurchaseProcessingResult.Complete;
     }
 
     public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
     {
-        // A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing 
+        // A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing
         // this reason with the user to guide their troubleshooting actions.
         Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}",
             product.definition.storeSpecificId, failureReason));
+    }
+
+    public static void ConfirmPendingPurchase(Product product, bool succes)
+    {
+        if (succes)
+            ExecutePurchase(product.definition.id);
+        m_StoreController.ConfirmPendingPurchase(product);
+        Debug.Log("confirming purchase" + succes);
+    }
+
+    private static void ExecutePurchase(string productId)
+    {
+        Debug.Log($"ProcessPurchase: PASS. Product: '{productId}'");
+        // Check if a consumable (coins) has been purchased by this user
+        foreach (var coin in CoinList.List)
+        {
+            if (!String.Equals(productId, coin.ProductId, StringComparison.Ordinal)) continue;
+            GameDataController.GetGameData().IncreaseCoinsOwned(coin.Amount);
+            FindObjectOfType<GameManager>().SetCoins();
+            FindObjectOfType<StoreController>().SetCoins();
+            return;
+        }
+
+        // Check if a non-consumable (car) has been purchased by this user
+        foreach (var car in CarList.List)
+        {
+            if (!String.Equals(productId, car.ProductId,
+                StringComparison.Ordinal)) continue;
+            GameDataController.GetGameData().PurchaseCar(car);
+            return;
+        }
     }
 }
