@@ -29,13 +29,6 @@ public enum BackgroundName
     Mushroom
 }
 
-public enum CoinAmount
-{
-    FiveCoins,
-    TenCoins,
-    TwentyCoins,
-    FiftyCoins
-}
 
 /// <summary>
 /// GameData stores all the items/data the player obtained.
@@ -114,8 +107,15 @@ public class GameData
     // TODO: Move interactions to GameData Controller.
     private void UpdateCoinText()
     {
-        Object.FindObjectOfType<GameManager>().SetCoins();
-        Object.FindObjectOfType<StoreController>().SetCoins();
+        Object.FindObjectOfType<GameManager>().SetCoinsBasedOnGameData();
+        Object.FindObjectOfType<StoreController>().SetCoinsBasedOnGameData();
+    }
+
+    // Purchase coins in store item.
+    public void PurchaseCoins(CoinList.Coin coinToPurchase)
+    {
+        IncreaseCoinsOwned(coinToPurchase.Amount);
+        CoinStorePageController.SetDeferredPurchaseReminderActiveness(coinToPurchase, false);
     }
 
     // Purchase a car.
@@ -161,6 +161,12 @@ public class GameData
         {
             background.gameObject.GetComponent<SpriteRenderer>().sprite = targetBackground.ImageSprite;
         }
+    }
+
+    // Set background according to the background in use.
+    public void SetBackgroundBasedOnGameData()
+    {
+        ChangeBackground(BackgroundList.List[(int) backgroundInUseName]);
     }
 
     // Subscribe to a subscription.

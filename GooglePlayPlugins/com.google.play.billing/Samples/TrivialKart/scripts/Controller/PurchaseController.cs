@@ -36,7 +36,12 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
         // Create a builder, first passing in a suite of google play store.
         var builder = ConfigurationBuilder.Instance(Google.Play.Billing.GooglePlayStoreModule.Instance());
-
+        
+        //Enable deferred purchases
+        builder.Configure<Google.Play.Billing.IGooglePlayConfiguration>()
+            .EnableDeferredPurchase();
+        Debug.Log("Deferred purchase enabled");
+        
         // Add consumable products (coins) associated with their product types to sell / restore by way of its identifier,
         // associating the general identifier with its store-specific identifiers.
         foreach (var coin in CoinList.List)
@@ -61,6 +66,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed.
         UnityPurchasing.Initialize(this, builder);
         Debug.Log("Finished initialization IAP.");
+        
     }
 
     private static bool IsInitialized()
@@ -119,8 +125,6 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         {
             var oldProduct = m_StoreController.products.WithID(oldSubscription.ProductId);
             var newProduct = m_StoreController.products.WithID(newSubscription.ProductId);
-            _playStoreExtensions =
-                m_StoreExtensionProvider.GetExtension<IGooglePlayStoreExtensions>();
             _playStoreExtensions.UpdateSubscription(oldProduct, newProduct);
         }
     }
@@ -134,12 +138,44 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         m_StoreController = controller;
         // Store specific subsystem, for accessing device-specific store features.
         m_StoreExtensionProvider = extensions;
+        // Set play store extensions.
+        _playStoreExtensions =
+            m_StoreExtensionProvider.GetExtension<Google.Play.Billing.IGooglePlayStoreExtensions>();
+        
+        // Set the deferred purchases callback.
+        _playStoreExtensions.SetDeferredPurchaseListener(
+            delegate(Product product)
+            {
+                DeferredPurchase(product.definition.id);
+                // Do not grant the item here. Instead, record the purchase and remind
+                // the user to complete the transaction in the Play Store.
+            });
     }
 
     public void OnInitializeFailed(InitializationFailureReason error)
     {
         // Purchasing set-up has not succeeded. Check error for reason. Consider sharing this reason with the user.
         Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
+    }
+
+    private static void DeferredPurchase(string productId)
+    {
+        // Check if a consumable (coins) has been deferred purchased by this user.
+        foreach (var coin in CoinList.List.Where(coin => string.Equals(productId, coin.ProductId, StringComparison.Ordinal)))
+        {
+            CoinStorePageController.SetDeferredPurchaseReminderActiveness(coin, true);
+            return;
+        }
+
+        // Check if a non-consumable (car) has been deferred purchased by this user.
+        foreach (var car in CarList.List.Where(car => string.Equals(productId, car.ProductId,
+            StringComparison.Ordinal)))
+        {
+            CarStorePageController.SetDeferredPurchaseReminderActiveness(car, true);
+            return;
+        }
+        
+        Debug.LogError("Product ID doesn't match any of exist one-time products that can be deferred purchase."); 
     }
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
@@ -150,8 +186,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // TODO: Server side verification.
 #else
         bool validPurchase = true; // Presume valid for platforms with no R.V.
-
-        // Unity IAP's validation logic is only included on these platforms.
+        
 #if UNITY_ANDROID
         // Prepare the validator with the secrets we prepared in the Editor
         // obfuscation window.
@@ -194,10 +229,12 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
     private static void UnlockInGameContent(string productId)
     {
+        var gameData = GameDataController.GetGameData();
+        
         // Check if a consumable (coins) has been purchased by this user.
         foreach (var coin in CoinList.List.Where(coin => string.Equals(productId, coin.ProductId, StringComparison.Ordinal)))
         {
-            GameDataController.GetGameData().IncreaseCoinsOwned(coin.Amount);
+            gameData.PurchaseCoins(coin);
             return;
         }
 
@@ -205,7 +242,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         foreach (var car in CarList.List.Where(car => string.Equals(productId, car.ProductId,
             StringComparison.Ordinal)))
         {
-            GameDataController.GetGameData().PurchaseCar(car);
+            gameData.PurchaseCar(car);
             return;
         }
 
@@ -214,18 +251,19 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             subscription.ProductId,
             StringComparison.Ordinal)))
         {
-            GameDataController.GetGameData().SubscriptTo(subscription);
+            gameData.SubscriptTo(subscription);
             return;
         }
 
-        // TODO: build an error dialog. 
+        // TODO: Build an error dialog. 
         Debug.LogError("Product ID doesn't match any of exist products.");
     }
 
     public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
     {
-// A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing 
-// this reason with the user to guide their troubleshooting actions.
+        // TODO: Add a reminder here.
+        // A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing 
+        // this reason with the user to guide their troubleshooting actions.
         Debug.Log(
             $"OnPurchaseFailed: FAIL. Product: '{product.definition.storeSpecificId}', PurchaseFailureReason: {failureReason}");
     }

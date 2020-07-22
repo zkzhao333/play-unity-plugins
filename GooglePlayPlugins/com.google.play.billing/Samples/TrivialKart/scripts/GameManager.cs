@@ -13,6 +13,10 @@ public class GameManager : MonoBehaviour
     public GameObject playPageCanvas;
     public GameObject storePageCanvas;
     public GameObject garagePageCanvas;
+    public GameObject storeItemFiveCoinGameObject;
+    public GameObject storeItemTenCoinGameObject;
+    public GameObject storeItemTwentyCoinGameObject;
+    public GameObject storeItemFiftyCoinGameObject;
     public GameObject storeItemCarSedanGameObj;
     public GameObject storeItemCarTruckGameObj;
     public GameObject storeItemCarJeepGameObj;
@@ -25,6 +29,8 @@ public class GameManager : MonoBehaviour
     public GameObject playCarJeepGameObj;
     public GameObject playCarTruckGameObj;
     public GameObject playCarKartGameObj;
+    public GameObject blueGrassBackgroundGarageItemGameObj;
+    public GameObject mushroomBackGroundGarageItemGameObj;
     public GameObject silverVipSubscribeButtonGameObj;
     public GameObject goldenVipSubscribeButtonGameObj;
     public Text coinsCount;
@@ -39,16 +45,22 @@ public class GameManager : MonoBehaviour
 #endif
         InitConstantData();
         GameDataController.LoadGameData();
-        SetCoins();
+        SetPlayPageBasedOnGameData();
         SetCanvas(playPageCanvas);
         // TODO: Set the background when start the game.
     }
 
+    // Set the play page items based on game data.
+    private void SetPlayPageBasedOnGameData()
+    {
+        GameDataController.GetGameData().SetBackgroundBasedOnGameData();
+        SetCoinsBasedOnGameData();
+    }
+
     // Set the coins text at the play page.
-    public void SetCoins()
+    public void SetCoinsBasedOnGameData()
     {
         coinsCount.text = GameDataController.GetGameData().coinsOwned.ToString();
-        
     }
 
     // Switch pages when enter the store.
@@ -90,6 +102,7 @@ public class GameManager : MonoBehaviour
     // Init constant game data before the game starts.
     private void InitConstantData()
     {
+        InitCoinList();
         InitCarList();
         InitBackGroundList();
         InitSubscriptionList();
@@ -117,9 +130,9 @@ public class GameManager : MonoBehaviour
     // Link background game object to the background object in backgroundList.
     private void InitBackGroundList()
     {
-        BackgroundList.BlueGrassBackground.GarageItemGameObj =   GameObject.FindWithTag("garagePages").transform.Find("backGroundPage/blueGrassBackground").gameObject;
+        BackgroundList.BlueGrassBackground.GarageItemGameObj = blueGrassBackgroundGarageItemGameObj;
         BackgroundList.BlueGrassBackground.ImageSprite = Resources.Load<Sprite>("background/blueGrass");
-        BackgroundList.MushroomBackground.GarageItemGameObj =  GameObject.FindWithTag("garagePages").transform.Find("backGroundPage/mushroomBackground").gameObject;
+        BackgroundList.MushroomBackground.GarageItemGameObj = mushroomBackGroundGarageItemGameObj;
         BackgroundList.MushroomBackground.ImageSprite = Resources.Load<Sprite>("background/coloredShroom");
     }
 
@@ -128,6 +141,14 @@ public class GameManager : MonoBehaviour
         SubscriptionList.SilverSubscription.SubscribeButtonGameObj = silverVipSubscribeButtonGameObj;
         SubscriptionList.GoldenSubscription.SubscribeButtonGameObj = goldenVipSubscribeButtonGameObj;
         SubscriptionList.NoSubscription.SubscribeButtonGameObj = new GameObject();
+    }
+
+    private void InitCoinList()
+    {
+        CoinList.FiveCoins.StoreItemCoinGameObj = storeItemFiveCoinGameObject;
+        CoinList.TenCoins.StoreItemCoinGameObj = storeItemTenCoinGameObject;
+        CoinList.TwentyCoins.StoreItemCoinGameObj = storeItemTwentyCoinGameObject;
+        CoinList.FiftyCoins.StoreItemCoinGameObj = storeItemFiftyCoinGameObject;
     }
     
     private void OnApplicationPause(bool pauseStatus)
