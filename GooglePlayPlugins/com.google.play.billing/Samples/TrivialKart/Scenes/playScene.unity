@@ -16294,7 +16294,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1023875365
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16455,8 +16455,8 @@ MonoBehaviour:
   playCarJeepGameObj: {fileID: 1916547075}
   playCarTruckGameObj: {fileID: 2142797795}
   playCarKartGameObj: {fileID: 837701542}
-  blueGrassBackgroundGarageItemGameObj: {fileID: 0}
-  mushroomBackGroundGarageItemGameObj: {fileID: 0}
+  blueGrassBackgroundGarageItemGameObj: {fileID: 1883743016}
+  mushroomBackGroundGarageItemGameObj: {fileID: 1023875364}
   silverVipSubscribeButtonGameObj: {fileID: 1570447886}
   goldenVipSubscribeButtonGameObj: {fileID: 574510996}
   coinsCount: {fileID: 255060344}

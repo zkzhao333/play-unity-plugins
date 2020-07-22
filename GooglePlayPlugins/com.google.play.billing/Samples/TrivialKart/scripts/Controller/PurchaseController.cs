@@ -36,12 +36,12 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
         // Create a builder, first passing in a suite of google play store.
         var builder = ConfigurationBuilder.Instance(Google.Play.Billing.GooglePlayStoreModule.Instance());
-        
+
         //Enable deferred purchases
         builder.Configure<Google.Play.Billing.IGooglePlayConfiguration>()
             .EnableDeferredPurchase();
         Debug.Log("Deferred purchase enabled");
-        
+
         // Add consumable products (coins) associated with their product types to sell / restore by way of its identifier,
         // associating the general identifier with its store-specific identifiers.
         foreach (var coin in CoinList.List)
@@ -66,7 +66,6 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed.
         UnityPurchasing.Initialize(this, builder);
         Debug.Log("Finished initialization IAP.");
-        
     }
 
     private static bool IsInitialized()
@@ -141,7 +140,9 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // Set play store extensions.
         _playStoreExtensions =
             m_StoreExtensionProvider.GetExtension<Google.Play.Billing.IGooglePlayStoreExtensions>();
-        
+
+        InitSubscriptionsBasedOnReceipt(controller);
+
         // Set the deferred purchases callback.
         _playStoreExtensions.SetDeferredPurchaseListener(
             delegate(Product product)
@@ -158,10 +159,23 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
     }
 
+    private void InitSubscriptionsBasedOnReceipt(IStoreController controller)
+    {
+        var silverSubscriptionProduct = controller.products.WithID(SubscriptionList.SilverSubscription.ProductId);
+        var goldenSubscriptionProduct = controller.products.WithID(SubscriptionList.GoldenSubscription.ProductId);
+        if (!(silverSubscriptionProduct.hasReceipt && ReceiptValidation(silverSubscriptionProduct.receipt)) &&
+            !(goldenSubscriptionProduct.hasReceipt && ReceiptValidation(goldenSubscriptionProduct.receipt)))
+        {
+            GameDataController.GetGameData().Unsubscribe();
+            Debug.Log("No subscription receipt found. Unsubscribe all subscriptions");
+        }
+    }
+
     private static void DeferredPurchase(string productId)
     {
         // Check if a consumable (coins) has been deferred purchased by this user.
-        foreach (var coin in CoinList.List.Where(coin => string.Equals(productId, coin.ProductId, StringComparison.Ordinal)))
+        foreach (var coin in CoinList.List.Where(coin =>
+            string.Equals(productId, coin.ProductId, StringComparison.Ordinal)))
         {
             CoinStorePageController.SetDeferredPurchaseReminderActiveness(coin, true);
             return;
@@ -174,19 +188,43 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             CarStorePageController.SetDeferredPurchaseReminderActiveness(car, true);
             return;
         }
-        
-        Debug.LogError("Product ID doesn't match any of exist one-time products that can be deferred purchase."); 
+
+        Debug.LogError("Product ID doesn't match any of exist one-time products that can be deferred purchase.");
     }
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
         // TODO: Use an error dialog to communicate.
         Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
+        bool validPurchase = ReceiptValidation(args.purchasedProduct.receipt);
+
+        if (validPurchase)
+        {
+            // Unlock the appropriate content.
+            UnlockInGameContent(args.purchasedProduct.definition.id);
+        }
+
+        // Return a flag indicating whether this product has completely been received, or if the application needs 
+        // to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still 
+        // saving purchased products to the cloud, and when that save is delayed. 
+        return PurchaseProcessingResult.Complete;
+    }
+
+    private static bool ReceiptValidation(string receipt)
+    {
+        bool validPurchase = true;
 #if ONLINE
         // TODO: Server side verification.
 #else
-        bool validPurchase = true; // Presume valid for platforms with no R.V.
-        
+        // Do client side receipt validation.
+        validPurchase = ClientSideReceiptValidation(receipt);
+#endif
+        return validPurchase;
+    }
+
+    private static bool ClientSideReceiptValidation(string receipt)
+    {
+        bool validPurchase = true;
 #if UNITY_ANDROID
         // Prepare the validator with the secrets we prepared in the Editor
         // obfuscation window.
@@ -196,7 +234,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         try
         {
             // On Google Play, result has a single product ID.
-            var result = validator.Validate(args.purchasedProduct.receipt);
+            var result = validator.Validate(receipt);
             // For informational purposes, we list the receipt(s).
             Debug.Log("Receipt is valid. Contents:");
             foreach (IPurchaseReceipt productReceipt in result)
@@ -212,27 +250,16 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             validPurchase = false;
         }
 #endif
-
-        if (validPurchase)
-        {
-            // Unlock the appropriate content.
-            UnlockInGameContent(args.purchasedProduct.definition.id);
-        }
-
-        // Return a flag indicating whether this product has completely been received, or if the application needs 
-        // to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still 
-        // saving purchased products to the cloud, and when that save is delayed. 
-        return PurchaseProcessingResult.Complete;
-#endif
+        return validPurchase;
     }
-
 
     private static void UnlockInGameContent(string productId)
     {
         var gameData = GameDataController.GetGameData();
-        
+
         // Check if a consumable (coins) has been purchased by this user.
-        foreach (var coin in CoinList.List.Where(coin => string.Equals(productId, coin.ProductId, StringComparison.Ordinal)))
+        foreach (var coin in CoinList.List.Where(coin =>
+            string.Equals(productId, coin.ProductId, StringComparison.Ordinal)))
         {
             gameData.PurchaseCoins(coin);
             return;
