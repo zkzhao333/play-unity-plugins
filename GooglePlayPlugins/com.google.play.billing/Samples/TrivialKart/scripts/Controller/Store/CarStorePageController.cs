@@ -120,6 +120,7 @@ public class CarStorePageController : MonoBehaviour
                 storeItemCarGameObj.GetComponent<Image>().color = _lightGreyColor;
                 storeItemCarGameObj.GetComponent<Button>().interactable = false;
                 storeItemCarGameObj.transform.Find("price").gameObject.GetComponent<Text>().text = "owned";
+                SetDeferredPurchaseReminderActiveness(car, false);
                 if (!car.IsRealMoneyPurchase)
                 {
                     storeItemCarGameObj.transform.Find("coinImage").gameObject.SetActive(false);
@@ -128,5 +129,14 @@ public class CarStorePageController : MonoBehaviour
             }
         }
        
+    }
+
+    public static void SetDeferredPurchaseReminderActiveness(CarList.Car car, bool isActive)
+    {
+        var storeItemCarGameObj = car.StoreItemCarGameObj;
+        storeItemCarGameObj.transform.Find("deferredPurchaseReminder")?.gameObject.SetActive(isActive);
+        // Set the Item not interactive if deferred purchase reminder is set up.
+        storeItemCarGameObj.GetComponent<Button>().interactable = !isActive;
+
     }
 }

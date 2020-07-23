@@ -42,7 +42,7 @@ public class StoreController : MonoBehaviour
     private void OnEnable()
     {
         // Update Coin text when enter the store.
-        SetCoins();
+        SetCoinsBasedOnGameData();
     }
     
     // TODO: Add parameters to the listeners.
@@ -90,7 +90,7 @@ public class StoreController : MonoBehaviour
     }
 
     // Update coin text in the store page.
-    public void SetCoins()
+    public void SetCoinsBasedOnGameData()
     {
         coinsCount.text = GameDataController.GetGameData().CoinsOwned.ToString();
     }

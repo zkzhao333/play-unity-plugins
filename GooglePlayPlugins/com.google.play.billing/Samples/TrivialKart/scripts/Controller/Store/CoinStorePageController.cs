@@ -59,4 +59,11 @@ public class CoinStorePageController : MonoBehaviour
     {
         confirmPanel.SetActive(false);
     }
+    
+    public static void SetDeferredPurchaseReminderActiveness(CoinList.Coin coin, bool isActive)
+    {
+        var storeItemCoinGameObj = coin.StoreItemCoinGameObj;
+        storeItemCoinGameObj.transform.Find("deferredPurchaseReminder")?.gameObject.SetActive(isActive);
+        storeItemCoinGameObj.GetComponent<Button>().interactable = !isActive;
+    }
 }

@@ -24,7 +24,7 @@ public class BackgroundGaragePageController : MonoBehaviour
     
     private void SwitchToTargetBackground(BackgroundList.Background targetBackground)
     {
-        GameDataController.GetGameData().ChangeBackground(targetBackground);
+        GameDataController.GetGameData().UpdateBackgroundInUse(targetBackground);
         SetBackgroundUsageStatus();
     }
 

@@ -7,7 +7,6 @@ using UnityEngine;
 /// </summary>
 public class CarGaragePageController : MonoBehaviour
 {
-    
     // Refresh the page when enter the car garage page.
     private void OnEnable()
     {
@@ -41,7 +40,7 @@ public class CarGaragePageController : MonoBehaviour
         GameDataController.GetGameData().CarInUseObj.GarageItemGameObj.transform.Find("statusText").gameObject
             .SetActive(true);
     }
-    
+
     public void OnItemSedanClicked()
     {
         SwitchCarInUse(CarList.CarSedan);
@@ -64,7 +63,7 @@ public class CarGaragePageController : MonoBehaviour
 
     private void SwitchCarInUse(CarList.Car targetCar)
     {
-        GameDataController.GetGameData().ChangeCar(targetCar);
+        GameDataController.GetGameData().UpdateCarInUse(targetCar);
         SetCarUsageStatus();
     }
 }
