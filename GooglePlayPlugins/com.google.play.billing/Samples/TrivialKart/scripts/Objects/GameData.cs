@@ -111,8 +111,8 @@ public class GameData
         Object.FindObjectOfType<StoreController>().SetCoinsBasedOnGameData();
     }
 
-    // Purchase coins in store item.
-    public void PurchaseCoins(CoinList.Coin coinToPurchase)
+    // Upgrade coins when player purchases coins.
+    public void UpgradeCoins(CoinList.Coin coinToPurchase)
     {
         IncreaseCoinsOwned(coinToPurchase.Amount);
         CoinStorePageController.SetDeferredPurchaseReminderActiveness(coinToPurchase, false);
@@ -127,7 +127,6 @@ public class GameData
         }
 
         carIndexToOwnership[(int) car.Name] = Ownership.Owned;
-        // TODO: Make the refresh happen in car store page controller.
         Object.FindObjectOfType<CarStorePageController>()?.RefreshPage();
     }
 
@@ -139,7 +138,7 @@ public class GameData
     }
 
     // Change car in use and apply the changes to the play page.
-    public void ChangeCar(CarList.Car targetCar)
+    public void ChangeCarInUse(CarList.Car targetCar)
     {
         carInUseName = targetCar.Name;
         _playerController.UpdateCarInUse();
@@ -169,8 +168,8 @@ public class GameData
         ChangeBackground(BackgroundList.List[(int) backgroundInUseName]);
     }
 
-    // Subscribe to a subscription.
-    public void SubscriptTo(SubscriptionList.Subscription targetSubscription)
+    // Update current subscription to target subscription.
+    public void UpgradeSubscription(SubscriptionList.Subscription targetSubscription)
     {
         subscriptionType = targetSubscription.Type;
         backgroundNameToOwnership[(int) BackgroundName.Mushroom] = Ownership.Owned;

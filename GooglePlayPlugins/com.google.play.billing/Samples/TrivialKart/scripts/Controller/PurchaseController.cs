@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Security;
-using IGooglePlayStoreExtensions = Google.Play.Billing.IGooglePlayStoreExtensions;
 
 /// <summary>
 /// Controller for the dollar item purchase flow in the game.
@@ -13,7 +12,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 {
     private static IStoreController m_StoreController; // The Unity Purchasing system.
     private static IExtensionProvider m_StoreExtensionProvider; // The store-specific Purchasing subsystems.
-    private static IGooglePlayStoreExtensions _playStoreExtensions;
+    private static Google.Play.Billing.IGooglePlayStoreExtensions _playStoreExtensions;
 
     private void Start()
     {
@@ -40,7 +39,6 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         //Enable deferred purchases
         builder.Configure<Google.Play.Billing.IGooglePlayConfiguration>()
             .EnableDeferredPurchase();
-        Debug.Log("Deferred purchase enabled");
 
         // Add consumable products (coins) associated with their product types to sell / restore by way of its identifier,
         // associating the general identifier with its store-specific identifiers.
@@ -140,14 +138,13 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // Set play store extensions.
         _playStoreExtensions =
             m_StoreExtensionProvider.GetExtension<Google.Play.Billing.IGooglePlayStoreExtensions>();
-
-        InitSubscriptionsBasedOnReceipt(controller);
+        CheckSubscriptionsAvailabilityBasedOnReceipt(controller);
 
         // Set the deferred purchases callback.
         _playStoreExtensions.SetDeferredPurchaseListener(
             delegate(Product product)
             {
-                DeferredPurchase(product.definition.id);
+                ProcessDeferredPurchase(product.definition.id);
                 // Do not grant the item here. Instead, record the purchase and remind
                 // the user to complete the transaction in the Play Store.
             });
@@ -159,19 +156,19 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
     }
 
-    private void InitSubscriptionsBasedOnReceipt(IStoreController controller)
+    private void CheckSubscriptionsAvailabilityBasedOnReceipt(IStoreController controller)
     {
         var silverSubscriptionProduct = controller.products.WithID(SubscriptionList.SilverSubscription.ProductId);
         var goldenSubscriptionProduct = controller.products.WithID(SubscriptionList.GoldenSubscription.ProductId);
-        if (!(silverSubscriptionProduct.hasReceipt && ReceiptValidation(silverSubscriptionProduct.receipt)) &&
-            !(goldenSubscriptionProduct.hasReceipt && ReceiptValidation(goldenSubscriptionProduct.receipt)))
+        if (!(silverSubscriptionProduct.hasReceipt && ClientSideReceiptValidation(silverSubscriptionProduct.receipt)) &&
+            !(goldenSubscriptionProduct.hasReceipt && ClientSideReceiptValidation(goldenSubscriptionProduct.receipt)))
         {
             GameDataController.GetGameData().Unsubscribe();
             Debug.Log("No subscription receipt found. Unsubscribe all subscriptions");
         }
     }
 
-    private static void DeferredPurchase(string productId)
+    private static void ProcessDeferredPurchase(string productId)
     {
         // Check if a consumable (coins) has been deferred purchased by this user.
         foreach (var coin in CoinList.List.Where(coin =>
@@ -196,9 +193,11 @@ public class PurchaseController : MonoBehaviour, IStoreListener
     {
         // TODO: Use an error dialog to communicate.
         Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
-        bool validPurchase = ReceiptValidation(args.purchasedProduct.receipt);
-
-        if (validPurchase)
+#if ONLINE
+        // TODO: Server side verification.
+        return PurchaseProcessingResult.Pending;
+#else
+        if (ClientSideReceiptValidation(args.purchasedProduct.receipt))
         {
             // Unlock the appropriate content.
             UnlockInGameContent(args.purchasedProduct.definition.id);
@@ -208,18 +207,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still 
         // saving purchased products to the cloud, and when that save is delayed. 
         return PurchaseProcessingResult.Complete;
-    }
-
-    private static bool ReceiptValidation(string receipt)
-    {
-        bool validPurchase = true;
-#if ONLINE
-        // TODO: Server side verification.
-#else
-        // Do client side receipt validation.
-        validPurchase = ClientSideReceiptValidation(receipt);
 #endif
-        return validPurchase;
     }
 
     private static bool ClientSideReceiptValidation(string receipt)
@@ -261,7 +249,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         foreach (var coin in CoinList.List.Where(coin =>
             string.Equals(productId, coin.ProductId, StringComparison.Ordinal)))
         {
-            gameData.PurchaseCoins(coin);
+            gameData.UpgradeCoins(coin);
             return;
         }
 
@@ -278,7 +266,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             subscription.ProductId,
             StringComparison.Ordinal)))
         {
-            gameData.SubscriptTo(subscription);
+            gameData.UpgradeSubscription(subscription);
             return;
         }
 
