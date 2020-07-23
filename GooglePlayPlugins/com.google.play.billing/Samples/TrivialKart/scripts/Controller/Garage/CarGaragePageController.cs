@@ -63,7 +63,7 @@ public class CarGaragePageController : MonoBehaviour
 
     private void SwitchCarInUse(CarList.Car targetCar)
     {
-        GameDataController.GetGameData().ChangeCarInUse(targetCar);
+        GameDataController.GetGameData().UpdateCarInUse(targetCar);
         SetCarUsageStatus();
     }
 }

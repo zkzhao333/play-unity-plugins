@@ -163,7 +163,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         if (!(silverSubscriptionProduct.hasReceipt && ClientSideReceiptValidation(silverSubscriptionProduct.receipt)) &&
             !(goldenSubscriptionProduct.hasReceipt && ClientSideReceiptValidation(goldenSubscriptionProduct.receipt)))
         {
-            GameDataController.GetGameData().Unsubscribe();
+            GameDataController.GetGameData().UpdateSubscription(SubscriptionList.NoSubscription);
             Debug.Log("No subscription receipt found. Unsubscribe all subscriptions");
         }
     }
@@ -249,7 +249,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         foreach (var coin in CoinList.List.Where(coin =>
             string.Equals(productId, coin.ProductId, StringComparison.Ordinal)))
         {
-            gameData.UpgradeCoins(coin);
+            gameData.UpdateCoins(coin);
             return;
         }
 
@@ -266,7 +266,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             subscription.ProductId,
             StringComparison.Ordinal)))
         {
-            gameData.UpgradeSubscription(subscription);
+            gameData.UpdateSubscription(subscription);
             return;
         }
 
