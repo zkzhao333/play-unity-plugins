@@ -124,18 +124,21 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         return PurchaseProcessingResult.Pending;
 #else
         ExecutePurchase(args.purchasedProduct.definition.id);
-#endif
 
         // Return a flag indicating whether this product has completely been received, or if the application needs
         // to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still
         // saving purchased products to the cloud, and when that save is delayed.
         return PurchaseProcessingResult.Complete;
+#endif
     }
 
     public static void ConfirmPendingPurchase(Product product, bool succes)
     {
         if (succes)
+        {
             ExecutePurchase(product.definition.id);
+        }
+
         m_StoreController.ConfirmPendingPurchase(product);
         Debug.Log("confirming purchase" + succes);
     }

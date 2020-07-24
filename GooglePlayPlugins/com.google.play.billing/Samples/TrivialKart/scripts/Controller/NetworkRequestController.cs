@@ -53,18 +53,10 @@ public class NetworkRequestController
     {
         var values = new Dictionary<string, string>
         {
-            ["receipt"] = getReceiptDetails(product.receipt),
-            ["isSubscription"] = product.definition.id.Contains("subscription").ToString()
+            ["receipt"] = product.receipt
         };
 
         ServerResponseModel serverResponse = sendUnityWebRequest(values, VERIFY_AND_SAVE_TOKEN_URL);
         PurchaseController.ConfirmPendingPurchase(product, serverResponse.success);
-    }
-
-    private static string getReceiptDetails(string receipt)
-    {
-        receipt = String.Join("", receipt.Split('\\'));
-        receipt = receipt.Remove(0, receipt.IndexOf("orderId") - 2);
-        return receipt.Remove(receipt.IndexOf("signature") - 3);
     }
 }
