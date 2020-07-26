@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// Constant data for coin store items.
@@ -19,6 +20,8 @@ public static class CoinList
         public float Price { get; }
 
         public string ProductId { get; }
+
+        public GameObject StoreItemCoinGameObj { get; set; }
     }
 
     public static readonly Coin FiveCoins = new Coin(5, 0.99f, "five_coins");

@@ -38,7 +38,7 @@ public class GarageController : MonoBehaviour
     private void OnEnable()
     {
         // Update Coin text when enter the garage.
-        SetCoins();
+        SetCoinsBasedOnGameData();
     }
 
     public void OnEnterCarGaragePageButtonCLicked()
@@ -72,7 +72,7 @@ public class GarageController : MonoBehaviour
     }
 
     // Update coin text in the garage page.
-    private void SetCoins()
+    private void SetCoinsBasedOnGameData()
     {
         coinsCount.text = GameDataController.GetGameData().CoinsOwned.ToString();
     }

@@ -42,8 +42,8 @@ public class GameDataController
         Debug.Log("loading data");
         try
         {
-            // Check if the data file exits.
-            if (File.Exists(DATA_PATH))
+            // Load data from data.json file if it exists and it's not empty.
+            if (File.Exists(DATA_PATH) && new FileInfo( DATA_PATH ).Length != 0)
             {
                 var contents = File.ReadAllText(DATA_PATH);
                 _gameData = JsonUtility.FromJson<GameData>(contents);
@@ -63,6 +63,10 @@ public class GameDataController
 
     public static GameData GetGameData()
     {
+        if (_gameData == null)
+        {
+            Debug.LogError("Game data has not been loaded yet.");
+        }
         return _gameData;
     }
 
