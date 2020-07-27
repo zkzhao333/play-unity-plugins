@@ -1,4 +1,19 @@
+// Copyright 2020 Google LLC
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Purchasing;
@@ -135,11 +150,13 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         m_StoreController = controller;
         // Store specific subsystem, for accessing device-specific store features.
         m_StoreExtensionProvider = extensions;
+
         // Set play store extensions.
         _playStoreExtensions =
             m_StoreExtensionProvider.GetExtension<Google.Play.Billing.IGooglePlayStoreExtensions>();
         CheckSubscriptionsAvailabilityBasedOnReceipt(controller);
-
+        // Pass an obfuscated account id.
+        _playStoreExtensions.SetObfuscatedAccountId(TrivialKartClientUtil.GetObfuscatedAccountId());
         // Set the deferred purchases callback.
         _playStoreExtensions.SetDeferredPurchaseListener(
             delegate(Product product)
@@ -156,7 +173,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
     }
 
-    private void CheckSubscriptionsAvailabilityBasedOnReceipt(IStoreController controller)
+    private static void CheckSubscriptionsAvailabilityBasedOnReceipt(IStoreController controller)
     {
         var silverSubscriptionProduct = controller.products.WithID(SubscriptionList.SilverSubscription.ProductId);
         var goldenSubscriptionProduct = controller.products.WithID(SubscriptionList.GoldenSubscription.ProductId);
@@ -221,7 +238,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         Debug.Log("confirming purchase : " + succes);
     }
 
-    private static bool ClientSideReceiptValidation(string receipt)
+    private static bool ClientSideReceiptValidation(string unityIapReceipt)
     {
         bool validPurchase = true;
 #if UNITY_ANDROID
@@ -232,8 +249,12 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
         try
         {
-            // On Google Play, result has a single product ID.
-            var result = validator.Validate(receipt);
+            // Validate the signature of the receipt with unity cross platform validator
+            var result = validator.Validate(unityIapReceipt);
+            
+            // Validate the obfuscated account id of the receipt.
+            ObfuscatedAccountIdValidation(unityIapReceipt);
+            
             // For informational purposes, we list the receipt(s).
             Debug.Log("Receipt is valid. Contents:");
             foreach (IPurchaseReceipt productReceipt in result)
@@ -250,6 +271,24 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         }
 #endif
         return validPurchase;
+    }
+
+    // Check if the obfuscated account id on the receipt is same as the one on the device.
+    private static void ObfuscatedAccountIdValidation(string unityIapReceipt)
+    {
+        Dictionary<string, object> unityIapReceiptDictionary = (Dictionary<string, object>) MiniJson.JsonDecode(unityIapReceipt);
+        string payload = (string) unityIapReceiptDictionary["Payload"];
+        Dictionary<string, object> payLoadDictionary = (Dictionary<string, object>) MiniJson.JsonDecode(payload);
+        string receipt = (string) payLoadDictionary["json"];
+
+        Dictionary<string, object> receiptDictionary = (Dictionary<string, object>) MiniJson.JsonDecode(receipt);
+        // TODO: Receipt with no obfuscated id may be valid.
+        if (!receiptDictionary.ContainsKey("obfuscatedAccountId") ||
+            !receiptDictionary["obfuscatedAccountId"].Equals(TrivialKartClientUtil.GetObfuscatedAccountId()))
+        {
+            Debug.Log("Obfuscated account id is invalid");
+            throw new IAPSecurityException();
+        }
     }
 
     private static void UnlockInGameContent(string productId)
