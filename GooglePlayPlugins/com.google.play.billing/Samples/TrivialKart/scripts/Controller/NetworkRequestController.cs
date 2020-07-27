@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Google LLC
+// Copyright 2020 Google LLC
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Purchasing;
 using static Server;
 
 public class NetworkRequestController
@@ -22,9 +26,6 @@ public class NetworkRequestController
 
     private const string VERIFY_AND_SAVE_TOKEN_URL =
         "https://us-central1-simpleserver-d2cf5.cloudfunctions.net/verify_and_save_purchase_token";
-
-    private const string VERIFY_PURCHASE_WITH_API_URL =
-        "https://us-central1-simpleserver-d2cf5.cloudfunctions.net/verify_purchase_play_dev_api";
 
     private const string SAVE_GAME_DATA_URL =
         "https://us-central1-simpleserver-d2cf5.cloudfunctions.net/save_game_data";
@@ -43,7 +44,7 @@ public class NetworkRequestController
         {
             ["gameData"] = JsonUtility.ToJson(GameDataController.GetGameData())
         };
-        
+
         return sendUnityWebRequest(values, SAVE_GAME_DATA_URL);
     }
 
@@ -62,24 +63,14 @@ public class NetworkRequestController
         }
     }
 
-    public static ServerResponseModel verifyAndSaveUserPurchase(string purchaseToken)
+    public static void verifyAndSaveUserPurchase(Product product)
     {
         var values = new Dictionary<string, string>
         {
-            ["purchaseToken"] = purchaseToken
+            ["receipt"] = product.receipt
         };
 
-        return sendUnityWebRequest(values, VERIFY_AND_SAVE_TOKEN_URL);
-    }
-
-    public static ServerResponseModel verifyPurchaseWithApi(string packageName, string productId, string purchaseToken)
-    {
-        var values = new Dictionary<string, string>
-        {
-            ["packageName"] = packageName,
-            ["productId"] = productId,
-            ["purchaseToken"] = purchaseToken
-        };
-        return sendUnityWebRequest(values, VERIFY_PURCHASE_WITH_API_URL);
+        ServerResponseModel serverResponse = sendUnityWebRequest(values, VERIFY_AND_SAVE_TOKEN_URL);
+        PurchaseController.ConfirmPendingPurchase(product, serverResponse.success);
     }
 }

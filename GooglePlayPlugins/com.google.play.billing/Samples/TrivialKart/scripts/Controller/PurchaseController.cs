@@ -75,7 +75,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             builder.AddProduct(subscription.ProductId, ProductType.Subscription);
         }
 
-        // Kick off the remainder of the set-up with an asynchrounous call, passing the configuration 
+        // Kick off the remainder of the set-up with an asynchrounous call, passing the configuration
         // and this class' instance. Expect a response either in OnInitialized or OnInitializeFailed.
         UnityPurchasing.Initialize(this, builder);
         Debug.Log("Finished initialization IAP.");
@@ -92,22 +92,22 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // If Purchasing has been initialized ...
         if (IsInitialized())
         {
-            // ... look up the Product reference with the general product identifier and the Purchasing 
+            // ... look up the Product reference with the general product identifier and the Purchasing
             // system's products collection.
             var product = m_StoreController.products.WithID(productId);
 
-            // If the look up found a product for this device's store and that product is ready to be sold ... 
+            // If the look up found a product for this device's store and that product is ready to be sold ...
             if (product != null && product.availableToPurchase)
             {
                 Debug.Log(string.Format("Purchasing product asychronously: '{0}'", product.definition.id));
-                // ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed 
-                // asynchronously. 
+                // ... buy the product. Expect a response either through ProcessPurchase or OnPurchaseFailed
+                // asynchronously.
                 m_StoreController.InitiatePurchase(product);
             }
             // Otherwise ...
             else
             {
-                // ... report the product look-up failure situation  
+                // ... report the product look-up failure situation
                 Debug.Log(
                     "BuyProductID: FAIL. Not purchasing product, either is not found or is not available for purchase");
             }
@@ -115,7 +115,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // Otherwise ...
         else
         {
-            // ... report the fact Purchasing has not succeeded initializing yet. Consider waiting longer or 
+            // ... report the fact Purchasing has not succeeded initializing yet. Consider waiting longer or
             // retrying initialization.
             Debug.Log("BuyProductID FAIL. Not initialized.");
         }
@@ -211,7 +211,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // TODO: Use an error dialog to communicate.
         Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
 #if ONLINE
-        // TODO: Server side verification.
+        NetworkRequestController.verifyAndSaveUserPurchase(args.purchasedProduct);
         return PurchaseProcessingResult.Pending;
 #else
         if (ClientSideReceiptValidation(args.purchasedProduct.receipt))
@@ -220,11 +220,22 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             UnlockInGameContent(args.purchasedProduct.definition.id);
         }
 
-        // Return a flag indicating whether this product has completely been received, or if the application needs 
-        // to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still 
-        // saving purchased products to the cloud, and when that save is delayed. 
+        // Return a flag indicating whether this product has completely been received, or if the application needs
+        // to be reminded of this purchase at next app launch. Use PurchaseProcessingResult.Pending when still
+        // saving purchased products to the cloud, and when that save is delayed.
         return PurchaseProcessingResult.Complete;
 #endif
+    }
+    
+    public static void ConfirmPendingPurchase(Product product, bool succes)
+    {
+        if (succes)
+        {
+            UnlockInGameContent(product.definition.id);
+        }
+
+        m_StoreController.ConfirmPendingPurchase(product);
+        Debug.Log("confirming purchase : " + succes);
     }
 
     private static bool ClientSideReceiptValidation(string unityIapReceipt)
@@ -309,14 +320,14 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             return;
         }
 
-        // TODO: Build an error dialog. 
+        // TODO: Build an error dialog.
         Debug.LogError("Product ID doesn't match any of exist products.");
     }
 
     public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
     {
         // TODO: Add a reminder here.
-        // A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing 
+        // A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing
         // this reason with the user to guide their troubleshooting actions.
         Debug.Log(
             $"OnPurchaseFailed: FAIL. Product: '{product.definition.storeSpecificId}', PurchaseFailureReason: {failureReason}");
