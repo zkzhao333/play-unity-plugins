@@ -227,7 +227,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 #endif
     }
 
-    private static bool ClientSideReceiptValidation(string unityIAPReceipt)
+    private static bool ClientSideReceiptValidation(string unityIapReceipt)
     {
         bool validPurchase = true;
 #if UNITY_ANDROID
@@ -239,10 +239,10 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         try
         {
             // Validate the signature of the receipt with unity cross platform validator
-            var result = validator.Validate(unityIAPReceipt);
+            var result = validator.Validate(unityIapReceipt);
             
             // Validate the obfuscated account id of the receipt.
-            ObfuscatedAccountIdValidation(unityIAPReceipt);
+            ObfuscatedAccountIdValidation(unityIapReceipt);
             
             // For informational purposes, we list the receipt(s).
             Debug.Log("Receipt is valid. Contents:");
@@ -263,10 +263,10 @@ public class PurchaseController : MonoBehaviour, IStoreListener
     }
 
     // Check if the obfuscated account id on the receipt is same as the one on the device.
-    private static void ObfuscatedAccountIdValidation(string unityIAPReceipt)
+    private static void ObfuscatedAccountIdValidation(string unityIapReceipt)
     {
-        Dictionary<string, object> unityIAPReceiptDictionary = (Dictionary<string, object>) MiniJson.JsonDecode(unityIAPReceipt);
-        string payload = (string) unityIAPReceiptDictionary["Payload"];
+        Dictionary<string, object> unityIapReceiptDictionary = (Dictionary<string, object>) MiniJson.JsonDecode(unityIapReceipt);
+        string payload = (string) unityIapReceiptDictionary["Payload"];
         Dictionary<string, object> payLoadDictionary = (Dictionary<string, object>) MiniJson.JsonDecode(payload);
         string receipt = (string) payLoadDictionary["json"];
 

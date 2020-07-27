@@ -18,7 +18,8 @@ using UnityEngine;
 
 public class TrivialKartClientUtil
 {
-    //Creat and return obfuscated account id based on the sha256 hash result of device unique id
+    // Create and return obfuscated account id based on the sha256 hash result of account id.
+    // Device unique id is used here as account id for simplicity on client side app.
     public static string GetObfuscatedAccountId()
     {
         // TODO: Added online version account id.
