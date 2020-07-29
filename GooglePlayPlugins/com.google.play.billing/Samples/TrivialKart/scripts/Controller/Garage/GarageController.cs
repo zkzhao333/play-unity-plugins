@@ -28,14 +28,14 @@ public class GarageController : MonoBehaviour
     public GameObject carPage;
     public GameObject backgroundPage;
     public GameObject restorePurchaseConfirmPanel;
-    public GameObject restorePurchaseSuccessText;
+    public GameObject restorePurchaseResultText;
     public Text coinsCount;
 
     private const int UnselectedTabIndex = 0;
     private const int SelectedTabIndex = 1;
     private const int CarGaragePageTabIndex = 0;
     private const int BackGroundGaragePageTabIndex = 1;
-    private const float HideRestorePurchaseSuccessTextTimeOut = 5f;
+    private const float HideRestorePurchaseSuccessTextTimeOutSec = 5f;
     private GameObject[] _tabs;
     private List<GameObject> _garagePages;
 
@@ -118,12 +118,26 @@ public class GarageController : MonoBehaviour
 
     public void OnRestorePurchaseSuccess()
     {
-        restorePurchaseSuccessText.SetActive(true);
-        Invoke(nameof(HideRestorePurchaseSuccessText), HideRestorePurchaseSuccessTextTimeOut);
+        SetRestorePurchaseText(true);
+    }
+
+    public void OnRestorePurchaseFail()
+    {
+        SetRestorePurchaseText(false);
+    }
+
+    private void SetRestorePurchaseText(bool isRestorePurchaseSuccess)
+    {
+        restorePurchaseResultText.SetActive(true);
+        restorePurchaseResultText.GetComponent<Text>().text = isRestorePurchaseSuccess
+            ? "Successful restore purchase!"
+            : "Fail to restore purchase. Please try again.";
+        Invoke(nameof(HideRestorePurchaseSuccessText), HideRestorePurchaseSuccessTextTimeOutSec);
+
     }
 
     private void HideRestorePurchaseSuccessText()
     {
-        restorePurchaseSuccessText.SetActive(false);
+        restorePurchaseResultText.SetActive(false);
     }
 }

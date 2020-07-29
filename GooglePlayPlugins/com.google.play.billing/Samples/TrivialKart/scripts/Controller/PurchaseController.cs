@@ -340,15 +340,18 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         _playStoreExtensions.RestoreTransactions(
             delegate(bool restoreSuccess)
             {
+                var garageController = FindObjectOfType<GarageController>();
                 if (restoreSuccess)
                 {
                     Debug.Log("Successfully restore purchase!");
-                    FindObjectOfType<GarageController>().OnRestorePurchaseSuccess();
+                    garageController.OnRestorePurchaseSuccess();
                 }
                 else
                 {
                     Debug.Log("Fail to restore purchase");
+                    garageController.OnRestorePurchaseFail();
                 }
             });
     }
+    
 }
