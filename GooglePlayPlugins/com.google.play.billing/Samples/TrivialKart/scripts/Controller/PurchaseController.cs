@@ -227,15 +227,14 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 #endif
     }
 
-    public static void ConfirmPendingPurchase(Product product, bool success)
+    public static void ConfirmPendingPurchase(Product product, bool purchaseVerifiedSuccess)
     {
-        if (success)
+        if (purchaseVerifiedSuccess)
         {
             UnlockInGameContent(product.definition.id);
         }
 
         m_StoreController.ConfirmPendingPurchase(product);
-        Debug.Log("confirming purchase : " + success);
     }
 
     private static bool ClientSideReceiptValidation(string unityIapReceipt)
@@ -340,18 +339,15 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         _playStoreExtensions.RestoreTransactions(
             delegate(bool restoreSuccess)
             {
-                var garageController = FindObjectOfType<GarageController>();
                 if (restoreSuccess)
                 {
                     Debug.Log("Successfully restore purchase!");
-                    garageController.OnRestorePurchaseSuccess();
+                    FindObjectOfType<GarageController>().OnRestorePurchaseSuccess();
                 }
                 else
                 {
                     Debug.Log("Fail to restore purchase");
-                    garageController.OnRestorePurchaseFail();
                 }
             });
     }
-    
 }
