@@ -114,11 +114,9 @@ public class GameData
         coinsOwned += increaseAmount;
         UpdateCoinText();
     }
-
-    // TODO: Move interactions to GameData Controller.
+    
     private void UpdateCoinText()
     {
-        Object.FindObjectOfType<GameManager>().SetCoinsBasedOnGameData();
         Object.FindObjectOfType<StoreController>().SetCoinsBasedOnGameData();
     }
 

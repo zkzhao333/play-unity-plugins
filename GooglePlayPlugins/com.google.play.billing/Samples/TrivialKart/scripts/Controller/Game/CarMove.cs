@@ -42,7 +42,7 @@ public class CarMove : MonoBehaviour
         _rigidbody2D = GetComponent<Rigidbody2D>();
         if (_rigidbody2D.velocity.magnitude < NoVelocity &&
             transform.parent.gameObject.GetComponent<Gas>().HasGas() &&
-            _gameManger.IsInPlayPage())
+            _gameManger.IsInPlayCanvas())
         {
             Drive();
         }

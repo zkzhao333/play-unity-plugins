@@ -226,16 +226,15 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         return PurchaseProcessingResult.Complete;
 #endif
     }
-    
-    public static void ConfirmPendingPurchase(Product product, bool succes)
+
+    public static void ConfirmPendingPurchase(Product product, bool purchaseVerifiedSuccess)
     {
-        if (succes)
+        if (purchaseVerifiedSuccess)
         {
             UnlockInGameContent(product.definition.id);
         }
 
         m_StoreController.ConfirmPendingPurchase(product);
-        Debug.Log("confirming purchase : " + succes);
     }
 
     private static bool ClientSideReceiptValidation(string unityIapReceipt)
@@ -251,10 +250,10 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         {
             // Validate the signature of the receipt with unity cross platform validator
             var result = validator.Validate(unityIapReceipt);
-            
+
             // Validate the obfuscated account id of the receipt.
             ObfuscatedAccountIdValidation(unityIapReceipt);
-            
+
             // For informational purposes, we list the receipt(s).
             Debug.Log("Receipt is valid. Contents:");
             foreach (IPurchaseReceipt productReceipt in result)
@@ -276,7 +275,8 @@ public class PurchaseController : MonoBehaviour, IStoreListener
     // Check if the obfuscated account id on the receipt is same as the one on the device.
     private static void ObfuscatedAccountIdValidation(string unityIapReceipt)
     {
-        Dictionary<string, object> unityIapReceiptDictionary = (Dictionary<string, object>) MiniJson.JsonDecode(unityIapReceipt);
+        Dictionary<string, object> unityIapReceiptDictionary =
+            (Dictionary<string, object>) MiniJson.JsonDecode(unityIapReceipt);
         string payload = (string) unityIapReceiptDictionary["Payload"];
         Dictionary<string, object> payLoadDictionary = (Dictionary<string, object>) MiniJson.JsonDecode(payload);
         string receipt = (string) payLoadDictionary["json"];
@@ -331,5 +331,25 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // this reason with the user to guide their troubleshooting actions.
         Debug.Log(
             $"OnPurchaseFailed: FAIL. Product: '{product.definition.storeSpecificId}', PurchaseFailureReason: {failureReason}");
+    }
+
+    // Restore purchase when the user login to a new device.
+    public static void RestorePurchase()
+    {
+        _playStoreExtensions.RestoreTransactions(
+            delegate(bool restoreSuccess)
+            {
+             var garageController = FindObjectOfType<GarageController>();
+             if (restoreSuccess)
+             {
+                 Debug.Log("Successfully restore purchase!");
+                 garageController.OnRestorePurchaseSuccess();
+                }
+                else
+                {
+                    Debug.Log("Fail to restore purchase");
+                    garageController.OnRestorePurchaseFail();
+                }
+            });
     }
 }

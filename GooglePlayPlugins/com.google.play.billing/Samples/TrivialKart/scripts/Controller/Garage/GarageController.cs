@@ -20,18 +20,22 @@ using UnityEngine.UI;
 /// Controller for the tab/page switch in the garage.
 /// It switches pages and tabs when different tabs are clicked;
 /// It updates the coin text indicator in the garage pages.
+/// It listens to the restore purchase button.
 /// </summary>
 public class GarageController : MonoBehaviour
 {
     public GameObject tab;
     public GameObject carPage;
     public GameObject backgroundPage;
+    public GameObject restorePurchaseConfirmPanel;
+    public GameObject restorePurchaseResultText;
     public Text coinsCount;
 
     private const int UnselectedTabIndex = 0;
     private const int SelectedTabIndex = 1;
     private const int CarGaragePageTabIndex = 0;
     private const int BackGroundGaragePageTabIndex = 1;
+    private const float HideRestorePurchaseSuccessTextTimeOutSec = 5f;
     private GameObject[] _tabs;
     private List<GameObject> _garagePages;
 
@@ -51,8 +55,14 @@ public class GarageController : MonoBehaviour
 
     private void OnEnable()
     {
-        // Update Coin text when enter the garage.
+        RefreshPage();
+    }
+
+    private void RefreshPage()
+    {
         SetCoinsBasedOnGameData();
+        restorePurchaseConfirmPanel.SetActive(false);
+        HideRestorePurchaseSuccessText();
     }
 
     public void OnEnterCarGaragePageButtonCLicked()
@@ -89,5 +99,45 @@ public class GarageController : MonoBehaviour
     private void SetCoinsBasedOnGameData()
     {
         coinsCount.text = GameDataController.GetGameData().CoinsOwned.ToString();
+    }
+
+    public void OnRestorePurchaseButtonClicked()
+    {
+        restorePurchaseConfirmPanel.SetActive(true);
+    }
+
+    public void OnRestorePurchaseConfirmPanelButtonClicked(bool isConfirmed)
+    {
+        if (isConfirmed)
+        {
+            PurchaseController.RestorePurchase();
+        }
+
+        restorePurchaseConfirmPanel.SetActive(false);
+    }
+
+    public void OnRestorePurchaseSuccess()
+    {
+        SetRestorePurchaseText(true);
+    }
+
+    public void OnRestorePurchaseFail()
+    {
+        SetRestorePurchaseText(false);
+    }
+
+    private void SetRestorePurchaseText(bool isRestorePurchaseSuccess)
+    {
+        restorePurchaseResultText.SetActive(true);
+        restorePurchaseResultText.GetComponent<Text>().text = isRestorePurchaseSuccess
+            ? "Successful restore purchase!"
+            : "Fail to restore purchase. Please try again.";
+        Invoke(nameof(HideRestorePurchaseSuccessText), HideRestorePurchaseSuccessTextTimeOutSec);
+
+    }
+
+    private void HideRestorePurchaseSuccessText()
+    {
+        restorePurchaseResultText.SetActive(false);
     }
 }

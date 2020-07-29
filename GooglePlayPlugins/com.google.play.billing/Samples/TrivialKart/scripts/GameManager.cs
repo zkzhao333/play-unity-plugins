@@ -14,13 +14,11 @@
 
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// GameManager inits the game when the game starts and controls the play canvas.
 /// It inits constant data, requests for game data load;
 /// It controls canvas switches among play, store and garage;
-/// It updates the coin text indicator in the play canvas.
 /// </summary>
 public class GameManager : MonoBehaviour
 {
@@ -47,7 +45,6 @@ public class GameManager : MonoBehaviour
     public GameObject mushroomBackGroundGarageItemGameObj;
     public GameObject silverVipSubscribeButtonGameObj;
     public GameObject goldenVipSubscribeButtonGameObj;
-    public Text coinsCount;
 
     private List<GameObject> _canvasPagesList;
     
@@ -59,21 +56,7 @@ public class GameManager : MonoBehaviour
 #endif
         InitConstantData();
         GameDataController.LoadGameData();
-        SetPlayPageBasedOnGameData();
         SetCanvas(playPageCanvas);
-    }
-
-    // Set the play page items based on game data.
-    private void SetPlayPageBasedOnGameData()
-    {
-        GameDataController.GetGameData().SetBackgroundBasedOnGameData();
-        SetCoinsBasedOnGameData();
-    }
-
-    // Set the coins text at the play page.
-    public void SetCoinsBasedOnGameData()
-    {
-        coinsCount.text = GameDataController.GetGameData().coinsOwned.ToString();
     }
 
     // Switch pages when enter the store.
@@ -107,7 +90,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Check if the player is in play mode (page).
-    public bool IsInPlayPage()
+    public bool IsInPlayCanvas()
     {
         return playPageCanvas.activeInHierarchy;
     }
