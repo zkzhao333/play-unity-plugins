@@ -43,4 +43,9 @@ public static class CoinList
     public static readonly Coin TwentyCoins = new Coin(20, 2.49f, "twenty_coins");
     public static readonly Coin FiftyCoins = new Coin(50, 4.99f, "fifty_coins");
     public static readonly List<Coin> List = new List<Coin>() {FiveCoins, TenCoins, TwentyCoins, FiftyCoins};
+
+    public static Coin GetCoinByCoinIndex(int coinIndex)
+    {
+        return List[coinIndex];
+    }
 }

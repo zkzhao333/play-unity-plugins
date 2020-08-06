@@ -72,4 +72,13 @@ public static class SubscriptionList
 
     public static readonly List<Subscription> List = new List<Subscription>()
         {NoSubscription, SilverSubscription, GoldenSubscription};
+
+    public static Subscription GetSubscriptionByType(SubscriptionType subscriptionType)
+    {
+        return List[(int) subscriptionType];
+    }
+    public static Subscription GetSubscriptionByIndex(int subscriptionIndex)
+    {
+        return List[subscriptionIndex];
+    }
 }

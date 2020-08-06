@@ -32,48 +32,23 @@ public class CoinStorePageController : MonoBehaviour
         confirmPanel.SetActive(false);
     }
 
-    public void OnFiveCoinsClicked()
+    public void OnCoinStoreItemCLicked(int coinStoreItemIndex)
     {
-        _coinToPurchase = CoinList.FiveCoins;
-        BuyCoins();
-    }
-
-    public void OnTenCoinsClicked()
-    {
-        _coinToPurchase = CoinList.TenCoins;
-        BuyCoins();
-    }
-
-    public void OnTwentyCoinsClicked()
-    {
-        _coinToPurchase = CoinList.TwentyCoins;
-        BuyCoins();
-    }
-
-    public void OnFiftyCoinsClicked()
-    {
-        _coinToPurchase = CoinList.FiftyCoins;
-        BuyCoins();
-    }
-
-    private void BuyCoins()
-    {
+        _coinToPurchase = CoinList.GetCoinByCoinIndex(coinStoreItemIndex);
         confirmPanel.SetActive(true);
         confirmText.text = "Would you like to purchase " + _coinToPurchase.Amount + "  Coins with $" +
                            _coinToPurchase.Price + "?";
     }
 
-    public void OnConfirmPurchaseButtonClicked()
+    public void OnConfirmPurchasePanelButtonClicked(bool isConfirmed)
     {
         confirmPanel.SetActive(false);
-        PurchaseController.BuyProductId(_coinToPurchase.ProductId);
+        if (isConfirmed)
+        {
+            PurchaseController.BuyProductId(_coinToPurchase.ProductId);
+        }
     }
 
-    public void OnCancelPurchaseButtonClicked()
-    {
-        confirmPanel.SetActive(false);
-    }
-    
     public static void SetDeferredPurchaseReminderActiveness(CoinList.Coin coin, bool isActive)
     {
         var storeItemCoinGameObj = coin.StoreItemCoinGameObj;

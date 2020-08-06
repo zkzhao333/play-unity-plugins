@@ -62,7 +62,7 @@ public class GameData
     private const int TotalCarCount = 4;
     private const int TotalBackgroundCount = 2;
     private PlayerController _playerController = Object.FindObjectOfType<PlayerController>();
-    private GameObject _backgroundImages = GameObject.Find("background/backGroundImages").gameObject;
+    private GameObject _backgroundImages = GameObject.Find("Background/backGroundImages").gameObject;
 
 
     public GameData()
@@ -89,12 +89,12 @@ public class GameData
         backgroundInUseName = BackgroundName.BlueGrass;
     }
 
-    public CarList.Car CarInUseObj => CarList.List[(int) carInUseName];
+    public CarList.Car CarInUseObj => CarList.GetCarByName(carInUseName);
 
-    public BackgroundList.Background BackgroundInUseObj => BackgroundList.List[(int) backgroundInUseName];
+    public BackgroundList.Background BackgroundInUseObj => BackgroundList.GetBackgroundByName(backgroundInUseName);
 
     public SubscriptionList.Subscription CurSubscriptionObj =>
-        SubscriptionList.List[(int) subscriptionType];
+        SubscriptionList.GetSubscriptionByType(subscriptionType);
 
     public int CoinsOwned => coinsOwned;
 
@@ -114,7 +114,7 @@ public class GameData
         coinsOwned += increaseAmount;
         UpdateCoinText();
     }
-    
+
     private void UpdateCoinText()
     {
         Object.FindObjectOfType<StoreController>().SetCoinsBasedOnGameData();
@@ -174,7 +174,7 @@ public class GameData
     // Set background according to the background in use.
     public void SetBackgroundBasedOnGameData()
     {
-        UpdateBackgroundInUse(BackgroundList.List[(int) backgroundInUseName]);
+        UpdateBackgroundInUse(BackgroundList.GetBackgroundByName(backgroundInUseName));
     }
 
     // Update current subscription to target subscription.

@@ -59,4 +59,9 @@ public static class CarList
     {
         return List[(int) carName];
     }
+
+    public static Car GetCarByCarIndex(int carIndex)
+    {
+        return List[carIndex];
+    }
 }

@@ -27,10 +27,12 @@ public class CarStorePageController : MonoBehaviour
 {
     public GameObject confirmPanel;
     public Text confirmText;
+    public GameObject coinsNotEnoughReminder;
 
     private CarList.Car _carToPurchaseObj;
     private readonly Color32 _lightGreyColor = new Color32(147, 147, 147, 255);
-    
+    private const float HideCoinsNotEnoughReminderTimeOutSec = 5f;
+
     private void OnEnable()
     {
         RefreshPage();
@@ -42,6 +44,7 @@ public class CarStorePageController : MonoBehaviour
         confirmPanel.SetActive(false);
         SetCarStoreItemStatusBasedOnOwnership();
         ApplyCoinItemsDiscount();
+        HideCoinsNotEnoughReminder();
     }
 
     // Apply discounts on coin text for each car sales in coin.
@@ -54,35 +57,30 @@ public class CarStorePageController : MonoBehaviour
                 (car.Price * discount).ToString(CultureInfo.InvariantCulture);
         }
     }
-    
-    public void OnItemSedanClicked()
-    {
-        _carToPurchaseObj = CarList.CarSedan;
-        BuyCar();
-    }
 
-    public void OnItemTruckClicked()
+    // Listener for car item purchase.
+    public void OnCarStoreItemClicked(int carIndex)
     {
-        var gameData = GameDataController.GetGameData();
-        // players can purchase the coin item only it they have enough coin
-        if (gameData.coinsOwned >= CarList.CarTruck.Price * gameData.Discount)
+        _carToPurchaseObj = CarList.GetCarByCarIndex(carIndex);
+
+        if (_carToPurchaseObj.IsRealMoneyPurchase)
         {
-            _carToPurchaseObj = CarList.CarTruck;
             BuyCar();
         }
-        // TODO: Add a popup window if the player doesn't have enough coins.
-    }
-
-    public void OnItemJeepClicked()
-    {
-        _carToPurchaseObj = CarList.CarJeep;
-        BuyCar();
-    }
-
-    public void OnItemKartClicked()
-    {
-        _carToPurchaseObj = CarList.CarKart;
-        BuyCar();
+        else // if the item sells in coins.
+        {
+            var gameData = GameDataController.GetGameData();
+            // Players can purchase the coin item only it they have enough coin.
+            if (gameData.coinsOwned >= _carToPurchaseObj.Price * gameData.Discount)
+            {
+                BuyCar();
+            }
+            else
+            {
+                coinsNotEnoughReminder.SetActive(true);
+                Invoke(nameof(HideCoinsNotEnoughReminder), HideCoinsNotEnoughReminderTimeOutSec);
+            }
+        }
     }
 
     private void BuyCar()
@@ -100,30 +98,26 @@ public class CarStorePageController : MonoBehaviour
         }
     }
 
-    public void OnConfirmPurchaseButtonClicked()
+    public void OnConfirmPurchasePanelButtonClicked(bool isConfirmed)
     {
-        // purchase APIs
         confirmPanel.SetActive(false);
-        // if the item sales in coins
-        if (_carToPurchaseObj.IsRealMoneyPurchase)
+
+        if (isConfirmed)
         {
-            PurchaseController.BuyProductId(_carToPurchaseObj.ProductId);
-        }
-        else
-        {
-            GameDataController.GetGameData().PurchaseCar(_carToPurchaseObj);
+            // If the item sales in coins, buy the product through the client side.
+            if (_carToPurchaseObj.IsRealMoneyPurchase)
+            {
+                PurchaseController.BuyProductId(_carToPurchaseObj.ProductId);
+            }
+            else
+            {
+                GameDataController.GetGameData().PurchaseCar(_carToPurchaseObj);
+            }
         }
     }
 
-    public void OnCancelPurchaseButtonClicked()
-    {
-        confirmPanel.SetActive(false);
-    }
-
-
-    // TODO: need to decide to use CarObj or Car as the name.
-    // check if the player own the car
-    // if the player own the car, disable the interaction of the car item
+    // Check if the player own the car;
+    // If the player own the car, disable the interaction of the car item.
     private void SetCarStoreItemStatusBasedOnOwnership()
     {
         foreach (var car in CarList.List)
@@ -142,7 +136,6 @@ public class CarStorePageController : MonoBehaviour
                 }
             }
         }
-       
     }
 
     public static void SetDeferredPurchaseReminderActiveness(CarList.Car car, bool isActive)
@@ -150,7 +143,14 @@ public class CarStorePageController : MonoBehaviour
         var storeItemCarGameObj = car.StoreItemCarGameObj;
         storeItemCarGameObj.transform.Find("deferredPurchaseReminder")?.gameObject.SetActive(isActive);
         // Set the Item not interactive if deferred purchase reminder is set up.
-        storeItemCarGameObj.GetComponent<Button>().interactable = !isActive;
+        if (isActive)
+        {
+            storeItemCarGameObj.GetComponent<Button>().interactable = false;
+        }
+    }
 
+    private void HideCoinsNotEnoughReminder()
+    {
+        coinsNotEnoughReminder.SetActive(false);
     }
 }

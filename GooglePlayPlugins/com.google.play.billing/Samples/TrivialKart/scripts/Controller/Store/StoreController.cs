@@ -32,13 +32,9 @@ public class StoreController : MonoBehaviour
 
     private const int UnselectedTabIndex = 0;
     private const int SelectedTabIndex = 1;
-    private const int GasStorePageTabIndex = 0;
-    private const int CoinStorePageTabIndex = 1;
-    private const int CarStorePageTabIndex = 2;
-    private const int SubscriptionPageTabIndex = 3;
     private GameObject[] _tabs;
     private List<GameObject> _storePages;
-    
+
     // Start is called before the first frame update.
     private void Start()
     {
@@ -57,30 +53,11 @@ public class StoreController : MonoBehaviour
         // Update Coin text when enter the store.
         SetCoinsBasedOnGameData();
     }
-    
-    // TODO: Add parameters to the listeners.
-    public void OnEnterGasPageButtonClicked()
-    {
-        SetPageActiveness(gasPage);
-        SetTabActiveness(GasStorePageTabIndex);
-    }
 
-    public void OnEnterCoinPageButtonClicked()
+    public void OnSwitchPageTabClicked(int tabIndex)
     {
-        SetPageActiveness(coinPage);
-        SetTabActiveness(CoinStorePageTabIndex);
-    }
-
-    public void OnEnterCarPageButtonClicked()
-    {
-        SetPageActiveness(carPage);
-        SetTabActiveness(CarStorePageTabIndex);
-    }
-
-    public void OnEnterSubscriptionPageButtonClicked()
-    {
-        SetPageActiveness(subscriptionPage);
-        SetTabActiveness(SubscriptionPageTabIndex);
+        SetPageActiveness(_storePages[tabIndex]);
+        SetTabActiveness(tabIndex);
     }
 
     private void SetPageActiveness(GameObject targetPage)
@@ -93,7 +70,6 @@ public class StoreController : MonoBehaviour
 
     private void SetTabActiveness(int targetTabIndex)
     {
-        // TODO: consider to make a class.
         for (var tabIndex = 0; tabIndex < _tabs.Length; tabIndex++)
         {
             var isTabSelected = tabIndex == targetTabIndex;

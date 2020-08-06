@@ -25,17 +25,12 @@ public class BackgroundGaragePageController : MonoBehaviour
     {
         RefreshPage();
     }
-    
-    public void OnItemBlueGrassBackgroundClicked()
+
+    public void OnBackgroundGarageItemClicked(int backgroundIndex)
     {
-        SwitchToTargetBackground(BackgroundList.BlueGrassBackground);
+        SwitchToTargetBackground(BackgroundList.GetBackgroundByIndex(backgroundIndex));
     }
 
-    public void OnItemMushroomBackGroundClicked()
-    {
-        SwitchToTargetBackground(BackgroundList.MushroomBackground);
-    }
-    
     private void SwitchToTargetBackground(BackgroundList.Background targetBackground)
     {
         GameDataController.GetGameData().UpdateBackgroundInUse(targetBackground);
