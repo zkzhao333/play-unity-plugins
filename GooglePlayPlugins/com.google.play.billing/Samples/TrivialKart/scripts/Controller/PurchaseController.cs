@@ -208,7 +208,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
-        // TODO: Use an error dialog to communicate.
+        
         Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
 #if ONLINE
         NetworkRequestController.verifyAndSaveUserPurchase(args.purchasedProduct);
@@ -282,7 +282,6 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         string receipt = (string) payLoadDictionary["json"];
 
         Dictionary<string, object> receiptDictionary = (Dictionary<string, object>) MiniJson.JsonDecode(receipt);
-        // TODO: Receipt with no obfuscated id may be valid.
         if (!receiptDictionary.ContainsKey("obfuscatedAccountId") ||
             !receiptDictionary["obfuscatedAccountId"].Equals(TrivialKartClientUtil.GetObfuscatedAccountId()))
         {
@@ -320,13 +319,14 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             return;
         }
 
-        // TODO: Build an error dialog.
+        
+        // Pop up window
         Debug.LogError("Product ID doesn't match any of exist products.");
     }
 
     public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
     {
-        // TODO: Add a reminder here.
+        
         // A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing
         // this reason with the user to guide their troubleshooting actions.
         Debug.Log(
