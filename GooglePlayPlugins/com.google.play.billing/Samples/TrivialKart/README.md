@@ -62,9 +62,9 @@ You may need to manually import the package at Assets/Plugins/UnityPurchasing/UD
 
     Fill the other fields. Set them to "Active".
 
-13. Publish your APK to the Alpha channel. Wait 2-3 hours for Google Play to process the APK. If you don't wait for Google Play to process the APK, you might see errors where Google Play says that "this version of the application is not enabled for in-app billing" or something similar.
+13. Publish your APK to the Beta channel. Wait 2-3 hours for Google Play to process the APK. If you don't wait for Google Play to process the APK, you might see errors where Google Play says that "this version of the application is not enabled for in-app billing" or something similar.
 
-14. Added Tester and License testing to your game on Play Console.
+14. (Optional) Added Tester and License testing to your game on Play Console.
 
 15. Also always make sure that the uploaded application has the same version as the one you are testing.
 
@@ -108,4 +108,4 @@ limitations under the License.
 2020-8-7: Inital release
 
 ## Acknowledgements
-Most of the game assets are collected from [Kenney](https://www.kenney.nl/). Thanks Kenney for the amazing assets.
+Most of the game assets are obtained from [Kenney](https://www.kenney.nl/). Thanks Kenney for the amazing assets.
