@@ -36,7 +36,6 @@ public class CarGaragePageController : MonoBehaviour
     // Check if player owns the car.
     private void ToggleCarActivenessBasedOnOwnership()
     {
-        // TODO: make the unavailable car in gray color.
         foreach (var car in CarList.List)
         {
             var isCarOwned = GameDataController.GetGameData().CheckCarOwnership(car);
@@ -55,24 +54,9 @@ public class CarGaragePageController : MonoBehaviour
             .SetActive(true);
     }
 
-    public void OnItemSedanClicked()
+    public void OnCarGarageItemClicked(int carIndex)
     {
-        SwitchCarInUse(CarList.CarSedan);
-    }
-
-    public void OnItemTruckClicked()
-    {
-        SwitchCarInUse(CarList.CarTruck);
-    }
-
-    public void OnItemJeepClicked()
-    {
-        SwitchCarInUse(CarList.CarJeep);
-    }
-
-    public void OnItemKartClicked()
-    {
-        SwitchCarInUse(CarList.CarKart);
+        SwitchCarInUse(CarList.GetCarByCarIndex(carIndex));
     }
 
     private void SwitchCarInUse(CarList.Car targetCar)

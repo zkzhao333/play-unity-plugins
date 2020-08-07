@@ -71,8 +71,7 @@ public class PlayerController : MonoBehaviour
         _carStartPos = _carInUseGameObj.transform.position;
         _camOffset = cam.transform.position - _carStartPos;
     }
-
-    // TODO: Put this method into gameData.cs/gameDataController.cs.
+    
     // Update the car in use in the play page when player switch the car.
     public void UpdateCarInUse()
     {

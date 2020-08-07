@@ -33,8 +33,6 @@ public class GarageController : MonoBehaviour
 
     private const int UnselectedTabIndex = 0;
     private const int SelectedTabIndex = 1;
-    private const int CarGaragePageTabIndex = 0;
-    private const int BackGroundGaragePageTabIndex = 1;
     private const float HideRestorePurchaseSuccessTextTimeOutSec = 5f;
     private GameObject[] _tabs;
     private List<GameObject> _garagePages;
@@ -65,16 +63,10 @@ public class GarageController : MonoBehaviour
         HideRestorePurchaseSuccessText();
     }
 
-    public void OnEnterCarGaragePageButtonCLicked()
+    public void OnSwitchPageTabClicked(int tabIndex)
     {
-        SetPage(carPage);
-        SetTab(CarGaragePageTabIndex);
-    }
-
-    public void OnEnterBackgroundPageButtonClicked()
-    {
-        SetPage(backgroundPage);
-        SetTab(BackGroundGaragePageTabIndex);
+        SetPage(_garagePages[tabIndex]);
+        SetTab(tabIndex);
     }
 
     private void SetPage(GameObject targetPage)
@@ -133,7 +125,6 @@ public class GarageController : MonoBehaviour
             ? "Successful restore purchase!"
             : "Fail to restore purchase. Please try again.";
         Invoke(nameof(HideRestorePurchaseSuccessText), HideRestorePurchaseSuccessTextTimeOutSec);
-
     }
 
     private void HideRestorePurchaseSuccessText()

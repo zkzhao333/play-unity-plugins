@@ -27,7 +27,7 @@ public class GasStorePageController : MonoBehaviour
     public GameObject panelFillGas;
     public GameObject gasLevelImageObj;
     public GameObject cannotAffordWarning;
-    public GameObject car; 
+    public GameObject car;
 
     private double _currentCost;
     private Gas _gas;
@@ -44,17 +44,17 @@ public class GasStorePageController : MonoBehaviour
     {
         RefreshGasStorePage();
     }
-    
+
     private void RefreshGasStorePage()
     {
-        _currentCost = Math.Ceiling((Gas.FullGasLevel - _gas.GasLevel) * GameDataController.GetGameData().Discount) ;
+        _currentCost = Math.Ceiling((Gas.FullGasLevel - _gas.GasLevel) * GameDataController.GetGameData().Discount);
         gasPrice.text = "* " + _currentCost;
         panelGasPrice.text = "Would you like to fill the gas tank with  " + _currentCost + "  coins";
         _gas.SetGasLevelHelper(_gasLevelImage, gasLevelImageObj);
         panelFillGas.SetActive(false);
         cannotAffordWarning.SetActive(false);
     }
-    
+
     public void OnFillGasButtonClicked()
     {
         var currentCoins = GameDataController.GetGameData().CoinsOwned;
@@ -67,18 +67,13 @@ public class GasStorePageController : MonoBehaviour
             cannotAffordWarning.SetActive(true);
         }
     }
-    
-    public void OnCancelFillGasButtonClicked()
-    {
-        panelFillGas.SetActive(false);
-    }
 
-    // Listener for confirm/yes fill gas button.
-    public void OnConfirmFillGasButtonClicked()
+    public void OnFillGasConfirmPanelButtonClicked(bool isConfirmed)
     {
         panelFillGas.SetActive(false);
-        var currentCoins = GameDataController.GetGameData().CoinsOwned;
-        if (currentCoins >= _currentCost)
+
+        // Fill the gas if the user taps "YES".
+        if (isConfirmed)
         {
             GameDataController.GetGameData().ReduceCoinsOwned((int) _currentCost);
             _gas.FilledGas();

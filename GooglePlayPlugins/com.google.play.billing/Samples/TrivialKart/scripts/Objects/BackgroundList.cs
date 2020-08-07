@@ -42,4 +42,14 @@ public class BackgroundList
 
     public static readonly List<Background> List = new List<Background>()
         {BlueGrassBackground, MushroomBackground};
+
+    public static Background GetBackgroundByName(BackgroundName backgroundName)
+    {
+        return List[(int) backgroundName];
+    }
+
+    public static Background GetBackgroundByIndex(int backgroundIndex)
+    {
+        return List[backgroundIndex];
+    }
 }

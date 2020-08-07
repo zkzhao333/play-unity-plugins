@@ -91,34 +91,21 @@ public class SubscriptionStorePageController : MonoBehaviour
         targetButton.GetComponent<Button>().interactable = isButtonInteractive;
     }
 
-    public void OnSilverSubscribeButtonClicked()
+    public void OnSubscriptionStoreItemClicked(int subscriptionIndex)
     {
-        _subscriptionToSubscribe = SubscriptionList.SilverSubscription;
-        Subscribe();
-    }
-
-    public void OnGoldenSubscribeButtonClicked()
-    {
-        _subscriptionToSubscribe = SubscriptionList.GoldenSubscription;
-        Subscribe();
-    }
-
-    private void Subscribe()
-    {
+        _subscriptionToSubscribe = SubscriptionList.GetSubscriptionByIndex(subscriptionIndex);
         confirmPanel.SetActive(true);
         confirmText.text = "Would you like to subscribe to " + _subscriptionToSubscribe.Name + " with " +
                            _subscriptionToSubscribe.Price + "/month ?";
     }
 
-    public void OnConfirmSubscribeButtonClicked()
+    public void OnConfirmSubscriptionPanelButtonClicked(bool isConfirmed)
     {
         confirmPanel.SetActive(false);
-        PurchaseController.PurchaseASubscription(GameDataController.GetGameData().CurSubscriptionObj,
-            _subscriptionToSubscribe);
-    }
-
-    public void OnCancelSubscribeButtonClicked()
-    {
-        confirmPanel.SetActive((false));
+        if (isConfirmed)
+        {
+            PurchaseController.PurchaseASubscription(GameDataController.GetGameData().CurSubscriptionObj,
+                _subscriptionToSubscribe);
+        }
     }
 }
