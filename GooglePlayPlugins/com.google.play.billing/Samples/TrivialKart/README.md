@@ -107,8 +107,5 @@ limitations under the License.
 ## CHANGELOG
 2020-8-7: Inital release
 
-
-
-
-##Acknowledgements
+## Acknowledgements
 Most of the game assets are collected from [Kenney](https://www.kenney.nl/). Thanks Kenney for the amazing assets.
