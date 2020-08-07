@@ -331,6 +331,14 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         // this reason with the user to guide their troubleshooting actions.
         Debug.Log(
             $"OnPurchaseFailed: FAIL. Product: '{product.definition.storeSpecificId}', PurchaseFailureReason: {failureReason}");
+
+        // When purchase fail due to duplicate transaction, and the item is not shown in client side,
+        // do restore purchase to fetch the product.
+        // This situation may happen when the user lose internet connection after paying to play store. 
+        if (failureReason == PurchaseFailureReason.DuplicateTransaction)
+        {
+            _playStoreExtensions.RestoreTransactions(null);
+        }
     }
 
     // Restore purchase when the user login to a new device.
@@ -339,11 +347,11 @@ public class PurchaseController : MonoBehaviour, IStoreListener
         _playStoreExtensions.RestoreTransactions(
             delegate(bool restoreSuccess)
             {
-             var garageController = FindObjectOfType<GarageController>();
-             if (restoreSuccess)
-             {
-                 Debug.Log("Successfully restore purchase!");
-                 garageController.OnRestorePurchaseSuccess();
+                var garageController = FindObjectOfType<GarageController>();
+                if (restoreSuccess)
+                {
+                    Debug.Log("Successfully restored purchase!");
+                    garageController.OnRestorePurchaseSuccess();
                 }
                 else
                 {

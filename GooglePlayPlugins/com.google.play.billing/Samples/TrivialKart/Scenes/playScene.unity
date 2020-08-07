@@ -3048,7 +3048,7 @@ MonoBehaviour:
   carPage: {fileID: 560796382}
   backgroundPage: {fileID: 434610940}
   restorePurchaseConfirmPanel: {fileID: 630752254}
-  restorePurchaseSuccessText: {fileID: 1447954936}
+  restorePurchaseResultText: {fileID: 1447954936}
   coinsCount: {fileID: 95428283}
 --- !u!1 &181622526
 GameObject:
@@ -18772,8 +18772,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 100.40039, y: 38.620117}
-  m_SizeDelta: {x: 200.79651, y: 70.21835}
+  m_AnchoredPosition: {x: 97.5, y: 26.5}
+  m_SizeDelta: {x: 195, y: 53}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1182112701
 MonoBehaviour:
@@ -21955,7 +21955,7 @@ GameObject:
   - component: {fileID: 1447954939}
   - component: {fileID: 1447954938}
   m_Layer: 5
-  m_Name: RestorePurchaseSuccessText
+  m_Name: RestorePurchaseResultText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23866,8 +23866,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -100.40039, y: 38.620117}
-  m_SizeDelta: {x: 200.79651, y: 70.21835}
+  m_AnchoredPosition: {x: -86.322266, y: 26.5}
+  m_SizeDelta: {x: 172.64563, y: 53}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1590864597
 MonoBehaviour:
