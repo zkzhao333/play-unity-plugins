@@ -80,6 +80,9 @@ public class NetworkRequestController
     {
         var values = new Dictionary<string, string> { };
         ServerResponseModel serverResponse = sendUnityWebRequest(values, CHECK_SUBSCRIPTION_PRICE_CHANGE);
-        PurchaseController.confirmSubscriptionPriceChange(serverResponse.result);
+        if (serverResponse.success)
+        {
+            PurchaseController.confirmSubscriptionPriceChange(serverResponse.result);
+        }
     }
 }

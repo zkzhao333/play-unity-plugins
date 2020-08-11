@@ -53,7 +53,6 @@ public class GameManager : MonoBehaviour
     {
 #if ONLINE
         NetworkRequestController.registerUserDevice();
-        NetworkRequestController.CheckSubscriptionPriceChange();
 #endif
         InitConstantData();
         GameDataController.LoadGameData();
@@ -76,6 +75,9 @@ public class GameManager : MonoBehaviour
     public void OnEnterGaragePageButtonClicked()
     {
         SetCanvas(garagePageCanvas);
+#if ONLINE
+        NetworkRequestController.CheckSubscriptionPriceChange();
+#endif
     }
 
     private void SetCanvas(GameObject targetCanvasPage)
