@@ -47,12 +47,13 @@ public class GameManager : MonoBehaviour
     public GameObject goldenVipSubscribeButtonGameObj;
 
     private List<GameObject> _canvasPagesList;
-    
+
     // Init the game.
     public void Awake()
     {
 #if ONLINE
         NetworkRequestController.registerUserDevice();
+        NetworkRequestController.CheckSubscriptionPriceChange();
 #endif
         InitConstantData();
         GameDataController.LoadGameData();
@@ -104,7 +105,7 @@ public class GameManager : MonoBehaviour
         InitSubscriptionList();
         _canvasPagesList = new List<GameObject>() {playPageCanvas, storePageCanvas, garagePageCanvas};
     }
-    
+
     // Link car game object to the car object in carList.
     private void InitCarList()
     {
@@ -122,7 +123,7 @@ public class GameManager : MonoBehaviour
         CarList.CarKart.PlayCarGameObj = playCarKartGameObj;
         CarList.CarKart.StoreItemCarGameObj = storeItemCarKartGameObj;
     }
-    
+
     // Link background game object to the background object in backgroundList.
     private void InitBackGroundList()
     {
@@ -146,7 +147,7 @@ public class GameManager : MonoBehaviour
         CoinList.TwentyCoins.StoreItemCoinGameObj = storeItemTwentyCoinGameObject;
         CoinList.FiftyCoins.StoreItemCoinGameObj = storeItemFiftyCoinGameObject;
     }
-    
+
     private void OnApplicationPause(bool pauseStatus)
     {
         GameDataController.SaveGameData();

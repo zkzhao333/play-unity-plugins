@@ -32,6 +32,9 @@ public class NetworkRequestController
 
     private const string GET_GAME_DATA_URL = "https://us-central1-simpleserver-d2cf5.cloudfunctions.net/get_game_data";
 
+    private const string CHECK_SUBSCRIPTION_PRICE_CHANGE =
+        "https://us-central1-simpleserver-d2cf5.cloudfunctions.net/check_subscription_price_change";
+
     public static ServerResponseModel registerUserDevice()
     {
         var values = new Dictionary<string, string> { };
@@ -54,7 +57,6 @@ public class NetworkRequestController
             sendUnityWebRequest(new Dictionary<string, string>(), GET_GAME_DATA_URL);
         if (serverResponse.success)
         {
-            Debug.Log(serverResponse.result);
             GameDataController.SetGameData(JsonUtility.FromJson<GameData>(serverResponse.result));
         }
         else
@@ -72,5 +74,12 @@ public class NetworkRequestController
 
         ServerResponseModel serverResponse = sendUnityWebRequest(values, VERIFY_AND_SAVE_TOKEN_URL);
         PurchaseController.ConfirmPendingPurchase(product, serverResponse.success);
+    }
+
+    public static void CheckSubscriptionPriceChange()
+    {
+        var values = new Dictionary<string, string> { };
+        ServerResponseModel serverResponse = sendUnityWebRequest(values, CHECK_SUBSCRIPTION_PRICE_CHANGE);
+        PurchaseController.confirmSubscriptionPriceChange(serverResponse.result);
     }
 }
