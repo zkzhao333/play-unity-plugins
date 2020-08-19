@@ -208,7 +208,6 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
     public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
     {
-        
         Debug.Log($"ProcessPurchase: PASS. Product: '{args.purchasedProduct.definition.id}'");
 #if ONLINE
         NetworkRequestController.verifyAndSaveUserPurchase(args.purchasedProduct);
@@ -319,14 +318,13 @@ public class PurchaseController : MonoBehaviour, IStoreListener
             return;
         }
 
-        
+
         // Pop up window
         Debug.LogError("Product ID doesn't match any of exist products.");
     }
 
     public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
     {
-        
         // A product purchase attempt did not succeed. Check failureReason for more detail. Consider sharing
         // this reason with the user to guide their troubleshooting actions.
         Debug.Log(
@@ -334,11 +332,29 @@ public class PurchaseController : MonoBehaviour, IStoreListener
 
         // When purchase fail due to duplicate transaction, and the item is not shown in client side,
         // do restore purchase to fetch the product.
-        // This situation may happen when the user lose internet connection after paying to play store. 
+        // This situation may happen when the user lose internet connection after paying to play store.
         if (failureReason == PurchaseFailureReason.DuplicateTransaction)
         {
             _playStoreExtensions.RestoreTransactions(null);
         }
+    }
+
+    public static void confirmSubscriptionPriceChange(string productId)
+    {
+        _playStoreExtensions.ConfirmSubscriptionPriceChange(productId,
+            delegate(bool priceChangeSucess)
+            {
+                if (priceChangeSucess)
+                {
+                    // Here you can choose to make an update or record that the user accpected the new price
+                    Debug.Log("The user accepted the price change");
+                }
+                else
+                {
+                    Debug.Log("The user did not accecpt the price change");
+                }
+            }
+        );
     }
 
     // Restore purchase when the user login to a new device.
