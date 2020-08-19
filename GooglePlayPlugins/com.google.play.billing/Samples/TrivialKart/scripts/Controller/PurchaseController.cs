@@ -351,7 +351,7 @@ public class PurchaseController : MonoBehaviour, IStoreListener
                 }
                 else
                 {
-                    Debug.Log("The did not accecpt the price change");
+                    Debug.Log("The user did not accecpt the price change");
                 }
             }
         );
